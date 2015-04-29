@@ -151,7 +151,7 @@ function an_loan_attr(loan){
     if (loan.funded_amount == 0) { //due to lag of API, this could be wrong.
         sp("You can be the first person to lend to this borrower.")
     }
-    if (Date.parse(loan.planned_expiration_date) - Date.now() < day){
+    if (Date.parse(loan.planned_expiration_date) - Date.now() < 3 * day){
         sp("This loan is expiring soon."); // Rally your teams to get this loan funded!
     }
     if ((loan.loan_amount - loan.funded_amount - loan.basket_amount) <= 75){ //or use "not much left on the loan!" when under $50/75?

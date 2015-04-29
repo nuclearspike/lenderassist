@@ -3,8 +3,9 @@ $.ajax({
     url: "http://api.kivaws.org/v1/lenders/" + t_lender_id + ".json",
     cache: true,
     success: function (result) {
-        lenders[t_lender_id] = result.lenders[0];
-        short_talk_lender(result.lenders[0]);
+        lender = result.lenders[0];
+        lenders[t_lender_id] = lender;
+        short_talk_lender(lender);
 
 
         var url = "http://www.kiva.org/ajax/getSuperGraphData?&sliceBy=sector&include=all&measure=count&subject_id=" + t_lender_id + "&type=lender&granularity=cumulative";
@@ -18,13 +19,12 @@ $.ajax({
             for (i = 0; i < Math.min(result.data.length, 3); i++){
                 sectors.push(result.lookup[result.data[i].name]);
             }
-            sp("Their top sectors are " + sectors.join(', '));
+            sp(lender.name + "'s top sectors are " + sectors.join(', '));
 
-            var teams = "http://api.kivaws.org/v1/lenders/" + t_lender_id + "/teams.json";
-            $.ajax({url: teams,
+            $.ajax({url: "http://api.kivaws.org/v1/lenders/" + t_lender_id + "/teams.json",
                     cache: true,
                 success: function (result) {
-                    sp("They belong to " + plural(result.paging.total, "team"));
+                    sp("and belongs to " + plural(result.paging.total, "team"));
                 }});
         });
 
