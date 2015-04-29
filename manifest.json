@@ -1,6 +1,6 @@
 {
   "name": "Kiva Lender Assistant",
-  "description": "The Kiva Lender Assistant points out details about the loans you're looking at.",
+  "description": "The Kiva Lender Assistant 1) points out details about the loans you're looking at. 2) In Chrome's location bar, just type 'kiva' and a keyword to search new loans. 3) Adds 'Live' link to every page. ",
   "version": "0.1",
   "manifest_version": 2,
 

@@ -1,9 +1,8 @@
 console.log("all_start.js processing");
 
-var second=1000, minute=second*60, hour=minute*60, day=hour*24, week=day* 7, month=day*30;
+var second=1000, minute=second*60, hour=minute*60, day=hour*24, week=day* 7, month=day*30, year=12*month;
 var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 var lender_id = undefined;
-
 
 //speak
 function sp(s) {
@@ -16,7 +15,6 @@ function sp(s) {
     });
 }
 
-//debug
 chrome.storage.onChanged.addListener(function(changes, namespace) {
     if (changes.was_logged_in){//present
         if (changes.was_logged_in.oldValue == true && changes.was_logged_in.newValue == false) {
@@ -24,6 +22,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
             chrome.storage.local.set({"d_countries":null,"d_sectors":null,"lender_id":null,"last_logged_out":Date.now()});
         }
     }
+    //debug
     for (key in changes) {
         var storageChange = changes[key];
         console.log('Storage key "%s" in namespace "%s" changed. ' +
@@ -80,4 +79,9 @@ function is_not_set(ouch){
     return (ouch==undefined || ouch==null || ouch=="");
 }
 
-chrome.storage.local.set({"last_visit":Date.now()});
+//CODE TO RUN
+chrome.storage.local.get("lender_id", function(result){
+    lender_id = result.lender_id;
+})
+
+chrome.storage.local.set({"last_visit": Date.now()});
