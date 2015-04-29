@@ -20,8 +20,6 @@ function set_zip_button(){
     });
 }
 
-var lenders = {};
-
 function short_talk_lender(lender){
     if (Date.now() - lender.last_spoke < 10 * second){
         return;
@@ -66,7 +64,7 @@ wire_intent('a[href*="kiva.org/lender/"]', 'lender_chatter', function($element){
         short_talk_lender(lenders[t_lender_id])
     } else {
         $.ajax({
-            url: "http://api.kivaws.org/v1/lenders/" + t_lender_id + ".json",
+            url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_lender_id + ".json",
             cache: true,
             success: function (result) {
                 lenders[t_lender_id] = result.lenders[0];
@@ -76,6 +74,12 @@ wire_intent('a[href*="kiva.org/lender/"]', 'lender_chatter', function($element){
     }
 })
 
+$(document).on('click', 'a[href*="kiva.org/lender/"]', function(e){
+    e.preventDefault();
+    var $elem = $(e.target).closest('a');
+    sp(pick_random(["Hold on...", "Let's look at this lender..."]), false);
+    window.location.href = $elem.attr("href")+"?super_graphs=1";
+})
 
 //http://api.kivaws.org/v1/teams/using_shortname/atheists.json
 

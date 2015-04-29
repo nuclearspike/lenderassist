@@ -38,10 +38,6 @@ function f_is_logged_in(){
     return result;
 }
 
-function get_rand_int(max) {
-    return Math.floor(Math.random() * max);
-}
-
 //i'd rather use the .success .fail pattern (.figure)
 function get_or_figure(key, context, figure_func, result_func){
     cl("get_or_figure " + key);
@@ -54,6 +50,29 @@ function get_or_figure(key, context, figure_func, result_func){
           result_func(context, result[key]);
       }
     });
+}
+
+var lenders = {};
+function get_lender(t_lender_id){
+    var def = $.Deferred();
+
+    if (lenders[t_lender_id]){
+        def.resolve(lenders[t_lender_id]);
+    }
+
+    $.ajax({
+        url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_lender_id + ".json",
+        cache: true,
+        fail: def.reject,
+        success: function (result) {
+            lender = result.lenders[0];
+            lenders[t_lender_id] = lender;
+            def.resolve(lender);
+            localStorage.lenders = lenders;
+        }
+    });
+
+    return def.promise();
 }
 
 function plural(count, word, plural_word){

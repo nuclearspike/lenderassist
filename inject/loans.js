@@ -105,7 +105,7 @@ function an_lender(loan){
 
 function an_wait_words(){
     var wait_words = ["Hum, just a second", "Let me look at this.", "Interesting...", "Look at this one.", "", "One second.", "Hold on...", "Wow.", "Okay.", "Ooo.", "Just a moment.", "What do you think about this one?", "Here we go."];
-    sp(wait_words[get_rand_int(wait_words.length)]);
+    sp(pick_random(wait_words), true);
 }
 
 function an_massage(loan){

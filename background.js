@@ -42,23 +42,26 @@ chrome.omnibox.onInputEntered.addListener(
 //background message receiver
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.utterance) {
-        narrate(request.utterance, function() { sendResponse("Narrate: OK"); });
+        narrate(request.utterance, request.interrupt, function() { sendResponse("Narrate: OK"); });
     } else if (request.funct) {
         console.log(request);
         eval(request.funct)(request.params);
         sendResponse("Received message to call function.")
-    }
+    } //else if (request.get_lender)
 });
 
 var last_utterances = [];
 
-function narrate(utterance, callback) {
+function narrate(utterance, interrupt, callback) {
     //utterance = '<?xml version="1.0"?>' + '<speak><emphasis>you are</emphasis>' + utterance + '</speak>';
 
     if (last_utterances.indexOf(utterance) > -1) return;
     last_utterances.push(utterance);
     console.log("Spoken: " + utterance);
 
+    if (interrupt && chrome.tts.isSpeaking()){
+        chrome.tts.stop();
+    }
     chrome.tts.speak(
         utterance,
         {
@@ -80,4 +83,6 @@ function narrate(utterance, callback) {
 }
 
 //happens when the extension loads
-narrate("Let's make the world a better place.");
+//narrate(pick_random(["Let's make the world a better place.","Things are looking better every day!", "Isn't it time to check out Kiva again?"]));
+
+narrate("Here we go again...");

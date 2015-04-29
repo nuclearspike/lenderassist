@@ -5,10 +5,11 @@ var monthNames = ["January", "February", "March", "April", "May", "June", "July"
 var lender_id = undefined;
 
 //speak
-function sp(speak) {
+function sp(speak, interrupt) {
     if (!speak) return;
     cl(speak);
-    chrome.runtime.sendMessage({utterance: speak});
+    if (interrupt == undefined) {interrupt = false}
+    chrome.runtime.sendMessage({utterance: speak, enqueue: interrupt});
 }
 
 function sp_once(named_utterance, utterance){
@@ -24,6 +25,14 @@ function sp_once(named_utterance, utterance){
 
 function cl(s){
     console.log(s);
+}
+
+function pick_random(arr){
+    return arr[get_rand_int(arr.length)];
+}
+
+function get_rand_int(max) {
+    return Math.floor(Math.random() * max);
 }
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
