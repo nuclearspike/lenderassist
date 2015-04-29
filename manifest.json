@@ -19,9 +19,14 @@
   },
   "content_scripts": [
     {
+      "matches": ["*://www.kiva.org/*","https://zip.kiva.org/*"],
+      "run_at": "document_start",
+      "js": ["js_lib/jquery/jquery.min.js", "inject/all_common_start.js"]
+    },
+    {
       "matches": ["*://www.kiva.org/*"],
       "run_at": "document_start",
-      "js": ["js_lib/jquery/jquery.min.js", "inject/all_start.js"],
+      "js": ["inject/all_start.js"],
       "css": ["inject/all.css"]
     },
     {
@@ -62,6 +67,11 @@
       "matches": ["https://www.kiva.org/myLenderId*"],
       "run_at": "document_end",
       "js":["inject/my_lender_id.js"]
+    },
+    {
+      "matches": ["https://zip.kiva.org/*"],
+      "run_at": "document_end",
+      "js": ["inject/zip.js"]
     }
   ]
 }
