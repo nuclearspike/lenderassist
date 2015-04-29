@@ -11,8 +11,7 @@ chrome.omnibox.onInputChanged.addListener(
         suggestions.push({content: 'http://www.kiva.org/lend', description: "Kiva Loan Search"});
         suggestions.push({content: 'https://www.kiva.org/portfolio', description: "Kiva Portfolio"});
         suggestions.push({content: 'https://www.kiva.org/portfolio/estimated-repayments', description: "Kiva Estimated Repayments"});
-        //suggestions.push({content: 'https://www.kiva.org/portfolio', description: "Kiva Portfolio"});
-        
+
         // Set first suggestion as the default suggestion
         chrome.omnibox.setDefaultSuggestion({description:suggestions[0].description});
 
@@ -44,8 +43,7 @@ chrome.omnibox.onInputEntered.addListener(
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.utterance) {
         narrate(request.utterance, function() { sendResponse("Narrate: OK"); });
-    }
-    if (request.funct) {
+    } else if (request.funct) {
         console.log(request);
         eval(request.funct)(request.params);
         sendResponse("Received message to call function.")
@@ -83,7 +81,7 @@ function narrate(utterance, callback) {
 //this isn't working...
 chrome.storage.local.get("lender_id", function(res){
     if (is_not_set(res.lender_id)){
-        sp("Many of the features of this extension require that you have a Kiva account. Please log in so I can know who you are.");
+        sp("Many of the features of this extension require that you have a Kiva account. Please log in so I know who you are.");
         create_lender_id_tab();
     }
 });

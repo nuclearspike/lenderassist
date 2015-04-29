@@ -1,7 +1,7 @@
 cl("all_end.js processing");
 
 chrome.runtime.sendMessage({funct: 'create_lender_id_tab'}, function(result){
-    cl("received result")
+    cl("received result");
     cl(result);
 });
 
