@@ -43,11 +43,6 @@
       "matches": ["http://www.kiva.org/live?v=1"],
       "css": ["inject/live_map.css"],
       "js": ["inject/live_map.js"]
-    },
-    {
-      "matches": ["http://www.kiva.org/team/*"],
-      "css": ["inject/team.css"],
-      "js": ["inject/team.js"]
     }
   ]
 }
