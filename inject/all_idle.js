@@ -31,11 +31,11 @@ function short_talk_lender(lender){
     if (lender.whereabouts.length > 0) {
         speak.push("lives in " + lender.whereabouts + " and");
     }
-    speak.push("has made " + lender.loan_count + " loans");
+    speak.push("has made " + plural(lender.loan_count,"loan"));
     ago = date_diff_to_words(Date.now() - new Date(Date.parse(lender.member_since)));
-    speak.push("and has been lending on Kiva for over " + ago.units + ago.uom);
+    speak.push("and has been lending for over " + ago.units + ago.uom);
     if (lender.invitee_count > 0){
-        speak.push("and has invited " + lender.invitee_count + " people who joined Kiva");
+        speak.push("and has invited " + plural(lender.invitee_count, "person", "people") + " who joined");
     }
 
     sp(speak.join(' '));
@@ -59,6 +59,8 @@ $(document).on('mouseover','a[href*="kiva.org/lender/"]',function(){
         });
         }
 });
+//http://api.kivaws.org/v1/teams/using_shortname/atheists.json
+
 
 $(function(){
     do_if_awhile("check_zip_logged_in", 15 * minute, function(){

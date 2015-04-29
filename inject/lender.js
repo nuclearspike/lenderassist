@@ -24,7 +24,7 @@ $.ajax({
             $.ajax({url: teams,
                     cache: true,
                 success: function (result) {
-                    sp("They belong to " + result.paging.total + " teams")
+                    sp("They belong to " + plural(result.paging.total, "team"));
                 }});
         });
 

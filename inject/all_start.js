@@ -39,6 +39,17 @@ function get_or_figure(key, context, figure_func, result_func){
     });
 }
 
+function plural(count, word, plural_word){
+    if (count != 1){
+        if (!plural_word){
+            plural_word = word + 's';
+        }
+        return count + " " + plural_word;
+    } else {
+        return "1 " + word;
+    }
+}
+
 function figure_lender_id(dom) {
     old_lender_id = lender_id;
     var lender_id = $(dom).find("center > div:first").text();

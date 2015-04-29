@@ -77,7 +77,7 @@ function an_lender(loan){
                     var to_say;
 
                     if (countries_all_c[loan.location.country] > 1){
-                        to_say = "You've made " + countries_all_c[loan.location.country] + " loans in " + loan.location.country + "  "
+                        to_say = "You've made " + plural(countries_all_c[loan.location.country], "loan") +  "in " + loan.location.country + "  "
                     } else {
                         to_say = "You've made a loan to someone in " + loan.location.country + " before, "
                     }
@@ -163,7 +163,7 @@ function an_partner_risk(partner){
     var rate = parseFloat(partner.rating);
     if (rate == NaN) return; //happens for "Not Rated"
     if (rate >= 4.5) { //make user defined
-        sp("Oh wow. " + partner.name + " is very highly rated, which means the MFI has lower risk of collapsing.");
+        sp("Oh wow. " + partner.name + " is very highly rated, which means that the MFI has lower risk of failing.");
     }
     if (rate <= 2.5){ //make user defined
         sp("The field partner has a low rating, meaning it is higher risk.");
