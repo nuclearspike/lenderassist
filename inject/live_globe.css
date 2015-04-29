@@ -1,0 +1,6 @@
+#globe span { /* this green centered text is ugly, replace with a floating box over the map */
+    display: none;
+}
+div.globe canvas:last-of-type { /* running into ticker looks bad */
+    width: 650px !important;
+}

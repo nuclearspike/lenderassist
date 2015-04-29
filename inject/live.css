@@ -1,0 +1,24 @@
+div.Streaming_TickerSubView li {
+    width: 100%; /* new registrations were sizing their width to content */
+}
+
+.ticker {
+    overflow-y: auto !important;
+}
+
+div.view_select { /* allow user to select which view they want to use */
+    position: absolute;
+    #opacity: 0;
+    top: 69px;
+    left: 23px;
+    font-size: smaller;
+    z-index: 10000;
+    border: gray;
+    border-style: dashed;
+    border-width: 1px;
+    padding: 2px;
+}
+
+ul.ticker li.loading img { /* crunched spacing on first load */
+    padding-right: 10px;
+}
