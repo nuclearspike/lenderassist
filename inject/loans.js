@@ -2,10 +2,6 @@ console.log("lend.js processing");
 var id = window.location.pathname.match(/^\/lend\/(\d+)/)[1];
 //var lender_id = undefined;
 
-chrome.storage.local.get("lender_id", function(result){
-    lender_id = result.lender_id;
-})
-
 //basic analysis
 
 //turn 'concerns' into something that will eventually be set in the properties form by the user.
