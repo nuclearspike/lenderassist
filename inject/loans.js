@@ -77,7 +77,7 @@ function an_lender(loan){
                     var to_say;
 
                     if (countries_all_c[loan.location.country] > 1){
-                        to_say = "You've made " + plural(countries_all_c[loan.location.country], "loan") +  "in " + loan.location.country + "  "
+                        to_say = "You've made " + plural(countries_all_c[loan.location.country], "loan") +  " in " + loan.location.country + "  "
                     } else {
                         to_say = "You've made a loan to someone in " + loan.location.country + " before, "
                     }
