@@ -1,4 +1,5 @@
 cl("all_start.js processing");
+//functions used all over
 
 //hmm.
 function fetch_value( key ) {

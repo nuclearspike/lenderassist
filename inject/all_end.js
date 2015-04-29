@@ -1,4 +1,6 @@
 cl("all_end.js processing");
+//these require the dom and/or jquery
+
 
 //load all settings needed for each page.
 chrome.storage.local.get("lender_id", function(res){

@@ -29,9 +29,11 @@ function short_talk_lender(lender){
     speak = [];
     speak.push(lender.name);
     if (lender.whereabouts.length > 0) {
-        speak.push("lives in " + lender.whereabouts + " and");
+        speak.push("lives in " + lender.whereabouts);
     }
-    speak.push("has made " + plural(lender.loan_count,"loan"));
+    if (lender.loan_count > 0) {
+        speak.push("and has made " + plural(lender.loan_count, "loan"));
+    }
     ago = date_diff_to_words(Date.now() - new Date(Date.parse(lender.member_since)));
     speak.push("and has been lending for " + ago.units + ago.uom);
     if (lender.invitee_count > 0){
@@ -42,9 +44,24 @@ function short_talk_lender(lender){
     lender.last_spoke = Date.now();
 }
 
-//needs to be much better about "intent"
-$(document).on('mouseover','a[href*="kiva.org/lender/"]',function(){
-    var t_lender_id = $(this).attr("href").match(/\/lender\/(.*)/)[1];
+function wire_intent(selector, name, on_intent_funct){
+    $(document).on('mouseenter', selector, function(e){
+        var $elem = $(e.target).closest('a');
+        //console.log($elem);
+        $elem.data(name + '_entered', Date.now());
+        setTimeout(function(){
+           if ($elem.data(name + '_entered')){ //if still over it.
+               on_intent_funct($elem);
+           }
+        }, 250);
+    }).on('mouseleave', selector, function(e){
+        var $elem = $(e.target).closest('a');
+        $elem.removeData(name + '_entered');
+    });
+}
+
+wire_intent('a[href*="kiva.org/lender/"]', 'lender_chatter', function($element){
+    var t_lender_id = $element.attr("href").match(/\/lender\/(.*)/)[1];
     if (t_lender_id == null) return;
     if (lenders[t_lender_id]) {
         short_talk_lender(lenders[t_lender_id])
@@ -57,10 +74,11 @@ $(document).on('mouseover','a[href*="kiva.org/lender/"]',function(){
                 short_talk_lender(result.lenders[0]);
             }
         });
-        }
-});
-//http://api.kivaws.org/v1/teams/using_shortname/atheists.json
+    }
+})
 
+
+//http://api.kivaws.org/v1/teams/using_shortname/atheists.json
 
 $(function(){
     do_if_awhile("check_zip_logged_in", 15 * minute, function(){
