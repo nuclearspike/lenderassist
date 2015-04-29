@@ -1,21 +1,15 @@
 cl("all_end.js processing");
 
-chrome.runtime.sendMessage({funct: 'create_lender_id_tab'}, function(result){
-    cl("received result");
-    cl(result);
-});
-
 //load all settings needed for each page.
 chrome.storage.local.get("lender_id", function(res){
-    cl(res['lender_id']);
+    //cl(res['lender_id']);
     if (is_not_set(res['lender_id'])){
-        cl("lender_id not set");
-        if (f_is_logged_in() && (window.location.protocol == "http:")){
-            cl("!!! sending message tab"); //todo: not working!
-            chrome.runtime.sendMessage({funct: 'create_lender_id_tab'}, function(result){
-                cl("received result");
-                cl(result);
-            });
+        if (f_is_logged_in()) {
+            if (location.href.indexOf(".org/myLenderId") == -1) {
+                $.ajax({url: "https://www.kiva.org/myLenderId"}).success(figure_lender_id);
+            }
+        } else {
+            sp_once("has_advised_to_log_in", "If you log in, I'll be able to relate the loans you're looking at to the ones in your portfolio");
         }
     } else {
         //I know your lender id
@@ -45,12 +39,5 @@ chrome.storage.local.get("last_visit", function(res){
     }
 });
 
-
+//todo: can we attach to the dom on start and look for the li to be created?
 $("#siteNavLend").before('<li id="siteNavLive"><a id="siteNavLiveAnchor" href="/live?v=1" class="elem_track_click" data-elem="nav_live">Live</a></li>');
-
-//this assumes the user already has a zip account, what happens when not true? is there a way to elegantly know?
-
-$(".siteNav li a").animate({opacity: 1});
-if (f_is_logged_in()) { //alter the zip button to go to the oauth login... it'd be great if we could already know if zip was logged in.
-    $("#siteNavZip").find("a").attr('href', 'https://zip.kiva.org/users/auth/kiva?kv_method=login');
-}

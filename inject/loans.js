@@ -83,7 +83,7 @@ function an_lender(loan){
                     }
 
                     if (cur_country_rank_active < 0){
-                        sp(to_say + "but you no longer have loans paying back from borrowers in that country. Maybe it's time to lend to another borrower in " + loan.location.country);
+                        sp(to_say + "but you no longer have active loans in that country. Maybe it's time to make another loan in " + loan.location.country);
                     } else {
                         if (countries_active_c[loan.location.country] == 1){
                             sp(to_say + " and you still have one loan paying back.");

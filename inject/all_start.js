@@ -11,6 +11,17 @@ function sp(s) {
     chrome.runtime.sendMessage({utterance: s.toString()});
 }
 
+function sp_once(named_utterance, utterance){
+    chrome.storage.local.get(named_utterance, function(res){
+        if (is_not_set(res[named_utterance])) {
+            sp(utterance);
+            obj = {};
+            obj[named_utterance] = true
+            chrome.storage.local.set(obj);
+        }
+    });
+}
+
 function cl(s){
     console.log(s);
 }
@@ -49,6 +60,20 @@ function fetch_value( key ) {
     return dfd.promise();
 }
 
+function do_if_awhile(named_process, amount_of_time, check_func, if_ready_func){
+    chrome.storage.local.get(named_process, function(res){
+        var last_check = res[named_process];
+        if (is_not_set(last_check) || (Date.now() -  last_check > amount_of_time)){
+            check_func();
+            obj = {};
+            obj[named_process] = Date.now();
+            chrome.storage.local.set(obj);
+        } else {
+            if_ready_func();
+        }
+    })
+}
+
 function f_is_logged_in(){
     result = $("div.loggedInGreeting").length > 0;
     chrome.storage.local.set({"was_logged_in": result});
@@ -84,7 +109,7 @@ function figure_lender_id(dom) {
     if (lender_id != "") {
         cl(lender_id);
         chrome.storage.local.set({"lender_id": lender_id});
-        if (old_lender_id == undefined) {
+        if (old_lender_id == undefined && !is_not_set(lender_id) ) {
             sp("Now I know who you are! When visiting loan pages, I'll relate the loan to your portfolio.");
         } else if (old_lender_id != lender_id){
             sp("You changed to a different account. Got it.");
