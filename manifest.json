@@ -12,6 +12,9 @@
     "storage",
     "*://www.kiva.org/*"
   ],
+  "omnibox": {
+    "keyword": "kiva"
+  },
   "content_scripts": [
     {
       "matches": ["*://www.kiva.org/*"],
@@ -23,6 +26,11 @@
       "matches": ["*://www.kiva.org/*"],
       "run_at": "document_end",
       "js": ["inject/all_end.js"]
+    },
+    {
+      "matches": ["https://www.kiva.org/*"],
+      "run_at": "document_end",
+      "js": ["inject/secure_pages.js"]
     },
     {
       "matches": ["http://www.kiva.org/lend*"],
