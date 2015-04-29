@@ -16,11 +16,12 @@ $.ajax({
             cache: true
         }).success(function(result){
             sectors = []
-            for (i = 0; i < Math.min(result.data.length, 3); i++){
-                sectors.push(result.lookup[result.data[i].name]);
+            if (result.data) {
+                for (i = 0; i < Math.min(result.data.length, 3); i++) {
+                    sectors.push(result.lookup[result.data[i].name]);
+                }
+                sp(lender.name + "'s top sectors are " + ar_and(sectors));
             }
-            sp(lender.name + "'s top sectors are " + sectors.join(', '));
-
             $.ajax({url: "http://api.kivaws.org/v1/lenders/" + t_lender_id + "/teams.json",
                     cache: true,
                 success: function (result) {

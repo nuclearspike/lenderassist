@@ -27,20 +27,19 @@ function short_talk_lender(lender){
         return;
     }
     speak = [];
-    speak.push(lender.name);
     if (lender.whereabouts.length > 0) {
         speak.push("lives in " + lender.whereabouts);
     }
     if (lender.loan_count > 0) {
-        speak.push("and has made " + plural(lender.loan_count, "loan"));
+        speak.push("has made " + plural(lender.loan_count, "loan"));
     }
     ago = date_diff_to_words(Date.now() - new Date(Date.parse(lender.member_since)));
-    speak.push("and has been lending for " + ago.units + ago.uom);
+    speak.push("has been lending for " + ago.units + ago.uom);
     if (lender.invitee_count > 0){
-        speak.push("with " + plural(lender.invitee_count, "successful invitation"));
+        speak.push("has made " + plural(lender.invitee_count, "successful invitation"));
     }
 
-    sp(speak.join(' '));
+    sp(lender.name + " " + ar_and(speak));
     lender.last_spoke = Date.now();
 }
 

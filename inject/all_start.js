@@ -16,6 +16,22 @@ function fetch_value( key ) {
     return dfd.promise();
 }
 
+function ar_and(arr){
+    var result = "";
+    for (i = 0; i < arr.length; i++){
+        connector = '';
+        if (i > 0) {
+            if (i == arr.length - 1) {
+                connector = ' and ';
+            } else {
+                connector = ', ';
+            }
+        }
+        result +=  connector + arr[i];
+    }
+    return result;
+}
+
 function f_is_logged_in(){
     result = $("div.loggedInGreeting").length > 0;
     chrome.storage.local.set({"was_logged_in": result});
