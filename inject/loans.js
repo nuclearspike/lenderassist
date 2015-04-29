@@ -1,10 +1,9 @@
-console.log("lend.js processing");
+cl("lend.js processing");
 var id = window.location.pathname.match(/^\/lend\/(\d+)/)[1];
-//var lender_id = undefined;
 
 //basic analysis
 
-//turn 'concerns' into something that will eventually be set in the properties form by the user.
+//todo: turn 'concerns' into something that will eventually be set in the properties form by the user.
 var concerns = {high_months_to_payback: 12, low_months_to_payback: 5};
 
 function analyze_loan(loan){
@@ -39,7 +38,7 @@ function an_lender(loan){
         dataType: "json",
         cache: true
     }).success(function(result){
-        //console.log(result);
+        //cl(result);
         if (result.data.length > 0) { //if user has ever done a loan
             //var country = result.lookup[result.data[0].name];
             for (i = 0; i < result.data.length; i++){
@@ -48,17 +47,13 @@ function an_lender(loan){
                 countries_all_c[result.lookup[result.data[i].name]] = parseInt(result.data[i].value);
             }
 
-            //cache['cum_top_countries'] = cum_top_countries;
-            //console.log(countries_lookup);
-            //console.log(countries_all);
-
             var cur_country_rank_all = countries_all.indexOf(loan.location.country);
             if (cur_country_rank_all > -1 && cur_country_rank_all < 10){
                 //is in the top 10
                 sp("It looks like " + loan.location.country + " is one of your favorite lending countries.")
             } else {
                 //is not in the top 10
-            } //should also look for ones you've never lent to before, ones you haven't lent to recently but have in the past... etc. (no active)
+            }
 
             var url = "http://www.kiva.org/ajax/getSuperGraphData?&sliceBy=country&include=active&measure=count&subject_id=" + lender_id + "&type=lender&granularity=cumulative";
             $.ajax({url: url,
@@ -67,7 +62,7 @@ function an_lender(loan){
                 dataType: "json",
                 cache: true
             }).success(function(result){
-                //console.log(result);
+                //cl(result);
                 countries_active = [];
                 countries_active_c = {};
                 for (i = 0; i < result.data.length; i++){
@@ -75,7 +70,7 @@ function an_lender(loan){
                     //store how many...
                     countries_active_c[result.lookup[result.data[i].name]] = parseInt(result.data[i].value);
                 }
-                console.log(countries_active_c);
+                cl(countries_active_c);
 
                 var cur_country_rank_active = countries_active.indexOf(loan.location.country);
                 if (cur_country_rank_all > -1){
@@ -104,7 +99,7 @@ function an_lender(loan){
         }
     }).fail(function(result){
         sp("Something went wrong!");
-        console.log(result);
+        cl(result);
     });
 }
 
@@ -166,7 +161,7 @@ function an_loan_attr(loan){
 
 function an_partner_risk(partner){
     var rate = parseFloat(partner.rating);
-    if (rate == NaN) return;
+    if (rate == NaN) return; //happens for "Not Rated"
     if (rate >= 4.5) { //make user defined
         sp("Oh wow. " + partner.name + " is very highly rated, which means the MFI has lower risk of collapsing.");
     }
@@ -183,14 +178,6 @@ function an_partner_stuff(partner) {
 
 an_wait_words();
 
-function get_lending_activity() {
-    chrome.storage.local.get('lender_id', function (res) {
-        if (res.lender_id == undefined) return;
-
-
-    })
-}
-
 $.ajax({url: "http://api.kivaws.org/v1/loans/"+ id +".json",
     crossDomain: true,
     type: "GET",
@@ -206,10 +193,10 @@ $.ajax({url: "http://api.kivaws.org/v1/loans/"+ id +".json",
     }).success(function(result){
         loan.partner = result.partners[0];
         analyze_loan(loan)
-        console.log(loan);
+        cl(loan);
     });
 
 }).fail(function(result){
     sp("failure!");
-    console.log(result);
+    cl(result);
 });
