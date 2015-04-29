@@ -50,8 +50,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
+var last_utterances = [];
+
 function narrate(utterance, callback) {
     //utterance = '<?xml version="1.0"?>' + '<speak><emphasis>you are</emphasis>' + utterance + '</speak>';
+
+    if (last_utterances.indexOf(utterance) > -1) return;
+    last_utterances.push(utterance);
+    console.log("Spoken: " + utterance);
+
     chrome.tts.speak(
         utterance,
         {
@@ -67,17 +74,10 @@ function narrate(utterance, callback) {
             callback && callback();
         }
     );
-}
-
-//this isn't working...
-chrome.storage.local.get("lender_id", function(res){
-    if (is_not_set(res.lender_id)){
-        //what causes a reset? it'll be the first user to log in forever. something should clear the local storage...
-            if (is_not_set(res.lender_id) && f_is_logged_in() && location.href.indexOf(".org/myLenderId") == -1){
-                $.ajax({url: "https://www.kiva.org/myLenderId"}).success(figure_lender_id);
-            }
+    if (last_utterances.length > 20) {
+        last_utterances.shift();
     }
-});
+}
 
 //happens when the extension loads
 narrate("Let's make the world a better place.");

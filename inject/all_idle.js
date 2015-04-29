@@ -1,3 +1,5 @@
+cl("all_idle.js processing");
+
 $(".siteNav li a").animate({opacity: 1});
 
 function set_zip_button(){
@@ -17,6 +19,46 @@ function set_zip_button(){
         });
     });
 }
+
+var lenders = {};
+
+function short_talk_lender(lender){
+    if (Date.now() - lender.last_spoke < 10 * second){
+        return;
+    }
+    speak = [];
+    speak.push(lender.name);
+    if (lender.whereabouts.length > 0) {
+        speak.push("lives in " + lender.whereabouts + " and");
+    }
+    speak.push("has made " + lender.loan_count + " loans");
+    ago = date_diff_to_words(Date.now() - new Date(Date.parse(lender.member_since)));
+    speak.push("and has been lending on Kiva for over " + ago.units + ago.uom);
+    if (lender.invitee_count > 0){
+        speak.push("and has invited " + lender.invitee_count + " people who joined Kiva");
+    }
+
+    sp(speak.join(' '));
+    lender.last_spoke = Date.now();
+}
+
+//every page gets this!?? //needs to be on() because on loan pages they load dynamically.
+$(document).on('mouseover','a[href*="kiva.org/lender/"]',function(){
+    var t_lender_id = $(this).attr("href").match(/\/lender\/(.*)/)[1];
+    if (t_lender_id == null) return;
+    if (lenders[t_lender_id]) {
+        short_talk_lender(lenders[t_lender_id])
+    } else {
+        $.ajax({
+            url: "http://api.kivaws.org/v1/lenders/" + t_lender_id + ".json",
+            cache: true,
+            success: function (result) {
+                lenders[t_lender_id] = result.lenders[0];
+                short_talk_lender(result.lenders[0]);
+            }
+        });
+        }
+});
 
 $(function(){
     do_if_awhile("check_zip_logged_in", 15 * minute, function(){

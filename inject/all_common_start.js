@@ -5,10 +5,10 @@ var monthNames = ["January", "February", "March", "April", "May", "June", "July"
 var lender_id = undefined;
 
 //speak
-function sp(s) {
-    if (!s) return;
-    cl("Spoken: " + s);
-    chrome.runtime.sendMessage({utterance: s.toString()});
+function sp(speak) {
+    if (!speak) return;
+    cl(speak);
+    chrome.runtime.sendMessage({utterance: speak});
 }
 
 function sp_once(named_utterance, utterance){

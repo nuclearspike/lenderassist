@@ -36,7 +36,7 @@
     },
     {
       "matches": ["*://www.kiva.org/*"],
-      "run_at": "document_idle",
+      "run_at": "document_end",
       "js": ["inject/all_idle.js"]
     },
     {
@@ -67,6 +67,10 @@
       "matches": ["https://www.kiva.org/myLenderId*"],
       "run_at": "document_end",
       "js":["inject/my_lender_id.js"]
+    },
+    {
+      "matches": ["http://www.kiva.org/lender/*"],
+      "js": ["inject/lender.js"]
     },
     {
       "matches": ["https://zip.kiva.org/*"],
