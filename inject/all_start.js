@@ -52,23 +52,71 @@ function get_or_figure(key, context, figure_func, result_func){
     });
 }
 
-var lenders = {};
-function get_lender(t_lender_id){
+//var lenders = {};
+function get_resource(t_id, path, api_array){
     var def = $.Deferred();
 
-    if (lenders[t_lender_id]){
-        def.resolve(lenders[t_lender_id]);
+    lenders = localStorage.lenders;
+    if (lenders[t_id]){
+        def.resolve(lenders[t_id]);
     }
 
     $.ajax({
-        url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_lender_id + ".json",
+        url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_id + ".json",
         cache: true,
         fail: def.reject,
         success: function (result) {
             lender = result.lenders[0];
-            lenders[t_lender_id] = lender;
+            lenders[t_id] = lender;
             def.resolve(lender);
-            localStorage.lenders = lenders;
+            localStorage.lenders = lenders; //todo: use this
+        }
+    });
+
+    return def.promise();
+}
+
+var lenders = {};
+function get_lender(t_id){
+    var def = $.Deferred();
+
+    lenders = localStorage.lenders;
+    if (lenders[t_id]){
+        def.resolve(lenders[t_id]);
+    }
+
+    $.ajax({
+        url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_id + ".json",
+        cache: true,
+        fail: def.reject,
+        success: function (result) {
+            lender = result.lenders[0];
+            lenders[t_id] = lender;
+            def.resolve(lender);
+            localStorage.lenders = lenders; //todo: use this
+        }
+    });
+
+    return def.promise();
+}
+
+var teams = {};
+function get_team(t_id){
+    var def = $.Deferred();
+
+    teams = localStorage.teams || teams;
+    if (teams[t_id]){
+        def.resolve(lenders[t_id]);
+    }
+
+    $.ajax({url: window.location.protocol + "//api.kivaws.org/v1/teams/using_shortname/" + t_id + ".json",
+        cache: true,
+        fail: def.reject,
+        success: function (result) {
+            team = result.teams[0];
+            teams[t_id] = teams;
+            def.resolve(team);
+            localStorage.teams = teams; //todo: use this
         }
     });
 

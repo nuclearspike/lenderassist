@@ -1,3 +1,5 @@
+cl("lender.js processing");
+
 var t_lender_id = location.pathname.match(/\/lender\/(.*)/)[1];
 
 function get_lender_data(lender, slice_by){
@@ -57,6 +59,5 @@ function get_lender_teams(lender){
 }
 
 get_lender(t_lender_id).done([short_talk_lender,get_lender_data_sector,get_lender_data_country]).done(get_lender_teams).done(function(thing){
-    console.log("YO" + thing);
     console.log(this);
 });

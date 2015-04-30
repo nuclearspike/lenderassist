@@ -75,6 +75,10 @@
       "js": ["inject/lender.js"]
     },
     {
+      "matches": ["http://www.kiva.org/team/*"],
+      "js": ["inject/team.js"]
+    },
+    {
       "matches": ["https://zip.kiva.org/*"],
       "run_at": "document_end",
       "js": ["inject/zip.js"]

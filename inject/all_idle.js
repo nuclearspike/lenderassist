@@ -11,13 +11,33 @@ function set_zip_button(){
         if (f_is_logged_in() && !zip_logged_in) { //alter the zip button to go to the oauth login...
             $zip.attr('href', 'https://zip.kiva.org/users/auth/kiva?kv_method=login');
         } else if (zip_logged_in) {
-            $zip.attr('href', 'https://zip.kiva.org/my/lender'); //don't do all the cross promo stuff. they have an account.
+            $zip.attr('href', 'https://zip.kiva.org/loans'); //don't do all the cross promo stuff. they have an account.
         }
 
         $zip.click(function(){
             chrome.storage.local.remove(['check_zip_logged_in','zip_logged_in']);
         });
     });
+}
+
+function short_talk_team(team){
+    speak = [team.name];
+    //speak.push("is a " + team.membership_type + " team");
+
+    ago = date_diff_to_words(Date.now() - new Date(Date.parse(team.team_since)));
+    speak.push("has been around for " + ago.units + ago.uom);
+
+    if (team.member_count > 500) {
+        speak.push("with more than " + plural(Math.floor(team.member_count / 100) * 100, 'member'));
+    } else {
+        speak.push("with " + plural(team.member_count, 'member'));
+    }
+    if (team.loan_count > 1000) {
+        speak.push("which has made over " + plural(Math.floor(team.loan_count/1000)*1000, 'loan'));
+    } else {
+        speak.push("which has made " + plural(team.loan_count, 'loan'));
+    }
+    sp(speak.join(' '));
 }
 
 function short_talk_lender(lender){
@@ -56,6 +76,23 @@ function wire_intent(selector, name, on_intent_funct){
         $elem.removeData(name + '_entered');
     });
 }
+
+wire_intent('a[href*="kiva.org/team/"]', 'team_chatter', function($element) {
+    var t_team_id = $element.attr("href").match(/\/team\/(.*)/)[1];
+    if (t_team_id == null) return;
+    if (teams[t_team_id]) {
+        short_talk_team(teams[t_team_id])
+    } else {
+        $.ajax({
+            url: window.location.protocol + "//api.kivaws.org/v1/teams/using_shortname/" + t_team_id + ".json",
+            cache: true,
+            success: function (result) {
+                teams[t_team_id] = result.teams[0];
+                short_talk_team(result.teams[0]);
+            }
+        });
+    }
+})
 
 wire_intent('a[href*="kiva.org/lender/"]', 'lender_chatter', function($element){
     var t_lender_id = $element.attr("href").match(/\/lender\/(.*)/)[1];

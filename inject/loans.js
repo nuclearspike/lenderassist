@@ -114,7 +114,8 @@ function an_massage(loan){
 
 function an_status(loan){
     if (loan.status == 'funded'){
-        sp("This loan has already been fully funded. Look at the top of the page to find similar loans.")
+        sp("This loan has already been fully funded.");
+        sp_once("loan_detail_look_at_similar", "Look at the top of the page to find similar loans")
     }
 }
 
