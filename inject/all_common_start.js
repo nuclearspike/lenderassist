@@ -23,6 +23,30 @@ function sp_once(named_utterance, utterance){
     });
 }
 
+function date_diff_to_words(date_diff){
+    if (date_diff < hour){
+        units = 0;
+        uom = '';
+    } else if (date_diff < day) {
+        units = Math.floor(date_diff / hour);
+        uom = ' hour';
+    } else if (date_diff < week) {
+        units = Math.floor(date_diff / day);
+        uom = ' day';
+    } else if (date_diff < month) {
+        units = Math.floor(date_diff / week);
+        uom = ' week';
+    } else if (date_diff < 18 * month) {
+        units = Math.floor(date_diff / month);
+        uom = ' month';
+    } else {
+        units = Math.floor(date_diff / year);
+        uom = ' year';
+    }
+    if (units > 1) { uom = uom + 's'}
+    return {units: units, uom: uom};
+}
+
 function cl(s){
     console.log(s);
 }

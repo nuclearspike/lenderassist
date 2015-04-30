@@ -38,7 +38,6 @@
     },
     {
       "matches": ["*://www.kiva.org/*"],
-      "run_at": "document_end",
       "js": ["inject/all_idle.js"]
     },
     {
@@ -52,16 +51,19 @@
     },
     {
       "matches": ["http://www.kiva.org/live*"],
+      "run_at": "document_end",
       "css": ["inject/live.css"],
       "js": ["inject/live.js"]
     },
     {
       "matches": ["http://www.kiva.org/live","http://www.kiva.org/live?v=2"],
+      "run_at": "document_end",
       "css": ["inject/live_globe.css"],
       "js": ["inject/live_globe.js"]
     },
     {
       "matches": ["http://www.kiva.org/live?v=1"],
+      "run_at": "document_end",
       "css": ["inject/live_map.css"],
       "js": ["inject/live_map.js"]
     },

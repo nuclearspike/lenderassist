@@ -27,29 +27,5 @@ chrome.storage.local.get("last_visit", function(res){
     }
 });
 
-function date_diff_to_words(date_diff){
-    if (date_diff < hour){
-        units = 0;
-        uom = '';
-    } else if (date_diff < day) {
-        units = Math.floor(date_diff / hour);
-        uom = ' hour';
-    } else if (date_diff < week) {
-        units = Math.floor(date_diff / day);
-        uom = ' day';
-    } else if (date_diff < month) {
-        units = Math.floor(date_diff / week);
-        uom = ' week';
-    } else if (date_diff < 18 * month) {
-        units = Math.floor(date_diff / month);
-        uom = ' month';
-    } else {
-        units = Math.floor(date_diff / year);
-        uom = ' year';
-    }
-    if (units > 1) { uom = uom + 's'}
-    return {units: units, uom: uom};
-}
-
 //todo: can we attach to the dom on start and look for the li to be created?
 $("#siteNavLend").before('<li id="siteNavLive"><a id="siteNavLiveAnchor" href="/live?v=1" class="elem_track_click" data-elem="nav_live">Live</a></li>');
