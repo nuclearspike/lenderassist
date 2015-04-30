@@ -42,7 +42,7 @@ chrome.omnibox.onInputEntered.addListener(
 //background message receiver
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.utterance) {
-        narrate(request.utterance, request.interrupt, function() { sendResponse("Narrate: OK"); });
+        narrate(request.utterance, request.interrupt, request.callback);
     } else if (request.funct) {
         console.log(request);
         eval(request.funct)(request.params);
@@ -55,9 +55,10 @@ var last_utterances = [];
 function narrate(utterance, interrupt, callback) {
     //utterance = '<?xml version="1.0"?>' + '<speak><emphasis>you are</emphasis>' + utterance + '</speak>';
 
-    if (last_utterances.indexOf(utterance) > -1) return;
+    if (last_utterances.indexOf(utterance) > -1) {
+        callback && callback("Skipped: " + utterance);
+    }
     last_utterances.push(utterance);
-    console.log("Spoken: " + utterance);
 
     if (interrupt && chrome.tts.isSpeaking()){
         chrome.tts.stop();
@@ -74,7 +75,7 @@ function narrate(utterance, interrupt, callback) {
             if(chrome.runtime.lastError !== undefined) {
                 console.error("Runtime error:", chrome.runtime.lastError.message);
             }
-            callback && callback();
+            callback && callback("Spoken: " + utterance);
         }
     );
     if (last_utterances.length > 20) {
