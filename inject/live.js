@@ -13,8 +13,7 @@ $(document).ready(function() {
                 if (parseFloat($("#secondsBetweenLoans").text()) > 10.0){
                     if ($new_li.hasClass("loan-purchased")){
 
-                        var $lender_link = $new_li.find('a[href^="lender/"]').first();
-                        console.log($lender_link);
+                        var $lender_link = $new_li.find('a[href^="lender/"]').first(); //brittle since this is not guaranteed to stay like this.
                         if ($lender_link.length > 0) {
 
                             var t_lender_id = $lender_link.attr("href").split('/')[1];

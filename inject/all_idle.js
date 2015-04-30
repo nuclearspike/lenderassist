@@ -33,9 +33,9 @@ function short_talk_team(team){
         speak.push("with " + plural(team.member_count, 'member'));
     }
     if (team.loan_count > 1000) {
-        speak.push("which has made over " + plural(Math.floor(team.loan_count/1000)*1000, 'loan'));
+        speak.push("and has made over " + plural(Math.floor(team.loan_count/1000)*1000, 'loan'));
     } else {
-        speak.push("which has made " + plural(team.loan_count, 'loan'));
+        speak.push("and has made " + plural(team.loan_count, 'loan'));
     }
     sp(speak.join(' '));
 }
