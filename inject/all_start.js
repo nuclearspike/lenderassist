@@ -113,7 +113,7 @@ function get_team(t_id){
         fail: def.reject,
         success: function (result) {
             team = result.teams[0];
-            teams[t_id] = teams;
+            teams[t_id] = team;
             def.resolve(team);
         }
     });

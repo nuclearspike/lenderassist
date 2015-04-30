@@ -14,6 +14,14 @@ $(document).ready(function() {
         sp('More lenders have been from ' + $("#mostCommonLenderCountry").text() + " than anywhere else");
     });
 
+    setTimeout(function(){
+        if (parseFloat($("#secondsBetweenLoans").text()) > 30.0){
+            sp("Wow. The site is very slow right now. Try visiting the Live page again during peak lending times.");
+            sp("Generally that is during the day time in the United States. Also, on the seventeenth of each month starting about 1 PM Pacific Time, all of the repayments settle and auto-lending kicks in.");
+            sp("It gets crazy!");
+        }
+    }, 5 * minute);
+
     $("#newLenders").html('0'); //starts out blank and looks like it's an error.
     var last_spoken_ticker = Date.now() - 10 * minute;
     setTimeout(function(){
