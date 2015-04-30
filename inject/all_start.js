@@ -1,5 +1,6 @@
 cl("all_start.js processing");
 //functions used all over
+//console.trace()
 
 //hmm.
 function fetch_value( key ) {
@@ -80,7 +81,7 @@ var lenders = {};
 function get_lender(t_id){
     var def = $.Deferred();
 
-    lenders = localStorage.lenders;
+    //lenders = localStorage.lenders;
     if (lenders[t_id]){
         def.resolve(lenders[t_id]);
     }
@@ -93,7 +94,6 @@ function get_lender(t_id){
             lender = result.lenders[0];
             lenders[t_id] = lender;
             def.resolve(lender);
-            localStorage.lenders = lenders; //todo: use this
         }
     });
 
@@ -104,9 +104,8 @@ var teams = {};
 function get_team(t_id){
     var def = $.Deferred();
 
-    //teams = localStorage.teams || teams;
     if (teams[t_id]){
-        def.resolve(lenders[t_id]);
+        def.resolve(teams[t_id]);
     }
 
     $.ajax({url: window.location.protocol + "//api.kivaws.org/v1/teams/using_shortname/" + t_id + ".json",
@@ -116,7 +115,6 @@ function get_team(t_id){
             team = result.teams[0];
             teams[t_id] = teams;
             def.resolve(team);
-            //localStorage.teams = teams; //todo: use this
         }
     });
 

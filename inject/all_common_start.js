@@ -26,7 +26,7 @@ function sp_once(named_utterance, utterance){
 function date_diff_to_words(date_diff){
     if (date_diff < hour){
         units = Math.floor(date_diff / minute);
-        uom = 'minutes';
+        uom = ' minute';
     } else if (date_diff < day) {
         units = Math.floor(date_diff / hour);
         uom = ' hour';

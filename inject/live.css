@@ -22,3 +22,7 @@ div.view_select { /* allow user to select which view they want to use */
 ul.ticker li.loading img { /* crunched spacing on first load */
     padding-right: 10px;
 }
+
+ul.ticker li a {
+    font-size: 10px !important;
+}

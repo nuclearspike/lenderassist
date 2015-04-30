@@ -22,7 +22,6 @@ function set_zip_button(){
 
 function short_talk_team(team){
     speak = [team.name];
-    //speak.push("is a " + team.membership_type + " team");
 
     ago = date_diff_to_words(Date.now() - new Date(Date.parse(team.team_since)));
     speak.push("has been around for " + ago.units + ago.uom);
@@ -80,43 +79,21 @@ function wire_intent(selector, name, on_intent_funct){
 wire_intent('a[href*="kiva.org/team/"]', 'team_chatter', function($element) {
     var t_team_id = $element.attr("href").split('/')[4];
     if (t_team_id == null) return;
-    if (teams[t_team_id]) {
-        short_talk_team(teams[t_team_id])
-    } else {
-        $.ajax({
-            url: window.location.protocol + "//api.kivaws.org/v1/teams/using_shortname/" + t_team_id + ".json",
-            cache: true,
-            success: function (result) {
-                teams[t_team_id] = result.teams[0];
-                short_talk_team(result.teams[0]);
-            }
-        });
-    }
-})
+    get_team(t_team_id).done(short_talk_team);
+});
 
 wire_intent('a[href*="kiva.org/lender/"]', 'lender_chatter', function($element){
     var t_lender_id = $element.attr("href").split('/')[4];
     if (t_lender_id == null) return;
-    if (lenders[t_lender_id]) {
-        short_talk_lender(lenders[t_lender_id])
-    } else {
-        $.ajax({
-            url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_lender_id + ".json",
-            cache: true,
-            success: function (result) {
-                lenders[t_lender_id] = result.lenders[0];
-                short_talk_lender(result.lenders[0]);
-            }
-        });
-    }
-})
+    get_lender(t_lender_id).done(short_talk_lender);
+});
 
 $(document).on('click', 'a[href*="kiva.org/lender/"]', function(e){
     e.preventDefault();
     var $elem = $(e.target).closest('a');
     sp(pick_random(["Hold on...", "Let's look at this lender..."]), false);
     window.location.href = $elem.attr("href")+"?super_graphs=1";
-})
+});
 
 //http://api.kivaws.org/v1/teams/using_shortname/atheists.json
 
@@ -133,5 +110,4 @@ $(function(){
             cache: false
         });
     }, set_zip_button);
-
-})
+});

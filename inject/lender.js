@@ -1,5 +1,4 @@
 cl("lender.js processing");
-
 var t_lender_id = location.pathname.match(/\/lender\/(.*)/)[1];
 
 function get_lender_data(lender, slice_by){
