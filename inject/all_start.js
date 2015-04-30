@@ -56,7 +56,7 @@ function get_or_figure(key, context, figure_func, result_func){
 function get_resource(t_id, path, api_array){
     var def = $.Deferred();
 
-    lenders = localStorage.lenders;
+    //lenders = localStorage.lenders;
     if (lenders[t_id]){
         def.resolve(lenders[t_id]);
     }
@@ -69,7 +69,7 @@ function get_resource(t_id, path, api_array){
             lender = result.lenders[0];
             lenders[t_id] = lender;
             def.resolve(lender);
-            localStorage.lenders = lenders; //todo: use this
+            //localStorage.lenders = lenders; //todo: use this
         }
     });
 
@@ -104,7 +104,7 @@ var teams = {};
 function get_team(t_id){
     var def = $.Deferred();
 
-    teams = localStorage.teams || teams;
+    //teams = localStorage.teams || teams;
     if (teams[t_id]){
         def.resolve(lenders[t_id]);
     }
@@ -116,7 +116,7 @@ function get_team(t_id){
             team = result.teams[0];
             teams[t_id] = teams;
             def.resolve(team);
-            localStorage.teams = teams; //todo: use this
+            //localStorage.teams = teams; //todo: use this
         }
     });
 

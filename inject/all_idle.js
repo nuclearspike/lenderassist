@@ -78,7 +78,7 @@ function wire_intent(selector, name, on_intent_funct){
 }
 
 wire_intent('a[href*="kiva.org/team/"]', 'team_chatter', function($element) {
-    var t_team_id = $element.attr("href").match(/\/team\/(.*)/)[1];
+    var t_team_id = $element.attr("href").split('/')[4];
     if (t_team_id == null) return;
     if (teams[t_team_id]) {
         short_talk_team(teams[t_team_id])
@@ -95,7 +95,7 @@ wire_intent('a[href*="kiva.org/team/"]', 'team_chatter', function($element) {
 })
 
 wire_intent('a[href*="kiva.org/lender/"]', 'lender_chatter', function($element){
-    var t_lender_id = $element.attr("href").match(/\/lender\/(.*)/)[1];
+    var t_lender_id = $element.attr("href").split('/')[4];
     if (t_lender_id == null) return;
     if (lenders[t_lender_id]) {
         short_talk_lender(lenders[t_lender_id])
