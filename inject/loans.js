@@ -179,14 +179,10 @@ function an_partner_stuff(partner) {
 
 an_wait_words();
 
-$.ajax({url: "http://api.kivaws.org/v1/loans/"+ id +".json",
-    crossDomain: true,
-    type: "GET",
-    cache: false
-}).success(function(result){
-    var loan = result.loans[0];
-    sp(loan.sector + ' loan for ' + loan.name + ' in ' + loan.location.country);
+//get_loan(id).then(get_partner_id_from_loan).done()
 
+get_loan(id).done(short_talk_loan).done(function(loan){
+    //todo: switch to get_partner
     $.ajax({url: "http://api.kivaws.org/v1/partners/"+ loan.partner_id +".json",
         crossDomain: true,
         type: "GET",
@@ -196,8 +192,4 @@ $.ajax({url: "http://api.kivaws.org/v1/loans/"+ id +".json",
         analyze_loan(loan)
         cl(loan);
     });
-
-}).fail(function(result){
-    sp("failure!");
-    cl(result);
 });

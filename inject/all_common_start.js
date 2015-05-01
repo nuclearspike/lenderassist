@@ -10,7 +10,7 @@ function sp(speak, interrupt) {
     cl(speak);
     if (interrupt == undefined) {interrupt = false}
     chrome.runtime.sendMessage({utterance: speak, enqueue: interrupt, callback: function(msg){
-        cl(msg);
+        console.log(msg);
     }});
 }
 
@@ -51,6 +51,10 @@ function date_diff_to_words(date_diff){
 
 function cl(s){
     console.log(s);
+}
+
+function sp_rand(arr){
+    sp(pick_random(arr));
 }
 
 function pick_random(arr){

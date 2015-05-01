@@ -57,6 +57,7 @@ function narrate(utterance, interrupt, callback) {
 
     if (last_utterances.indexOf(utterance) > -1) {
         callback && callback("Skipped: " + utterance);
+        return; //don't say it;
     }
     last_utterances.push(utterance);
 

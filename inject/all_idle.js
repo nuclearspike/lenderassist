@@ -20,61 +20,7 @@ function set_zip_button(){
     });
 }
 
-function short_talk_team(team){
-    speak = [team.name];
 
-    ago = date_diff_to_words(Date.now() - new Date(Date.parse(team.team_since)));
-    speak.push("has been around for " + ago.units + ago.uom);
-
-    if (team.member_count > 500) {
-        speak.push("with more than " + plural(Math.floor(team.member_count / 100) * 100, 'member'));
-    } else {
-        speak.push("with " + plural(team.member_count, 'member'));
-    }
-    if (team.loan_count > 1000) {
-        speak.push("and has made over " + plural(Math.floor(team.loan_count/1000)*1000, 'loan'));
-    } else {
-        speak.push("and has made " + plural(team.loan_count, 'loan'));
-    }
-    sp(speak.join(' '));
-}
-
-function short_talk_lender(lender){
-    if (Date.now() - lender.last_spoke < 10 * second){
-        return;
-    }
-    speak = [];
-    if (lender.whereabouts.length > 0) {
-        speak.push("lives in " + lender.whereabouts);
-    }
-    if (lender.loan_count > 0) {
-        speak.push("has made " + plural(lender.loan_count, "loan"));
-    }
-    ago = date_diff_to_words(Date.now() - new Date(Date.parse(lender.member_since)));
-    speak.push("has been lending for " + ago.units + ago.uom);
-    if (lender.invitee_count > 0){
-        speak.push("has made " + plural(lender.invitee_count, "successful invitation"));
-    }
-
-    sp(lender.name + " " + ar_and(speak));
-    lender.last_spoke = Date.now();
-}
-
-function wire_intent(selector, name, on_intent_funct){
-    $(document).on('mouseenter', selector, function(e){
-        var $elem = $(e.target).closest('a');
-        //console.log($elem);
-        $elem.data(name + '_entered', Date.now());
-        setTimeout(function(){
-           if ($elem.data(name + '_entered')){ //if still over it.
-               on_intent_funct($elem);
-           }
-        }, 250);
-    }).on('mouseleave', selector, function(e){
-        var $elem = $(e.target).closest('a');
-        $elem.removeData(name + '_entered');
-    });
-}
 
 wire_intent('a[href*="kiva.org/team/"]', 'team_chatter', function($element) {
     var t_team_id = $element.attr("href").split('/')[4];
