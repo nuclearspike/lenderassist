@@ -1,5 +1,8 @@
 cl("lend.js processing");
-var id = window.location.pathname.match(/^\/lend\/(\d+)/)[1];
+var matches = window.location.pathname.match(/^\/lend\/(\d+)/);
+if (matches) {
+    var id = matches[1];
+}
 
 //basic analysis
 
@@ -177,19 +180,21 @@ function an_partner_stuff(partner) {
     }
 }
 
-an_wait_words();
-
-//get_loan(id).then(get_partner_id_from_loan).done()
-
-get_loan(id).done(short_talk_loan).done(function(loan){
-    //todo: switch to get_partner
-    $.ajax({url: "http://api.kivaws.org/v1/partners/"+ loan.partner_id +".json",
-        crossDomain: true,
-        type: "GET",
-        cache: true
-    }).success(function(result){
-        loan.partner = result.partners[0];
-        analyze_loan(loan)
-        cl(loan);
+if (id) {
+    an_wait_words();
+    //get_loan(id).then(get_partner_id_from_loan).done()
+    get_loan(id).done(short_talk_loan).done(function (loan) {
+        //todo: switch to get_partner
+        $.ajax({
+            url: "http://api.kivaws.org/v1/partners/" + loan.partner_id + ".json",
+            crossDomain: true,
+            type: "GET",
+            cache: true
+        }).success(function (result) {
+            loan.partner = result.partners[0];
+            analyze_loan(loan)
+            cl(loan);
+        });
     });
-});
+
+}
