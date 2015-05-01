@@ -122,7 +122,7 @@ function comment_on_team($li){
 function comment_on_loan($li){
     if ($li.data().loan_id != undefined) {
         get_loan($li.data().loan_id).done(function (loan) {
-            sp(loan.name + ' is a ' + loan.sector + ' loan in ' + loan.location.country);
+            sp(loan.name + ' is in ' + loan.location.country);
             $li.data().loan = loan;
             last_spoken_ticker = Date.now();
             $li.data().commented_on_loan = true;
@@ -143,7 +143,7 @@ function add_color_commentary_more($li){
     var track = $li.data();
     $li.addClass("lenderassist_color_commentary_more");
 
-    if ($li.hasClass("loan-purchased") || $li.hasClass("loan-purchased")) {
+    if ($li.hasClass("loan-purchased") || $li.hasClass("lender-joinedTeam")) {
         if (!track.commented_on_loan && track.loan_id) {
             comment_on_loan($li);
         } else if (!track.commented_on_team && track.team_id) {

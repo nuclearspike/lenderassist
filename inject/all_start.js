@@ -143,7 +143,6 @@ function get_loan(t_id){
 }
 
 function get_lender_data(lender, slice_by){
-    cl("get_lender_data: " + slice_by);
     var def = $.Deferred();
     var url = location.protocol + "//www.kiva.org/ajax/getSuperGraphData?&sliceBy="+ slice_by +"&include=all&measure=count&subject_id=" + lender.lender_id + "&type=lender&granularity=cumulative";
     $.ajax({url: url,
@@ -241,7 +240,7 @@ function plural(count, word, plural_word){
 
 function figure_lender_id(dom) {
     old_lender_id = lender_id;
-    var lender_id = $(dom).find("center > div:first").text();
+    var lender_id = $(dom).find("center > div:first").text(); //brittle!
     if (lender_id != "") {
         cl(lender_id);
         chrome.storage.local.set({"lender_id": lender_id});

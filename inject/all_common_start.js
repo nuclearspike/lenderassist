@@ -9,7 +9,7 @@ function sp(speak, interrupt) {
     if (!speak) return;
     cl(speak);
     if (interrupt == undefined) {interrupt = false}
-    chrome.runtime.sendMessage({utterance: speak, enqueue: interrupt, callback: function(msg){
+    chrome.runtime.sendMessage({utterance: speak, interrupt: interrupt, callback: function(msg){
         console.log(msg);
     }});
 }
