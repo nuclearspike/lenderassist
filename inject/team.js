@@ -1,3 +1,2 @@
 cl("team.js processing");
-var t_team_id = location.pathname.split('/')[2];
-get_team(t_team_id).done(short_talk_team);
+api_object.done([short_talk_team, get_team_data_country, get_team_data_sector]);

@@ -156,4 +156,4 @@ function add_color_commentary_more($li){
     console.log($li.data());
 }
 
-sp("I'm currently debugging this page, so yes, the coloring for the ticker is ugly. It's only temporary, don't freak out.")
+//sp("I'm currently debugging this page, so yes, the coloring for the ticker is ugly. It's only temporary, don't freak out.")

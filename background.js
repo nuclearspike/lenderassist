@@ -61,14 +61,15 @@ function narrate(utterance, interrupt, callback) {
     }
     last_utterances.push(utterance);
 
-    if (interrupt && chrome.tts.isSpeaking()){
-        chrome.tts.stop();
-    }
+    //if (interrupt && chrome.tts.isSpeaking()){
+    //    chrome.tts.stop();
+    //}
     chrome.tts.speak(
         utterance,
         {
-            enqueue: true,
+            enqueue: !interrupt,
             onEvent: function(ttsEvent) {
+                console.log(ttsEvent);
                 if(ttsEvent.type == "error") { console.error("TTS Error:", ttsEvent); }
             }
         },

@@ -1,5 +1,4 @@
 cl("all_idle.js processing");
-
 $(".siteNav li a").animate({opacity: 1});
 
 function set_zip_button(){
@@ -20,25 +19,20 @@ function set_zip_button(){
     });
 }
 
-
-
 wire_intent('a[href*="kiva.org/team/"]', 'team_chatter', function($element) {
-    var t_team_id = $element.attr("href").split('/')[4];
-    if (t_team_id == null) return;
-    get_team(t_team_id).done(short_talk_team);
+    url_to_api_object($element.attr("href")).done(short_talk_team);
 });
 
 wire_intent('a[href*="kiva.org/lender/"]', 'lender_chatter', function($element){
-    var t_lender_id = $element.attr("href").split('/')[4];
-    if (t_lender_id == null) return;
-    get_lender(t_lender_id).done(short_talk_lender);
+    url_to_api_object($element.attr("href")).done(short_talk_lender);
 });
 
 $(document).on('click', 'a[href*="kiva.org/lender/"]', function(e){
     e.preventDefault();
     var $elem = $(e.target).closest('a');
-    sp(pick_random(["Hold on...", "Let's look at this lender..."]), false);
-    window.location.href = $elem.attr("href")+"?super_graphs=1";
+    sp_rand(["Ok...", "Let's look at this lender...",]);
+    var amp = ($elem.attr("href").indexOf('?') > -1) ? '&': '?';
+    window.location.href = $elem.attr("href")+ amp + "super_graphs=1";
 });
 
 //http://api.kivaws.org/v1/teams/using_shortname/atheists.json

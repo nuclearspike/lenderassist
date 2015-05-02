@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Trial Page</title>
+</head>
+<body>
+
+<express id="root">
+    <express condition="page_load">
+        Hello, World!!
+    </express>
+    <express condition="time_out">
+        Time Out!!
+    </express>
+</express>
+
+<ul id="to_express">
+
+</ul>
+</body>
+
+<script lang="text/javascript" id="brian">
+$(function(){
+    /////// framework
+    var conditions = {};
+    function reg_condition(condition_name, options){
+        if (conditions[condition_name]){
+            //already exists...?
+        } else {
+            var def = $.Deferred();
+            def.progress(options.progress);
+            def.done(options.progress);
+            conditions[condition_name] = {deferred: def, options: options};
+        }
+    }
+
+    function condition_met(condition_name){
+        var cond = conditions[condition_name];
+        cond.deferred.notify({express: true, options: cond.options});
+    }
+
+    /////// wiring to page
+    $root = $("#root");
+    $to_express = $("#to_express");
+
+    function express_it(msg){
+        $li = $("<li></li>");
+        $li.text(msg.options.node.text());
+        $to_express.append($li);
+    }
+
+    $root.find("express").each(function(i, el){
+        reg_condition($(el).attr('condition'), {node: $(el), progress: express_it});
+    });
+
+    ///////
+    condition_met('page_load');
+    setTimeout(function(){
+        condition_met('time_out');
+    }, 5000);
+});
+</script>
+</html>

@@ -1,7 +1,5 @@
 cl("lend.js processing");
 
-var loan;
-
 //basic analysis
 
 //todo: turn 'concerns' into something that will eventually be set in the properties form by the user.
@@ -161,9 +159,9 @@ function an_loan_attr(loan){
 
 function an_partner_risk(partner){
     var rate = parseFloat(partner.rating);
-    if (rate == NaN) return; //happens for "Not Rated"
+    if (isNaN(rate)) return; //happens for "Not Rated"
     if (rate >= 4.5) { //make user defined
-        sp("Oh wow. " + partner.name + " is very highly rated, which means that the MFI has lower risk of failing.");
+        sp("Oh wow. the MFI is very highly rated, which means that the MFI has lower risk of failing.");
     }
     if (rate <= 2.5){ //make user defined
         sp("The field partner has a low rating, meaning it is higher risk.");
@@ -177,5 +175,4 @@ function an_partner_stuff(partner) {
 }
 
 an_wait_words();
-
 api_object.done([short_talk_loan, analyze_loan]);

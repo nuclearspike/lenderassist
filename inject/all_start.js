@@ -140,9 +140,10 @@ function get_loan(t_id){
     return def.promise();
 }
 
-function get_lender_data(lender, slice_by){
+function get_graph_data(subject_type, subject, slice_by){
     var def = $.Deferred();
-    var url = location.protocol + "//www.kiva.org/ajax/getSuperGraphData?&sliceBy="+ slice_by +"&include=all&measure=count&subject_id=" + lender.lender_id + "&type=lender&granularity=cumulative";
+    var subject_id = (subject_type == 'lender')? subject.lender_id : subject.shortname;
+    var url = location.protocol + "//www.kiva.org/ajax/getSuperGraphData?&sliceBy="+ slice_by +"&include=all&measure=count&subject_id=" + subject_id + "&type=" + subject_type + "&granularity=cumulative";
     $.ajax({url: url,
         crossDomain: true,
         type: "GET",
@@ -158,25 +159,33 @@ function get_lender_data(lender, slice_by){
                 sp("Their top " + slice_by + "s are " + ar_and(slices));
             }
         }
-        def.resolve(lender);
+        def.resolve(subject);
     }).fail(def.reject);
     return def.promise();
 }
 
 function get_lender_data_sector(lender){
-    return get_lender_data(lender,'sector');
+    return get_graph_data('lender', lender,'sector');
+}
+
+function get_team_data_sector(team){
+    return get_graph_data('team', team,'sector'); //needs to have a speak defined not implied
 }
 
 function get_lender_data_country(lender){
-    return get_lender_data(lender,'country');
+    return get_graph_data('lender', lender,'country');
+}
+
+function get_team_data_country(team){
+    return get_graph_data('team', team,'country');
 }
 
 function get_lender_data_region(lender){
-    return get_lender_data(lender,'region');
+    return get_graph_data('lender', lender,'region');
 }
 
 function get_lender_data_activity(lender){
-    return get_lender_data(lender,'activity');
+    return get_graph_data('lender', lender,'activity');
 }
 
 function get_lender_teams(lender){
@@ -186,9 +195,9 @@ function get_lender_teams(lender){
         cache: true,
         success: function (result) {
             if (result.paging.total > 0) {
-                sp("and belongs to " + plural(result.paging.total, "team"));
+                sp("They belong to " + plural(result.paging.total, "team"));
             }
-            lender['teams_count'] = result.paging.total;
+            lender.teams_count = result.paging.total;
             def.resolve(lender)
         }}).fail(def.reject);
 
@@ -196,11 +205,10 @@ function get_lender_teams(lender){
 }
 
 function get_partner_from_loan(loan){
-    console.log('get partner id from loan');
     var def = $.Deferred();
 
     if (!loan.partner){
-        get_partner(loan.partner_id).done(def.resolve).done(function(partner){ loan.partner = partner; });
+        get_partner(loan.partner_id).done(function(partner){ loan.partner = partner; }).done(def.resolve);
     } else {
         loan.partner = partner; //does this do anything? isn't loan lost?
         def.resolve(loan.partner);
