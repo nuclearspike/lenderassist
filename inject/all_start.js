@@ -143,7 +143,8 @@ function get_loan(t_id){
 function get_graph_data(subject_type, subject, slice_by){
     var def = $.Deferred();
     var subject_id = (subject_type == 'lender')? subject.lender_id : subject.shortname;
-    var url = location.protocol + "//www.kiva.org/ajax/getSuperGraphData?&sliceBy="+ slice_by +"&include=all&measure=count&subject_id=" + subject_id + "&type=" + subject_type + "&granularity=cumulative";
+    var all_active = 'all'; //for now.
+    var url = location.protocol + "//www.kiva.org/ajax/getSuperGraphData?&sliceBy="+ slice_by +"&include="+ all_active +"&measure=count&subject_id=" + subject_id + "&type=" + subject_type + "&granularity=cumulative";
     $.ajax({url: url,
         crossDomain: true,
         type: "GET",
