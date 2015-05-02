@@ -1,6 +1,4 @@
 cl("all_start.js processing");
-//functions used all over
-//console.trace()
 
 //hmm.
 function fetch_value( key ) {
@@ -198,14 +196,20 @@ function get_lender_teams(lender){
 }
 
 function get_partner_from_loan(loan){
-    //is there a this?
     console.log('get partner id from loan');
-    if (loan.partner){
-       // return partner;
+    var def = $.Deferred();
+
+    if (!loan.partner){
+        get_partner(loan.partner_id).done(def.resolve).done(function(partner){ loan.partner = partner; });
+    } else {
+        loan.partner = partner; //does this do anything? isn't loan lost?
+        def.resolve(loan.partner);
     }
-    return loan.partner_id;
+
+    return def.promise();
 }
 
+var partners = {};
 function get_partner(t_id){
     var def = $.Deferred();
 
@@ -312,6 +316,34 @@ function wire_intent(selector, name, on_intent_funct){
     });
 }
 
+function url_to_parts(url){
+    //I DO NOT LIKE THIS METHOD.
+    var matches = url.match(/\.org\/(?:lend|partners|team|lender)\/(\w+)/gi);
+    if (!matches){ return { reject: true }; }
+    var parts = matches[0].split('/');
+    if (parts.length == 0){ return { reject: true }; }
+    return {path: parts[1], id: parts[2]};
+}
+
+function url_to_api_object(url){
+    var def = $.Deferred();
+    var parts = url_to_parts(url);
+    if (parts.reject) {
+        def.reject();
+        return def.promise();
+    } else {
+        var funcs = {
+            team: get_team,
+            lend: get_loan,
+            lender: get_lender,
+            partners: get_partner
+        };
+    }
+    return funcs[parts.path](parts.id); //promise
+}
+
+var api_object = url_to_api_object(window.location.href); //promise
+
 //CODE TO RUN
 chrome.storage.local.get("lender_id", function(result){
     lender_id = result.lender_id;
@@ -320,3 +352,4 @@ chrome.storage.local.get("lender_id", function(result){
 chrome.storage.local.set({"last_visit": Date.now()});
 
 //chrome.storage.local.set({"lender_id": null});
+

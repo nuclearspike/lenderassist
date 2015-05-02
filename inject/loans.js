@@ -1,8 +1,6 @@
 cl("lend.js processing");
-var matches = window.location.pathname.match(/^\/lend\/(\d+)/);
-if (matches) {
-    var id = matches[1];
-}
+
+var loan;
 
 //basic analysis
 
@@ -19,10 +17,8 @@ function analyze_loan(loan){
         return;
     }
     an_loan_attr(loan);
-
     an_repayment_term(loan);
-    an_partner_risk(loan.partner);
-    an_partner_stuff(loan.partner);
+    get_partner_from_loan(loan).done([an_partner_risk, an_partner_stuff]);
     an_lender(loan);
 }
 
@@ -118,7 +114,7 @@ function an_massage(loan){
 function an_status(loan){
     if (loan.status == 'funded'){
         sp("This loan has already been fully funded.");
-        sp_once("loan_detail_look_at_similar", "Look at the top of the page to find similar loans")
+        sp_once("loan_detail_look_at_similar", "Look at the top of the page to find similar loans.");
     }
 }
 
@@ -180,21 +176,6 @@ function an_partner_stuff(partner) {
     }
 }
 
-if (id) {
-    an_wait_words();
-    //get_loan(id).then(get_partner_id_from_loan).done()
-    get_loan(id).done(short_talk_loan).done(function (loan) {
-        //todo: switch to get_partner
-        $.ajax({
-            url: "http://api.kivaws.org/v1/partners/" + loan.partner_id + ".json",
-            crossDomain: true,
-            type: "GET",
-            cache: true
-        }).success(function (result) {
-            loan.partner = result.partners[0];
-            analyze_loan(loan)
-            cl(loan);
-        });
-    });
+an_wait_words();
 
-}
+api_object.done([short_talk_loan, analyze_loan]);

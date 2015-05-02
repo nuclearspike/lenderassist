@@ -5,6 +5,7 @@ $(document).ready(function() {
 
     $("#siteNavAboutAnchor").parent().removeClass("urHere");
     $("#siteNavLiveAnchor").parent().addClass("urHere");
+
     $("#mostCommonBorrowerCountry").on("DOMSubtreeModified", function(e){
         if (Date.now() - live_page_loaded > 2 * minute)
             sp($("#mostCommonBorrowerCountry").text() + " is the new trending borrower country");
