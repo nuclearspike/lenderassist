@@ -1,4 +1,4 @@
-# lenderassist
+# Kiva Lender Assistant
 
 To install, download the .zip file or pull to a directory. In Chrome, go to the Extensions page and check "Developer mode".
 Then click "Load unpacked extension" and select the directory.
@@ -29,11 +29,11 @@ on Zip, the link will just take you to the listing of fundraising loans.
 ## Chrome Omnibar
 
 1.    In Chrome's URL/Search bar, just type "kiva cattle" and the extension will automatically send that query to Kiva's lend tab.
-2.    If you type "kiva" it will also display some popular kiva pages that you can immediately jump to.
+2.    If you type "kiva" it will also display some popular Kiva pages that you can immediately jump to.
 
 ## Loan Pages
 
 1.    When viewing a fundraising loan, the Lender Assistant will make comments on things that are out of the ordinary with the loan. This includes
-a longer or shorter than normal repayment term, when the rating of the partner is much higher or lower than normal.
+a longer or shorter than normal repayment term, when the rating of the partner is much higher or lower than normal, etc.
 2.    Once the Lender Assistant knows who you are (you just have to log in once, it'll figure out the rest), it will be able to relate the loan you're
 looking at to loans in your portfolio and, for example, comment that you've made a lot of loans to that country before but they're all done paying back.
