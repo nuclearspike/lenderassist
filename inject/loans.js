@@ -53,7 +53,7 @@ function an_lender(loan){
             sp("You've never lent to anyone in " + loan.location.country + " before. Maybe now is the time.");
         }
 
-    });
+    }).fail(function(){cl("failed;")});
 }
 
 function an_wait_words(){

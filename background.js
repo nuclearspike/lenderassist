@@ -48,7 +48,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         eval(request.funct)(request.params);
         sendResponse("Received message to call function.")
     } else if (request.cache == 'get'){
-        sendResponse(get_session_cache(request.key));
+        sendResponse(get_session_cache(request.key, request.max_age));
     } else if (request.cache == 'set'){
         set_session_cache(request.key, request.value)
     } else if (request.cache == 'clear') {
@@ -69,9 +69,11 @@ function set_session_cache(key, value){
     session_cache[key] = {value: value, added: Date.now()};
 }
 
-function get_session_cache(key){
+function get_session_cache(key, max_age){
     var entry = session_cache[key];
-    if (entry){
+    var day = 1000 * 60 * 60 * 24;
+    var max_age = max_age || day;
+    if (entry && (Date.now() - entry.added < max_age)) {
         return entry.value;
     } else {
         return undefined;

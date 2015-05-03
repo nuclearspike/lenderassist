@@ -10,7 +10,7 @@ function sp(speak, interrupt) {
     cl(speak);
     if (interrupt == undefined) {interrupt = false}
     chrome.runtime.sendMessage({utterance: speak, interrupt: interrupt}, function(msg){
-        console.log("callback:" + msg);
+        //console.log("callback:" + msg);
     });
 }
 
@@ -29,16 +29,22 @@ function set_cache(key, value){
     chrome.runtime.sendMessage({cache:'set', key: key, value: value});
 }
 
-function get_cache(key){
+function get_cache(key, calc, max_age){
     var def = $.Deferred();
     var t = function(result){
         if (result == undefined){
+            if (calc){
+                calc.done(function(value){
+                    set_cache(key, value);
+                })
+            }
             def.reject();
         } else {
             def.resolve(result);
         }
     }
-    chrome.runtime.sendMessage({cache:'get', key: key}, t);
+
+    chrome.runtime.sendMessage({cache:'get', key: key, max_age: max_age}, t);
     return def.promise();
 }
 
@@ -74,8 +80,8 @@ function cl(s){
     console.log(s);
 }
 
-function sp_rand(arr){
-    sp(pick_random(arr));
+function sp_rand(arr, interrupt){
+    sp(pick_random(arr), interrupt);
 }
 
 function pick_random(arr){
@@ -105,6 +111,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
     }
 });
 
+//make this Deferred?
 function do_if_awhile(named_process, amount_of_time, check_func, if_ready_func){
     chrome.storage.local.get(named_process, function(res){
         var last_check = res[named_process];
