@@ -182,44 +182,51 @@ function combine_all_and_active_verse_data(subject_type, subject_id, slice_by){
     return def.promise();
 }
 
-function sp_top_3_lender_sectors(lender){
+function sp_top_3_lender_sectors(lender){ //used on /live
     get_verse_data('lender', lender.lender_id,'sector', 'all', 3, 3).done(function(slices){
         sp("Their top sectors are " + ar_and(slices.ordered.slice(0,3)));
     });
 }
 
-function sp_top_3_lender_countries(lender){
+function sp_top_3_lender_countries(lender){ //not in use anymore
     get_verse_data('lender', lender.lender_id,'country', 'all', 3, 3).done(function(slices){
         sp("Their top countries are " + ar_and(slices.ordered.slice(0,3)));
     });
 }
 
-function sp_top_3_lender_regions(lender){
+function sp_top_3_lender_regions(lender){ //not in use anymore
     get_verse_data('lender', lender.lender_id,'region', 'all', 3,3).done(function(slices){
         sp("Their top regions are " + ar_and(slices.ordered.slice(0,3)));
     });
 }
 
-function get_lender_data_sector(lender){
-    return get_verse_data('lender', lender,'sector');
+function sp_top_3_lender_stats(lender){ //on lender page
+    get_verse_data('lender', lender.lender_id,'region', 'all', 3,3).then(function(slices){
+        sp("This lender's top regions are " + ar_and(regions.ordered.slice(0,3)));
+    });
+    get_verse_data('lender', lender.lender_id,'country', 'all', 3,3).then(function(slices){
+        sp("Their most popular countries are " + ar_and(countries.ordered.slice(0,3)));
+    });
+    get_verse_data('lender', lender.lender_id,'sector', 'all', 3,3).then(function(slices){
+        sp("They love loans for " + ar_and(sectors.ordered.slice(0,3)));
+    });
 }
 
-function get_team_data_sector(team){
-    return get_verse_data('team', team,'sector'); //needs to have a speak defined not implied
+function sp_top_3_team_stats(team){ //on team page
+    get_verse_data('team', team.shortname,'region', 'all', 3,3).then(function(slices){
+        sp("This team's top regions are " + ar_and(slices.ordered.slice(0,3)));
+    });
+
+    get_verse_data('team', team.shortname,'country', 'all', 3,3).then(function(slices){
+        sp("Their most popular countries are " + ar_and(slices.ordered.slice(0,3)));
+    });
+
+    get_verse_data('team', team.shortname,'sector', 'all', 3,3).then(function(slices){
+        sp("They love loans for " + ar_and(slices.ordered.slice(0,3)));
+    });
 }
 
-function get_lender_data_country(lender){
-    return get_verse_data('lender', lender,'country');
-}
-
-function get_team_data_country(team){
-    return get_verse_data('team', team,'country');
-}
-
-function get_lender_data_activity(lender){
-    return get_verse_data('lender', lender,'activity');
-}
-
+//todo: make this use the other pattern
 function get_lender_teams(lender){ //this doesn't really get their teams, just the count (won't page if they have a bunch
     var def = $.Deferred();
 
@@ -314,7 +321,7 @@ function wire_intent(selector, name, on_intent_funct){
             if ($elem.data(name + '_entered')){ //if still over it.
                 on_intent_funct($elem);
             }
-        }, 250);
+        }, 500);
     }).on('mouseleave', selector, function(e){
         var $elem = $(e.target).closest('a');
         $elem.removeData(name + '_entered');
