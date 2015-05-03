@@ -42,15 +42,41 @@ chrome.omnibox.onInputEntered.addListener(
 //background message receiver
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.utterance) {
-        narrate(request.utterance, request.interrupt, request.callback);
+        narrate(request.utterance, request.interrupt, sendResponse);
+        return true; //keeps the channel open for the response;
     } else if (request.funct) {
-        console.log(request);
         eval(request.funct)(request.params);
         sendResponse("Received message to call function.")
-    } //else if (request.get_lender)
+    } else if (request.cache == 'get'){
+        sendResponse(get_session_cache(request.key));
+    } else if (request.cache == 'set'){
+        set_session_cache(request.key, request.value)
+    } else if (request.cache == 'clear') {
+        clear_session_cache();
+    }
+    console.log(request);
 });
 
 var last_utterances = [];
+
+var session_cache = {};
+
+function clear_session_cache(){
+    session_cache = {};
+}
+
+function set_session_cache(key, value){
+    session_cache[key] = {value: value, added: Date.now()};
+}
+
+function get_session_cache(key){
+    var entry = session_cache[key];
+    if (entry){
+        return entry.value;
+    } else {
+        return undefined;
+    }
+}
 
 function narrate(utterance, interrupt, callback) {
     //utterance = '<?xml version="1.0"?>' + '<speak><emphasis>you are</emphasis>' + utterance + '</speak>';
@@ -61,9 +87,6 @@ function narrate(utterance, interrupt, callback) {
     }
     last_utterances.push(utterance);
 
-    //if (interrupt && chrome.tts.isSpeaking()){
-    //    chrome.tts.stop();
-    //}
     chrome.tts.speak(
         utterance,
         {

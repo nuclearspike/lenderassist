@@ -9,9 +9,9 @@ function sp(speak, interrupt) {
     if (!speak) return;
     cl(speak);
     if (interrupt == undefined) {interrupt = false}
-    chrome.runtime.sendMessage({utterance: speak, interrupt: interrupt, callback: function(msg){
-        console.log(msg);
-    }});
+    chrome.runtime.sendMessage({utterance: speak, interrupt: interrupt}, function(msg){
+        console.log("callback:" + msg);
+    });
 }
 
 function sp_once(named_utterance, utterance){
@@ -23,6 +23,27 @@ function sp_once(named_utterance, utterance){
             chrome.storage.local.set(obj);
         }
     });
+}
+
+function set_cache(key, value){
+    chrome.runtime.sendMessage({cache:'set', key: key, value: value});
+}
+
+function get_cache(key){
+    var def = $.Deferred();
+    var t = function(result){
+        if (result == undefined){
+            def.reject();
+        } else {
+            def.resolve(result);
+        }
+    }
+    chrome.runtime.sendMessage({cache:'get', key: key}, t);
+    return def.promise();
+}
+
+function clear_cache(){
+    chrome.runtime.sendMessage({cache:'clear'});
 }
 
 function date_diff_to_words(date_diff){

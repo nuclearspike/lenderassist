@@ -29,7 +29,7 @@ on Zip, the link will just take you to the listing of fundraising loans.
 ## Chrome Omnibar
 
 1.    In Chrome's URL/Search bar, just type "kiva cattle" and the extension will automatically send that query to Kiva's lend tab.
-2.    If you type "kiva" it will also display some popular Kiva pages that you can immediately jump to.
+2.    If you type "kiva" and start typing another word it will also display some popular Kiva pages that you can immediately jump to.
 
 ## Loan Pages
 

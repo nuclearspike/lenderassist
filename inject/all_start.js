@@ -140,11 +140,10 @@ function get_loan(t_id){
     return def.promise();
 }
 
-function get_graph_data(subject_type, subject, slice_by){
+function get_verse_data(subject_type, subject_id, slice_by, all_active, min_count, max_count){
     var def = $.Deferred();
-    var subject_id = (subject_type == 'lender')? subject.lender_id : subject.shortname;
-    var all_active = 'all'; //for now.
-    var url = location.protocol + "//www.kiva.org/ajax/getSuperGraphData?&sliceBy="+ slice_by +"&include="+ all_active +"&measure=count&subject_id=" + subject_id + "&type=" + subject_type + "&granularity=cumulative";
+    var granularity = 'cumulative'; //for now
+    var url = location.protocol + "//www.kiva.org/ajax/getSuperGraphData?&sliceBy="+ slice_by +"&include="+ all_active +"&measure=count&subject_id=" + subject_id + "&type=" + subject_type + "&granularity=" + granularity;
     $.ajax({url: url,
         crossDomain: true,
         type: "GET",
@@ -152,44 +151,84 @@ function get_graph_data(subject_type, subject, slice_by){
         cache: true
     }).success(function(result){
         slices = [];
+        totals = {};
         if (result.data) {
-            if (result.data.length > 3) {
-                for (i = 0; i < Math.min(result.data.length, 3); i++) {
-                    slices.push(result.lookup[result.data[i].name]);
-                }
-                sp("Their top " + slice_by + "s are " + ar_and(slices));
+            if (max_count == -1) {
+                max_count = result.data.length
+            } else {
+                max_count = Math.min(max_count, result.data.length);
+            }
+
+            for (i = 0; i < max_count; i++) {
+                slices.push(result.lookup[result.data[i].name]);
+                totals[result.lookup[result.data[i].name]] = result.data[i].value;
             }
         }
-        def.resolve(subject);
+        if (slices.length >= min_count) {
+            def.resolve({ordered: slices, totals: totals});
+        } else {
+            def.reject();
+        }
     }).fail(def.reject);
     return def.promise();
 }
 
+function combine_all_and_active_verse_data(subject_type, subject_id, slice_by){
+    var def = $.Deferred();
+    cache_key = subject_type + "_" + subject_id + "_" + slice_by;
+    get_cache(cache_key).done(function(result){
+        def.resolve(result);
+    }).fail(function(){
+        $.when(get_verse_data(subject_type, subject_id, slice_by, 'all', 0, -1),
+            get_verse_data(subject_type, subject_id, slice_by, 'active', 0, -1))
+            .then(function(all_results, active_results){
+                result = { all: all_results, active: active_results};
+                set_cache(cache_key, result);
+                def.resolve(result);
+            }).fail(def.reject);
+    });
+    return def.promise();
+}
+
+function sp_top_3_lender_sectors(lender){
+    get_verse_data('lender', lender.lender_id,'sector', 'all', 3, 3).done(function(slices){
+        sp("Their top sectors are " + ar_and(slices.slice(0,3)));
+    });
+}
+
+function sp_top_3_lender_countries(lender){
+    get_verse_data('lender', lender.lender_id,'country', 'all', 3, 3).done(function(slices){
+        sp("Their top countries are " + ar_and(slices.slice(0,3)));
+    });
+}
+
+function sp_top_3_lender_regions(lender){
+    get_verse_data('lender', lender.lender_id,'region', 'all', 3,3).done(function(slices){
+        sp("Their top regions are " + ar_and(slices.slice(0,3)));
+    });
+}
+
 function get_lender_data_sector(lender){
-    return get_graph_data('lender', lender,'sector');
+    return get_verse_data('lender', lender,'sector');
 }
 
 function get_team_data_sector(team){
-    return get_graph_data('team', team,'sector'); //needs to have a speak defined not implied
+    return get_verse_data('team', team,'sector'); //needs to have a speak defined not implied
 }
 
 function get_lender_data_country(lender){
-    return get_graph_data('lender', lender,'country');
+    return get_verse_data('lender', lender,'country');
 }
 
 function get_team_data_country(team){
-    return get_graph_data('team', team,'country');
-}
-
-function get_lender_data_region(lender){
-    return get_graph_data('lender', lender,'region');
+    return get_verse_data('team', team,'country');
 }
 
 function get_lender_data_activity(lender){
-    return get_graph_data('lender', lender,'activity');
+    return get_verse_data('lender', lender,'activity');
 }
 
-function get_lender_teams(lender){
+function get_lender_teams(lender){ //this doesn't really get their teams, just the count (won't page if they have a bunch
     var def = $.Deferred();
 
     $.ajax({url: location.protocol + "//api.kivaws.org/v1/lenders/" + lender.lender_id + "/teams.json",
@@ -199,7 +238,7 @@ function get_lender_teams(lender){
                 sp("They belong to " + plural(result.paging.total, "team"));
             }
             lender.teams_count = result.paging.total;
-            def.resolve(lender)
+            def.resolve(lender);
         }}).fail(def.reject);
 
     return def.promise();
@@ -285,7 +324,7 @@ function short_talk_team(team){
     } else {
         speak.push("and has made " + plural(team.loan_count, 'loan'));
     }
-    sp(speak.join(' '));
+    sp(speak.join(' '), true);
 }
 
 function short_talk_lender(lender){
@@ -305,7 +344,7 @@ function short_talk_lender(lender){
         speak.push("has made " + plural(lender.invitee_count, "successful invitation"));
     }
 
-    sp(lender.name + " " + ar_and(speak));
+    sp(lender.name + " " + ar_and(speak), true);
     lender.last_spoke = Date.now();
 }
 

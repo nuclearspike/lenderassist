@@ -20,89 +20,45 @@ function analyze_loan(loan){
     an_lender(loan);
 }
 
-var countries_lookup = {};
-var countries_all_c = {};
-var countries_all = [];
-var countries_active = [];
-
 function an_lender(loan){
     if (lender_id == undefined) return; //we can't look up information on a lender
 
-    var url = "http://www.kiva.org/ajax/getSuperGraphData?&sliceBy=country&include=all&measure=count&subject_id=" + lender_id + "&type=lender&granularity=cumulative";
-    $.ajax({url: url,
-        crossDomain: true,
-        type: "GET",
-        dataType: "json",
-        cache: true
-    }).success(function(result){
-        //cl(result);
-        if (result.data.length > 0) { //if user has ever done a loan
-            //var country = result.lookup[result.data[0].name];
-            for (i = 0; i < result.data.length; i++){
-                countries_lookup[result.data[i].name] = result.lookup[result.data[i].name];
-                countries_all.push(result.lookup[result.data[i].name]);
-                countries_all_c[result.lookup[result.data[i].name]] = parseInt(result.data[i].value);
-            }
-
-            var cur_country_rank_all = countries_all.indexOf(loan.location.country);
-            if (cur_country_rank_all > -1 && cur_country_rank_all < 10){
-                //is in the top 10
-                sp("It looks like " + loan.location.country + " is one of your favorite lending countries.")
-            } else {
-                //is not in the top 10
-            }
-
-            var url = "http://www.kiva.org/ajax/getSuperGraphData?&sliceBy=country&include=active&measure=count&subject_id=" + lender_id + "&type=lender&granularity=cumulative";
-            $.ajax({url: url,
-                crossDomain: true,
-                type: "GET",
-                dataType: "json",
-                cache: true
-            }).success(function(result){
-                //cl(result);
-                countries_active = [];
-                countries_active_c = {};
-                for (i = 0; i < result.data.length; i++){
-                    countries_active.push(result.lookup[result.data[i].name]);
-                    //store how many...
-                    countries_active_c[result.lookup[result.data[i].name]] = parseInt(result.data[i].value);
-                }
-                cl(countries_active_c);
-
-                var cur_country_rank_active = countries_active.indexOf(loan.location.country);
-                if (cur_country_rank_all > -1){
-                    var to_say;
-
-                    if (countries_all_c[loan.location.country] > 1){
-                        to_say = "You've made " + plural(countries_all_c[loan.location.country], "loan") +  " in " + loan.location.country + "  "
-                    } else {
-                        to_say = "You've made a loan to someone in " + loan.location.country + " before, "
-                    }
-
-                    if (cur_country_rank_active < 0){
-                        sp(to_say + "but you have no active loans in that country. Maybe it's time to make another loan in " + loan.location.country);
-                    } else {
-                        if (countries_active_c[loan.location.country] == 1){
-                            sp(to_say + "and you still have one loan paying back.");
-                        } else {
-                            sp(to_say + "and you have " + countries_active_c[loan.location.country] + " loans still paying back.");
-                        }
-                    }
-                } else { //never before
-                    sp("You've never lent to anyone in " + loan.location.country + " before. Maybe now is the time.");
-                }
-
-            });
+    combine_all_and_active_verse_data('lender', lender_id, 'country').done(function(data){
+        cl(data);
+        var cur_country_rank_all = data.all.ordered.indexOf(loan.location.country);
+        if (cur_country_rank_all > -1 && cur_country_rank_all < 10){
+            sp("It looks like " + loan.location.country + " is one of your favorite lending countries.")
         }
-    }).fail(function(result){
-        sp("Something went wrong!");
-        cl(result);
+
+        var cur_country_rank_active = data.active.ordered.indexOf(loan.location.country);
+        if (cur_country_rank_all > -1){ //you've made a loan before.
+            var to_say;
+
+            if (data.all.totals[loan.location.country] > 1){
+                to_say = "You've made " + plural(data.all.totals[loan.location.country], "loan") +  " in " + loan.location.country + "  "
+            } else {
+                to_say = "You've made a loan to someone in " + loan.location.country + " before, "
+            }
+
+            if (cur_country_rank_active < 0){
+                sp(to_say + "but you have no active loans in that country. Maybe it's time to make another loan in " + loan.location.country);
+            } else {
+                if (data.active.totals[loan.location.country] == 1){
+                    sp(to_say + "and you still have one loan paying back.");
+                } else {
+                    sp(to_say + "and you have " + data.active.totals[loan.location.country] + " loans still paying back.");
+                }
+            }
+        } else { //never before
+            sp("You've never lent to anyone in " + loan.location.country + " before. Maybe now is the time.");
+        }
+
     });
 }
 
 function an_wait_words(){
     var wait_words = ["Hum, just a second", "Let me look at this.", "Interesting...", "Look at this one.", "", "One second.", "Hold on...", "Wow.", "Okay.", "Ooo.", "Just a moment.", "What do you think about this one?", "Here we go."];
-    sp(pick_random(wait_words), true);
+    sp_rand(wait_words); //not interrupting speech
 }
 
 function an_massage(loan){

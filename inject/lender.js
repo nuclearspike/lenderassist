@@ -1,2 +1,2 @@
 cl("lender.js processing");
-api_object.done([short_talk_lender,get_lender_data_region,get_lender_data_country,get_lender_data_sector,get_lender_teams]);
+api_object.done([short_talk_lender, get_lender_teams, sp_top_3_lender_regions, sp_top_3_lender_countries, sp_top_3_lender_sectors]);

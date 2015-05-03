@@ -27,6 +27,10 @@ wire_intent('a[href*="kiva.org/lender/"]', 'lender_chatter', function($element){
     url_to_api_object($element.attr("href")).done(short_talk_lender);
 });
 
+wire_intent('a[href*="kiva.org/lend/"]', 'lender_chatter', function($element){
+    url_to_api_object($element.attr("href")).done(short_talk_loan);
+});
+
 $(document).on('click', 'a[href*="kiva.org/lender/"]', function(e){
     e.preventDefault();
     var $elem = $(e.target).closest('a');
