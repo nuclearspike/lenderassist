@@ -132,7 +132,7 @@ function get_verse_data(subject_type, subject_id, slice_by, all_active, min_coun
     var url = location.protocol + "//www.kiva.org/ajax/getSuperGraphData?&sliceBy="+ slice_by +"&include="+ all_active +"&measure=count&subject_id=" + subject_id + "&type=" + subject_type + "&granularity=" + granularity;
     var cache_key = "get_verse_data_" + subject_type + "_" + subject_id + "_" + slice_by + "_" + all_active  + "_" + min_count + "_" + max_count + "_" + granularity;
 
-    get_cache(cache_key).done(function(result){
+    get_cache(cache_key, def).done(function(result){
         cl(result);
         def.resolve(result);
     }).fail(function() {
@@ -161,7 +161,6 @@ function get_verse_data(subject_type, subject_id, slice_by, all_active, min_coun
             if (slices.length >= min_count) {
                 result = {ordered: slices, totals: totals};
                 def.resolve(result);
-                set_cache(cache_key, result);
             } else {
                 def.reject();
             }

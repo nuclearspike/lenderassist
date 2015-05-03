@@ -7,10 +7,10 @@ var lender_id = undefined;
 //speak
 function sp(speak, interrupt) {
     if (!speak) return;
-    cl(speak);
+    //cl(speak);
     if (interrupt == undefined) {interrupt = false}
     chrome.runtime.sendMessage({utterance: speak, interrupt: interrupt}, function(msg){
-        //console.log("callback:" + msg);
+        cl(msg);
     });
 }
 
@@ -31,20 +31,20 @@ function set_cache(key, value){
 
 function get_cache(key, calc, max_age){
     var def = $.Deferred();
-    var t = function(result){
-        if (result == undefined){
-            if (calc){
+    var cache_callback = function(result){
+        if (result == undefined){ //when missing from the cache
+            if (calc){ //wire up interest in watching the (parent) function that can fetch/figure the value
                 calc.done(function(value){
-                    set_cache(key, value);
+                    set_cache(key, value); //and set the cache value once calculated
                 })
             }
             def.reject();
-        } else {
+        } else { //resolve it with the cached value
             def.resolve(result);
         }
     }
 
-    chrome.runtime.sendMessage({cache:'get', key: key, max_age: max_age}, t);
+    chrome.runtime.sendMessage({cache:'get', key: key, max_age: max_age}, cache_callback);
     return def.promise();
 }
 
