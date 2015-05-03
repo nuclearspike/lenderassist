@@ -202,13 +202,13 @@ function sp_top_3_lender_regions(lender){ //not in use anymore
 
 function sp_top_3_lender_stats(lender){ //on lender page
     get_verse_data('lender', lender.lender_id,'region', 'all', 3,3).then(function(slices){
-        sp("This lender's top regions are " + ar_and(regions.ordered.slice(0,3)));
+        sp("This lender's top regions are " + ar_and(slices.ordered.slice(0,3)));
     });
     get_verse_data('lender', lender.lender_id,'country', 'all', 3,3).then(function(slices){
-        sp("Their most popular countries are " + ar_and(countries.ordered.slice(0,3)));
+        sp("Their most popular countries are " + ar_and(slices.ordered.slice(0,3)));
     });
     get_verse_data('lender', lender.lender_id,'sector', 'all', 3,3).then(function(slices){
-        sp("They love loans for " + ar_and(sectors.ordered.slice(0,3)));
+        sp("They love loans for " + ar_and(slices.ordered.slice(0,3)));
     });
 }
 
