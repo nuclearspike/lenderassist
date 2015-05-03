@@ -42,7 +42,7 @@ chrome.omnibox.onInputEntered.addListener(
 //background message receiver
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.utterance) {
-        narrate(request.utterance, request.interrupt, sendResponse);
+        narrate(request.utterance, request.context, request.follow_up, request.interrupt, sendResponse);
         return true; //keeps the channel open for the response;
     } else if (request.funct) {
         eval(request.funct)(request.params);
@@ -80,14 +80,28 @@ function get_session_cache(key, max_age){
     }
 }
 
-function narrate(utterance, interrupt, callback) {
+var last_context;
+function narrate(utterance, context, follow_up, interrupt, callback) {
     //utterance = '<?xml version="1.0"?>' + '<speak><emphasis>you are</emphasis>' + utterance + '</speak>';
 
-    if (last_utterances.indexOf(utterance) > -1) {
-        callback && callback("Skipped: " + utterance);
+    //a "follow up" message must match the same context or it gets skipped.
+
+    if (typeof context == Object) {
+        context = JSON.stringify(context);
+    }
+
+    if (last_utterances.indexOf(context + utterance) > -1) {
+        callback && callback("Skipped (just said it): " + utterance);
         return; //don't say it;
     }
-    last_utterances.push(utterance);
+
+    if (follow_up && context != last_context){
+        callback && callback("Skipped (context switched unexpectedly): " + utterance);
+        return; //don't say it;
+    }
+    last_context = context;
+
+    last_utterances.push(context + utterance);
 
     chrome.tts.speak(
         utterance,

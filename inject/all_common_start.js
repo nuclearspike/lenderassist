@@ -5,11 +5,10 @@ var monthNames = ["January", "February", "March", "April", "May", "June", "July"
 var lender_id = undefined;
 
 //speak
-function sp(speak, interrupt) {
+function sp(speak, context, follow_up, interrupt) {
     if (!speak) return;
-    //cl(speak);
     if (interrupt == undefined) {interrupt = false}
-    chrome.runtime.sendMessage({utterance: speak, interrupt: interrupt}, function(msg){
+    chrome.runtime.sendMessage({utterance: speak, context: context, follow_up: follow_up, interrupt: interrupt}, function(msg){
         cl(msg);
     });
 }
@@ -80,8 +79,8 @@ function cl(s){
     console.log(s);
 }
 
-function sp_rand(arr, interrupt){
-    sp(pick_random(arr), interrupt);
+function sp_rand(arr, context, interrupt){
+    sp(pick_random(arr), context, interrupt);
 }
 
 function pick_random(arr){
@@ -96,7 +95,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
     if (changes.was_logged_in){//present
         if (changes.was_logged_in.oldValue == true && changes.was_logged_in.newValue == false) {
             //if we log out, set the data to wipe out.
-            chrome.storage.local.set({"d_countries":null,"d_sectors":null,"lender_id":null,"last_logged_out":Date.now()});
+            chrome.storage.local.set({"d_countries":null,"d_sectors":null,"last_logged_out":Date.now()}); //"lender_id":null,
         }
     }
     //debug

@@ -1,0 +1,1 @@
+//framework for conditions

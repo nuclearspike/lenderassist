@@ -33,7 +33,14 @@ function ar_and(arr){
 
 function f_is_logged_in(){
     result = $("div.loggedInGreeting").length > 0;
-    chrome.storage.local.set({"was_logged_in": result});
+    if (result) {
+        chrome.storage.local.set({"was_logged_in": true});
+    } else {
+        if ($(".headerLoginContainer").length > 0) {
+            //test for the login div to really know. opening a lender picture was registering it as not logged in
+            chrome.storage.local.set({"was_logged_in": false});
+        }
+    }
     return result;
 }
 
@@ -184,45 +191,45 @@ function combine_all_and_active_verse_data(subject_type, subject_id, slice_by){
 
 function sp_top_3_lender_sectors(lender){ //used on /live
     get_verse_data('lender', lender.lender_id,'sector', 'all', 3, 3).done(function(slices){
-        sp("Their top sectors are " + ar_and(slices.ordered.slice(0,3)));
+        sp("Their top sectors are " + ar_and(slices.ordered.slice(0,3)), lender);
     });
 }
 
 function sp_top_3_lender_countries(lender){ //not in use anymore
     get_verse_data('lender', lender.lender_id,'country', 'all', 3, 3).done(function(slices){
-        sp("Their top countries are " + ar_and(slices.ordered.slice(0,3)));
+        sp("Their top countries are " + ar_and(slices.ordered.slice(0,3)), lender);
     });
 }
 
 function sp_top_3_lender_regions(lender){ //not in use anymore
     get_verse_data('lender', lender.lender_id,'region', 'all', 3,3).done(function(slices){
-        sp("Their top regions are " + ar_and(slices.ordered.slice(0,3)));
+        sp("Their top regions are " + ar_and(slices.ordered.slice(0,3)), lender);
     });
 }
 
 function sp_top_3_lender_stats(lender){ //on lender page
     get_verse_data('lender', lender.lender_id,'region', 'all', 3,3).then(function(slices){
-        sp("This lender's top regions are " + ar_and(slices.ordered.slice(0,3)));
+        sp("This lender's top regions are " + ar_and(slices.ordered.slice(0,3)), lender);
     });
     get_verse_data('lender', lender.lender_id,'country', 'all', 3,3).then(function(slices){
-        sp("Their most popular countries are " + ar_and(slices.ordered.slice(0,3)));
+        sp("Their most popular countries are " + ar_and(slices.ordered.slice(0,3)), lender);
     });
     get_verse_data('lender', lender.lender_id,'sector', 'all', 3,3).then(function(slices){
-        sp("They love loans for " + ar_and(slices.ordered.slice(0,3)));
+        sp("They love loans for " + ar_and(slices.ordered.slice(0,3)), lender);
     });
 }
 
 function sp_top_3_team_stats(team){ //on team page
     get_verse_data('team', team.shortname,'region', 'all', 3,3).then(function(slices){
-        sp("This team's top regions are " + ar_and(slices.ordered.slice(0,3)));
+        sp("This team's top regions are " + ar_and(slices.ordered.slice(0,3)), team);
     });
 
     get_verse_data('team', team.shortname,'country', 'all', 3,3).then(function(slices){
-        sp("Their most popular countries are " + ar_and(slices.ordered.slice(0,3)));
+        sp("Their most popular countries are " + ar_and(slices.ordered.slice(0,3)), team);
     });
 
     get_verse_data('team', team.shortname,'sector', 'all', 3,3).then(function(slices){
-        sp("They love loans for " + ar_and(slices.ordered.slice(0,3)));
+        sp("They love loans for " + ar_and(slices.ordered.slice(0,3)), team);
     });
 }
 
@@ -234,7 +241,7 @@ function get_lender_teams(lender){ //this doesn't really get their teams, just t
         cache: true,
         success: function (result) {
             if (result.paging.total > 0) {
-                sp("They belong to " + plural(result.paging.total, "team"));
+                sp("They belong to " + plural(result.paging.total, "team"), lender);
             }
             lender.teams_count = result.paging.total;
             def.resolve(lender);
@@ -269,7 +276,7 @@ function figure_lender_id(dom) {
 }
 
 function short_talk_loan(loan){
-    sp(loan.sector + ' loan for ' + loan.name + ' in ' + loan.location.country);
+    sp(loan.sector + ' loan for ' + loan.name + ' in ' + loan.location.country, loan);
 }
 
 function short_talk_team(team){
@@ -288,7 +295,7 @@ function short_talk_team(team){
     } else {
         speak.push("and has made " + plural(team.loan_count, 'loan'));
     }
-    sp(speak.join(' '), true);
+    sp(speak.join(' '), team);
 }
 
 function short_talk_lender(lender){
@@ -308,7 +315,7 @@ function short_talk_lender(lender){
         speak.push("has made " + plural(lender.invitee_count, "successful invitation"));
     }
 
-    sp(lender.name + " " + ar_and(speak), true);
+    sp(lender.name + " " + ar_and(speak), lender);
     lender.last_spoke = Date.now();
 }
 

@@ -2,7 +2,6 @@ var live_page_loaded = Date.now();
 var last_spoken_ticker = Date.now() - 10 * minute;
 
 $(document).ready(function() {
-
     $("#siteNavAboutAnchor").parent().removeClass("urHere");
     $("#siteNavLiveAnchor").parent().addClass("urHere");
 
@@ -18,14 +17,15 @@ $(document).ready(function() {
 
     $("#mostCommonLenderCountry").on("DOMSubtreeModified", function(e){
         if (Date.now() - live_page_loaded > 2 * minute)
-            sp("There's been more lending from " + $("#mostCommonLenderCountry").text() + " than anywhere else recently.");
+            sp("There's been a lot of lending from " + $("#mostCommonLenderCountry").text() + " recently.");
     });
 
     setTimeout(function(){
         if (parseFloat($("#secondsBetweenLoans").text()) > 30.0){
-            sp("Wow. The site is very slow right now. Try visiting the Live page again during peak lending times.");
-            sp("Generally that is during the day time in the United States. Also, on the seventeenth of each month starting about 1 PM Pacific Time, all of the repayments settle and auto-lending kicks in.");
-            sp("It gets crazy!");
+            var speak = "Wow. The site is very slow right now. Try visiting the Live page again during peak lending times.";
+            speak += "Generally that is during the day time in the United States. Also, on the seventeenth of each month starting about 1 PM Pacific Time, all of the repayments come back and auto-lending kicks in.";
+            sp(speak);
+            sp(" It gets crazy!");
         }
     }, 5 * minute);
 
@@ -91,6 +91,9 @@ function read_li_text($li){
     $li.addClass('lenderassist_read_text');
     var to_say = $li.find("span").text();
     to_say = to_say.replace(/\+\d+ more/gi, '').replace(/\s{1,}/gi, ' ').trim();
+    to_say = to_say.replace("made a loan, which helps", pick_random(["is helping", "made a loan, which helps" ,
+                                                            "decided to help", "wants to help", "is lending money to assist",
+                                                            "made a loan to", "is making a difference by helping"]));
     last_spoken_ticker = Date.now();
     sp(to_say);
 }
@@ -102,7 +105,7 @@ function comment_on_lender($li){
             ago = date_diff_to_words(Date.now() - new Date(Date.parse(lender.member_since)));
             last_spoken_ticker = Date.now();
             $li.data().commented_on_lender = true;
-            sp(lender.name + " has made " + plural(lender.loan_count, "loan") + " since joining " + ago.units + ago.uom + " ago");
+            sp(lender.name + " has made " + plural(lender.loan_count, "loan") + " since joining " + ago.units + ago.uom + " ago", lender);
             if (lender.loan_count > 100) {
                 sp_top_3_lender_sectors(lender);
             }
@@ -123,7 +126,7 @@ function comment_on_team($li){
 function comment_on_loan($li){
     if ($li.data().loan_id != undefined) {
         get_loan($li.data().loan_id).done(function (loan) {
-            sp(loan.name + ' is in ' + loan.location.country);
+            sp(loan.name + ' is in ' + loan.location.country, loan);
             $li.data().loan = loan;
             last_spoken_ticker = Date.now();
             $li.data().commented_on_loan = true;
@@ -156,4 +159,4 @@ function add_color_commentary_more($li){
     console.log($li.data());
 }
 
-//sp("I'm currently debugging this page, so yes, the coloring for the ticker is ugly. It's only temporary, don't freak out.")
+sp_rand(["Here's what's happening.","See what other lenders are doing", "You should have this page open in a tab before you complete your loan purchase so you can see your loans happen."]);

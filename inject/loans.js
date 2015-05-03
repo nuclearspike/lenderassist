@@ -10,7 +10,7 @@ function analyze_loan(loan){
     an_status(loan);
     if (loan.status != 'fundraising') {
         if (['issue', 'reviewed', 'inactive'].indexOf(loan.status) > -1) {
-            sp("Well, that's weird. The API for Kiva is showing that this loan is still in the " + loan.status + " state. I'm not going to analyze this loan any further.");
+            sp("Well, that's weird. The API for Kiva is showing that this loan is still in the " + loan.status + " state. I'm not going to analyze this loan any further.", loan);
         }
         return;
     }
@@ -27,7 +27,7 @@ function an_lender(loan){
         cl(data);
         var cur_country_rank_all = data.all.ordered.indexOf(loan.location.country);
         if (cur_country_rank_all > -1 && cur_country_rank_all < 10){
-            sp("It looks like " + loan.location.country + " is one of your favorite lending countries.")
+            sp("It looks like " + loan.location.country + " is one of your favorite lending countries.", lender_id);
         }
 
         var cur_country_rank_active = data.active.ordered.indexOf(loan.location.country);
@@ -41,16 +41,16 @@ function an_lender(loan){
             }
 
             if (cur_country_rank_active < 0){
-                sp(to_say + "but you have no active loans in that country. Maybe it's time to make another loan in " + loan.location.country);
+                sp(to_say + "but you have no active loans in that country. Maybe it's time to make another loan in " + loan.location.country, lender_id);
             } else {
                 if (data.active.totals[loan.location.country] == 1){
                     sp(to_say + "and you still have one loan paying back.");
                 } else {
-                    sp(to_say + "and you have " + data.active.totals[loan.location.country] + " loans still paying back.");
+                    sp(to_say + "and you have " + data.active.totals[loan.location.country] + " loans still paying back.", lender_id);
                 }
             }
         } else { //never before
-            sp("You've never lent to anyone in " + loan.location.country + " before. Maybe now is the time.");
+            sp("You've never lent to anyone in " + loan.location.country + " before. Maybe now is the time.", loan);
         }
 
     }).fail(function(){cl("failed;")});
@@ -67,8 +67,8 @@ function an_massage(loan){
 
 function an_status(loan){
     if (loan.status == 'funded'){
-        sp("This loan has already been fully funded.");
-        sp_once("loan_detail_look_at_similar", "Look at the top of the page to find similar loans.");
+        sp("This loan has already been fully funded.", loan);
+        sp_once("loan_detail_look_at_similar", "Look at the top of the page to find similar loans."); //
     }
 }
 
@@ -82,34 +82,35 @@ function an_repayment_term(loan){
     frd = new Date(loan.final_payment);
 
     if (Math.ceil(months_to_go) <= concerns.low_months_to_payback ){
-        sp("That's great! This loan should pay back in " + h_make_date(frd) + " which is only " + Math.ceil(months_to_go) + " months away.");
+        sp("That's great! This loan should pay back in " + h_make_date(frd) + " which is only " + Math.ceil(months_to_go) + " months away.", loan);
     }
 
     if (Math.floor(months_to_go) >= concerns.high_months_to_payback){
-        sp("Note: The final repayment isn't until " + h_make_date(frd) + " which is " + Math.floor(months_to_go) + " months away.");
+        sp("Note: The final repayment isn't until " + h_make_date(frd) + " which is " + Math.floor(months_to_go) + " months away.", loan);
     }
 
     if (loan.terms.disbursal_date) {
         predisbursal_date = new Date(Date.parse(loan.terms.disbursal_date));
         //it should look at the repayment schedule before making this comment!
         if (Date.parse(loan.terms.scheduled_payments[0].date) < Date.now()){
-        //    sp("Nice! The borrower has already received the money in " + h_make_date(predisbursal_date) + " which means your repayments will generally start sooner with a lump sum at the start.");
+            sp("Was this loan really predisbursed?", loan);
+        //    sp("Nice! The borrower has already received the money in " + h_make_date(predisbursal_date) + " which means your repayments will generally start sooner with a lump sum at the start.", loan);
         }
     }
 }
 
 function an_loan_attr(loan){
     if (Date.now() - Date.parse(loan.posted_date) < hour * 3){
-        sp("This loan just posted within the past few hours.");
+        sp("This loan just posted within the past few hours.", loan);
     }
     if (loan.funded_amount == 0) { //due to lag of API, this could be wrong.
-        sp("You can be the first person to lend to this borrower.")
+        sp("You can be the first person to lend to this borrower.", loan)
     }
     if (Date.parse(loan.planned_expiration_date) - Date.now() < 3 * day){
-        sp("This loan is expiring soon."); // Rally your teams to get this loan funded!
+        sp("This loan is expiring soon.", loan); // Rally your teams to get this loan funded!
     }
     if ((loan.loan_amount - loan.funded_amount - loan.basket_amount) <= 75){ //or use "not much left on the loan!" when under $50/75?
-        sp("This loan is almost fully funded.");
+        sp("This loan is almost fully funded.", loan);
     }
 }
 
@@ -117,16 +118,16 @@ function an_partner_risk(partner){
     var rate = parseFloat(partner.rating);
     if (isNaN(rate)) return; //happens for "Not Rated"
     if (rate >= 4.5) { //make user defined
-        sp("Oh wow. the MFI is very highly rated, which means that the MFI has lower risk of failing.");
+        sp("Oh wow. the MFI is very highly rated, which means that the MFI has lower risk of failing.", partner);
     }
     if (rate <= 2.5){ //make user defined
-        sp("The field partner has a low rating, meaning it is higher risk.");
+        sp("The field partner has a low risk rating, meaning it is higher risk.", partner);
     }
 }
 
 function an_partner_stuff(partner) {
     if (partner.social_performance_strengths && partner.social_performance_strengths.length > 3) {
-        sp("Nice! The field partner has a lot of social performance badges including " + partner.social_performance_strengths[get_rand_int(partner.social_performance_strengths.length)].name);
+        sp("Nice! The field partner has a lot of social performance badges including " + partner.social_performance_strengths[get_rand_int(partner.social_performance_strengths.length)].name, partner);
     }
 }
 
