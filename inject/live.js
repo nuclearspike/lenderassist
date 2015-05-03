@@ -22,10 +22,9 @@ $(document).ready(function() {
 
     setTimeout(function(){
         if (parseFloat($("#secondsBetweenLoans").text()) > 30.0){
-            var speak = "Wow. The site is very slow right now. Try visiting the Live page again during peak lending times.";
-            speak += "Generally that is during the day time in the United States. Also, on the seventeenth of each month starting about 1 PM Pacific Time, all of the repayments come back and auto-lending kicks in.";
-            sp(speak);
-            sp(" It gets crazy!");
+            var speak = "Wow. The site is very slow right now.";
+            speak += "Try back during the day time in the United States. Also, on the seventeenth of each month starting about 1 PM Pacific Time, the repayments come back and auto-lending kicks in.";
+            sp(speak,"page");
         }
     }, 5 * minute);
 
@@ -92,8 +91,8 @@ function read_li_text($li){
     var to_say = $li.find("span").text();
     to_say = to_say.replace(/\+\d+ more/gi, '').replace(/\s{1,}/gi, ' ').trim();
     to_say = to_say.replace("made a loan, which helps", pick_random(["is helping", "made a loan, which helps" ,
-                                                            "decided to help", "wants to help", "is lending money to assist",
-                                                            "made a loan to", "is making a difference by helping"]));
+                                                            "decided to help", "wants to help", "is lending money to help",
+                                                            "made a loan to help", "is making a difference by helping"]));
     last_spoken_ticker = Date.now();
     sp(to_say);
 }

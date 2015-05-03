@@ -207,15 +207,39 @@ function sp_top_3_lender_regions(lender){ //not in use anymore
     });
 }
 
+
+
 function sp_top_3_lender_stats(lender){ //on lender page
+    var already_did_percent_stat = false;
     get_verse_data('lender', lender.lender_id,'region', 'all', 3,3).then(function(slices){
-        sp("This lender's top regions are " + ar_and(slices.ordered.slice(0,3)), lender);
+        sp("This lender's top regions are " + ar_and(slices.ordered.slice(0,3)), lender_id);
     });
     get_verse_data('lender', lender.lender_id,'country', 'all', 3,3).then(function(slices){
-        sp("Their most popular countries are " + ar_and(slices.ordered.slice(0,3)), lender);
+        var to_say = "Their most popular countries are " + ar_and(slices.ordered.slice(0,3)), lender_id;
+        total = 0;
+        for (var key in slices.totals) {
+            total += parseInt(slices.totals[key]);
+        }
+        percent = Math.floor(100 * total / lender.loan_count);
+        if (percent >= 50 && !already_did_percent_stat){
+            sp(to_say + ". Those countries account for " + percent + " percent of their portfolio", lender_id);
+            //already_did_percent_stat = true;
+        } else {
+            sp(to_say);
+        }
     });
     get_verse_data('lender', lender.lender_id,'sector', 'all', 3,3).then(function(slices){
-        sp("They love loans for " + ar_and(slices.ordered.slice(0,3)), lender);
+        total = 0;
+        for (var key in slices.totals) {
+            total += parseInt(slices.totals[key]);
+        }
+        percent = Math.floor(100 * total / lender.loan_count);
+        if (percent >= 50 && lender.loan_count > 20 && !already_did_percent_stat){
+            sp("Wow, they really love the " + ar_and(slices.ordered.slice(0,3)) + " sectors. Those account for " + percent + " percent of their portfolio", lender_id);
+            //already_did_percent_stat = true
+        } else {
+            sp("They like lending " + ar_and(slices.ordered.slice(0,3)), lender_id);
+        }
     });
 }
 
@@ -295,7 +319,7 @@ function short_talk_team(team){
     } else {
         speak.push("and has made " + plural(team.loan_count, 'loan'));
     }
-    sp(speak.join(' '), team);
+    sp(speak.join(' '), team, false, true);
 }
 
 function short_talk_lender(lender){
