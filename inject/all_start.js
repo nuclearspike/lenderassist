@@ -40,7 +40,7 @@ function f_is_logged_in(){
 function get_lender(t_id){
     var def = $.Deferred();
 
-    get_cache('lender_' + t_id, def, 1 * day).done(function(lender){
+    get_cache('lender_' + t_id, def, 10 * minute).done(function(lender){
         def.resolve(lender);
     }).fail(function(){
         $.ajax({
@@ -58,7 +58,7 @@ function get_lender(t_id){
 function get_team(t_id){
     var def = $.Deferred();
 
-    get_cache('team_'+t_id, def, 1 * day).done(function(team){
+    get_cache('team_'+t_id, def, 1 * hour).done(function(team){
         def.resolve(team);
     }).fail(function(){
         $.ajax({
@@ -96,7 +96,7 @@ function get_loan(t_id){
 function get_partner(t_id){
     var def = $.Deferred();
 
-    get_cache('partner_' + t_id, def, 1 * day).done(function(partner){
+    get_cache('partner_' + t_id, def, 6 * hour).done(function(partner){
         def.resolve(partner);
     }).fail(function(){
         $.ajax({
