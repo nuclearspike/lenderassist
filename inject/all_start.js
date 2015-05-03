@@ -45,7 +45,7 @@ function get_lender(t_id){
     }).fail(function(){
         $.ajax({
             url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_id + ".json",
-            cache: true,
+            cache: false,
             fail: def.reject,
             success: function (result) {
                 lender = result.lenders[0];
@@ -63,7 +63,7 @@ function get_team(t_id){
     }).fail(function(){
         $.ajax({
             url: window.location.protocol + "//api.kivaws.org/v1/teams/using_shortname/" + t_id + ".json",
-            cache: true,
+            cache: false,
             fail: def.reject,
             success: function (result) {
                 team = result.teams[0];
@@ -82,7 +82,7 @@ function get_loan(t_id){
     }).fail(function(){
         $.ajax({
             url: window.location.protocol + "//api.kivaws.org/v1/loans/" + t_id + ".json",
-            cache: true,
+            cache: false,
             fail: def.reject,
             success: function (result) {
                 loan = result.loans[0];
@@ -101,7 +101,7 @@ function get_partner(t_id){
     }).fail(function(){
         $.ajax({
             url: window.location.protocol + "//api.kivaws.org/v1/partners/" + t_id + ".json",
-            cache: true,
+            cache: false,
             fail: def.reject,
             success: function (result) {
                 partner = result.partners[0];
