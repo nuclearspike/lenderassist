@@ -21,7 +21,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://www.kiva.org/*","https://zip.kiva.org/*"],
+      "matches": ["*://www.kiva.org/*","https://zip.kiva.org/*","https://www.kivalens.org/nosilverlight.htm"],
       "run_at": "document_start",
       "js": ["js_lib/jquery/jquery.min.js", "inject/all_common_start.js"]
     },
@@ -48,6 +48,11 @@
       "matches": ["http://www.kiva.org/lend/*"],
       "run_at": "document_end",
       "js": ["inject/loans.js"]
+    },
+    {
+      "matches": ["http://www.kiva.org/partners/*"],
+      "run_at": "document_end",
+      "js": ["inject/partner.js"]
     },
     {
       "matches": ["http://www.kiva.org/live*"],
@@ -85,6 +90,11 @@
       "matches": ["https://zip.kiva.org/*"],
       "run_at": "document_end",
       "js": ["inject/zip.js"]
+    },
+    {
+      "matches": ["https://www.kivalens.org/nosilverlight.htm"],
+      "run_at": "document_start",
+      "js": ["inject/oauth.js"]
     }
   ]
 }

@@ -1,0 +1,1 @@
+api_object.done([short_talk_partner]);

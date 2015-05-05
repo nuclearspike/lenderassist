@@ -18,7 +18,7 @@ function sp_once(named_utterance, utterance){
         if (is_not_set(res[named_utterance])) {
             sp(utterance);
             obj = {};
-            obj[named_utterance] = true;
+            obj[named_utterance] = true; //named_utterance must be a variable, cannot reduce to {named_utterance: true}
             chrome.storage.local.set(obj);
         }
     });

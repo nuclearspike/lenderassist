@@ -151,14 +151,16 @@ function get_verse_data(subject_type, subject_id, slice_by, all_active, min_coun
             dataType: "json",
             cache: true
         }).success(function (result) {
-            slices = [];
-            totals = {};
+            var slices = [];
+            var totals = {};
+            var total_unsliced = 0;
             if (result.data) {
                 if (max_count == -1) {
                     max_count = result.data.length
                 } else {
                     max_count = Math.min(max_count, result.data.length);
                 }
+                total_unsliced = result.data.length;
 
                 for (i = 0; i < max_count; i++) {
                     slices.push(result.lookup[result.data[i].name]);
@@ -166,7 +168,7 @@ function get_verse_data(subject_type, subject_id, slice_by, all_active, min_coun
                 }
             }
             if (slices.length >= min_count) {
-                result = {ordered: slices, totals: totals};
+                result = {ordered: slices, totals: totals, total_count: total_unsliced};
                 def.resolve(result);
             } else {
                 def.reject();
@@ -207,8 +209,6 @@ function sp_top_3_lender_regions(lender){ //not in use anymore
     });
 }
 
-
-
 function sp_top_3_lender_stats(lender){ //on lender page
     var already_did_percent_stat = false;
     get_verse_data('lender', lender.lender_id,'region', 'all', 3,3).then(function(slices){
@@ -235,7 +235,7 @@ function sp_top_3_lender_stats(lender){ //on lender page
         }
         percent = Math.floor(100 * total / lender.loan_count);
         if (percent >= 50 && lender.loan_count > 20 && !already_did_percent_stat){
-            sp("Wow, they really love the " + ar_and(slices.ordered.slice(0,3)) + " sectors. Those account for " + percent + " percent of their portfolio", lender_id);
+            sp("Wow, they really love " + ar_and(slices.ordered.slice(0,3)) + ". Those sectors account for " + percent + " percent of their portfolio", lender_id);
             //already_did_percent_stat = true
         } else {
             sp("They like lending " + ar_and(slices.ordered.slice(0,3)), lender_id);
@@ -285,6 +285,7 @@ function plural(count, word, plural_word){
     }
 }
 
+//used when you nave to the myLenderId page directly or during ajax calls if it doesn't know who you are and you're logged in.
 function figure_lender_id(dom) {
     old_lender_id = lender_id;
     var lender_id = $(dom).find("center > div:first").text(); //brittle!
@@ -340,7 +341,11 @@ function short_talk_lender(lender){
     }
 
     sp(lender.name + " " + ar_and(speak), lender);
-    lender.last_spoke = Date.now();
+    lender.last_spoke = Date.now(); //if these values aren't getting pushed back to the cache, it only helps on that page.
+}
+
+function short_talk_partner(partner){
+    sp(partner.name);
 }
 
 function wire_intent(selector, name, on_intent_funct){

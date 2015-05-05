@@ -5,15 +5,16 @@ function set_zip_button(){
     chrome.storage.local.get('zip_logged_in', function(res){
         zip_logged_in = res.zip_logged_in || false;
 
-        $zip = $("#siteNavZip").find("a");
+        $zip = $("#siteNavZip").find("a"); //nav on WWW
 
-        if (f_is_logged_in() && !zip_logged_in) { //alter the zip button to go to the oauth login...
+        if (f_is_logged_in() && !zip_logged_in) { //WWW in|ZIP not. alter the zip button to go to the oauth login...
             $zip.attr('href', 'https://zip.kiva.org/users/auth/kiva?kv_method=login');
-        } else if (zip_logged_in) {
+        } else if (zip_logged_in) { //if ZIP in then just hop to loans page
             $zip.attr('href', 'https://zip.kiva.org/loans'); //don't do all the cross promo stuff. they have an account.
         }
 
         $zip.click(function(){
+            //clear these so that injected pages on zip do a full check when on the site.
             chrome.storage.local.remove(['check_zip_logged_in','zip_logged_in']);
         });
     });
@@ -39,9 +40,30 @@ $(document).on('click', 'a[href*="kiva.org/lender/"]', function(e){
     window.location.href = $elem.attr("href")+ amp + "super_graphs=1";
 });
 
-//http://api.kivaws.org/v1/teams/using_shortname/atheists.json
-
 $(function(){
+    $("#kivaLogoAnchor").click(function(e){
+        //e.preventDefault();
+        //hello('kiva').login().then(function(e){
+            //alert("Logged In");
+            //console.log(e);
+        //}, function (e){
+            //console.log(e);
+        //});
+        //var sessionStart = function(e) {
+            //alert('Session has started');
+            //console.log(e);
+        //};
+        //hello.on('auth.login', sessionStart);
+        //var sessionStop = function(e) {
+            //alert('Session has stopped');
+            //console.log(e);
+        //};
+        //hello.on('auth.logout', sessionStop);
+        //hello.api('my/email').then(null, function (e){
+            //console.log(e);
+        //});
+    });
+
     do_if_awhile("check_zip_logged_in", 15 * minute, function(){
         $.ajax({
             type: 'GET',
@@ -55,3 +77,4 @@ $(function(){
         });
     }, set_zip_button);
 });
+

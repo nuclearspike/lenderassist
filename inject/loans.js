@@ -2,6 +2,8 @@ cl("lend.js processing");
 
 //basic analysis
 
+var block_wait_words = false;
+
 //todo: turn 'concerns' into something that will eventually be set in the properties form by the user.
 var concerns = {high_months_to_payback: 12, low_months_to_payback: 5};
 
@@ -57,6 +59,7 @@ function an_lender(loan){
 }
 
 function an_wait_words(){
+    if (block_wait_words) return
     var wait_words = ["Hum, just a second", "Let me look at this.", "Interesting...", "Look at this one.", "", "One second.", "Hold on...", "Wow.", "Okay.", "Ooo.", "Just a moment.", "What do you think about this one?", "Here we go."];
     sp_rand(wait_words); //not interrupting speech
 }
@@ -72,7 +75,7 @@ function an_status(loan){
     }
 }
 
-function h_make_date(date){
+function h_make_date(date){ //ex: March 2015
     return monthNames[date.getMonth()] + " " + date.getFullYear().toString();
 }
 
@@ -118,7 +121,7 @@ function an_partner_risk(partner){
     var rate = parseFloat(partner.rating);
     if (isNaN(rate)) return; //happens for "Not Rated"
     if (rate >= 4.5) { //make user defined
-        sp("Oh wow. the MFI is very highly rated, which means that the MFI has lower risk of failing.", partner);
+        sp("Oh wow. The MFI is very highly rated, which means that the MFI has lower risk of failing.", partner);
     }
     if (rate <= 2.5){ //make user defined
         sp("The field partner has a low risk rating, meaning it is higher risk.", partner);
@@ -131,5 +134,6 @@ function an_partner_stuff(partner) {
     }
 }
 
+api_object.done([short_talk_loan, analyze_loan, function(){block_wait_words = true}]);
+
 an_wait_words();
-api_object.done([short_talk_loan, analyze_loan]);

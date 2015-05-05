@@ -1,24 +1,29 @@
 var live_page_loaded = Date.now();
 var last_spoken_ticker = Date.now() - 10 * minute;
 
+function test_change(id, to_say){
+    if ($(id).hasClass("dataChanged")){
+        var data = $(id).text();
+        to_say = to_say.replace('{word}', data);
+        sp(to_say);
+        $(id).removeClass("dataChanged");
+    }
+}
+
 $(document).ready(function() {
     $("#siteNavAboutAnchor").parent().removeClass("urHere");
     $("#siteNavLiveAnchor").parent().addClass("urHere");
 
-    $("#mostCommonBorrowerCountry").on("DOMSubtreeModified", function(e){
-        if (Date.now() - live_page_loaded > 2 * minute)
-            sp($("#mostCommonBorrowerCountry").text() + " is the new trending borrower country");
+    //wire to look for changes and tag them to be read.
+    $("#mostCommonBorrowerCountry, #mostCommonSector, #mostCommonLenderCountry").on("DOMSubtreeModified", function(e) {
+        $(e.target).addClass("dataChanged");
     });
 
-    $("#mostCommonSector").on("DOMSubtreeModified", function(e){
-        if (Date.now() - live_page_loaded > 2 * minute)
-            sp($("#mostCommonSector").text() + " just became the new top sector");
-    });
-
-    $("#mostCommonLenderCountry").on("DOMSubtreeModified", function(e){
-        if (Date.now() - live_page_loaded > 2 * minute)
-            sp("There's been a lot of lending from " + $("#mostCommonLenderCountry").text() + " recently.");
-    });
+    setInterval(function(){ //could set up a rand selection from array
+        test_change("#mostCommonSector", pick_random(["{word} is the new top sector", "There have been a lot of loans in the {word} sector recently"]));
+        test_change("#mostCommonBorrowerCountry", pick_random(["{word} is the new trending borrower country","Many loans have been going to borrowers in {word}"]));
+        test_change("#mostCommonLenderCountry", pick_random(["There's been a lot of lending from {word} recently.","People in {word} have been lending a bunch"]));
+    }, 10 * second);
 
     setTimeout(function(){
         if (parseFloat($("#secondsBetweenLoans").text()) > 30.0){
@@ -158,4 +163,4 @@ function add_color_commentary_more($li){
     console.log($li.data());
 }
 
-sp_rand(["Here's what's happening.","See what other lenders are doing", "You should have this page open in a tab before you complete your loan purchase so you can see your loans happen."]);
+sp_rand(["Here's what's happening.","Let's see what other lenders are doing", "You should have this page open in a tab before you complete your loan purchase so you can see your loans happen."]);
