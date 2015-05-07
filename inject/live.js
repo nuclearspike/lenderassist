@@ -20,9 +20,9 @@ $(document).ready(function() {
     });
 
     setInterval(function(){ //could set up a rand selection from array
-        test_change("#mostCommonSector", pick_random(["{word} is the new top sector", "There have been a lot of loans in the {word} sector recently"]));
-        test_change("#mostCommonBorrowerCountry", pick_random(["{word} is the new trending borrower country","Many loans have been going to borrowers in {word}"]));
-        test_change("#mostCommonLenderCountry", pick_random(["There's been a lot of lending from {word} recently.","People in {word} have been lending a bunch"]));
+        test_change("#mostCommonSector", pick_random(["{word} is trending", "{word} is the new top sector", "There have been a lot of loans in the {word} sector recently"]));
+        test_change("#mostCommonBorrowerCountry", pick_random(["{word} is trending", "{word} is the new trending borrower country","Many loans have been going to borrowers in {word}"]));
+        test_change("#mostCommonLenderCountry", pick_random(["{word} is trending", "There's been a lot of lending from {word} recently.","People in {word} have been lending a bunch"]));
     }, 60 * second);
 
     setTimeout(function(){

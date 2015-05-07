@@ -1,4 +1,5 @@
 cl("all_common_start.js processing");
+//this is shared between www, zip, and background pages.
 
 var second=1000, minute=second*60, hour=minute*60, day=hour*24, week=day* 7, month=day*30, year=12*month;
 var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];

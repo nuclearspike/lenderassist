@@ -35,35 +35,12 @@ wire_intent('a[href*="kiva.org/lend/"]', 'loan_chatter', function($element){
 $(document).on('click', 'a[href*="kiva.org/lender/"]', function(e){
     e.preventDefault();
     var $elem = $(e.target).closest('a');
-    sp_rand(["Ok...", "Let's look at this lender...",]);
+    sp_rand(["Ok...", "Let's look at this lender..."]);
     var amp = ($elem.attr("href").indexOf('?') > -1) ? '&': '?';
     window.location.href = $elem.attr("href")+ amp + "super_graphs=1";
 });
 
 $(function(){
-    $("#kivaLogoAnchor").click(function(e){
-        //e.preventDefault();
-        //hello('kiva').login().then(function(e){
-            //alert("Logged In");
-            //console.log(e);
-        //}, function (e){
-            //console.log(e);
-        //});
-        //var sessionStart = function(e) {
-            //alert('Session has started');
-            //console.log(e);
-        //};
-        //hello.on('auth.login', sessionStart);
-        //var sessionStop = function(e) {
-            //alert('Session has stopped');
-            //console.log(e);
-        //};
-        //hello.on('auth.logout', sessionStop);
-        //hello.api('my/email').then(null, function (e){
-            //console.log(e);
-        //});
-    });
-
     do_if_awhile("check_zip_logged_in", 15 * minute, function(){
         $.ajax({
             type: 'GET',

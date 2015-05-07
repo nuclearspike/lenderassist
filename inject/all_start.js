@@ -126,7 +126,7 @@ function get_partner_from_loan(loan){
     if (!loan.partner){
         get_partner(loan.partner_id).done(function(partner){ loan.partner = partner; }).done(def.resolve);
     } else {
-        loan.partner = partner; //does this do anything? isn't loan lost?
+        loan.partner = partner; //todo: partner is bad. does this do anything? isn't loan lost?
         def.resolve(loan.partner);
     }
 
