@@ -16,7 +16,8 @@ $(document).ready(function() {
 
     //wire to look for changes and tag them to be read.
     $("#mostCommonBorrowerCountry, #mostCommonSector, #mostCommonLenderCountry").on("DOMSubtreeModified", function(e) {
-        $(e.target).addClass("dataChanged");
+        if ($(e.target).text() != '(Undisclosed)') //
+            $(e.target).addClass("dataChanged");
     });
 
     setInterval(function(){ //could set up a rand selection from array

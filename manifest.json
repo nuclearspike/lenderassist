@@ -21,7 +21,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://www.kiva.org/*","https://zip.kiva.org/*","https://www.kivalens.org/nosilverlight.htm"],
+      "matches": ["*://www.kiva.org/*","https://zip.kiva.org/*"],
       "run_at": "document_start",
       "js": ["js_lib/jquery/jquery.min.js", "inject/all_common_start.js"]
     },

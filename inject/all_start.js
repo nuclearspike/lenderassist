@@ -154,21 +154,26 @@ function get_verse_data(subject_type, subject_id, slice_by, all_active, min_coun
             var slices = [];
             var totals = {};
             var total_unsliced = 0;
+            var total_sum = 0;
+
             if (result.data) {
                 if (max_count == -1) {
                     max_count = result.data.length
                 } else {
                     max_count = Math.min(max_count, result.data.length);
                 }
-                total_unsliced = result.data.length;
+
+                for (i = 0; i < result.data.length; i++){
+                    total_sum += parseInt(result.data[i].value);
+                }
 
                 for (i = 0; i < max_count; i++) {
                     slices.push(result.lookup[result.data[i].name]);
-                    totals[result.lookup[result.data[i].name]] = result.data[i].value;
+                    totals[result.lookup[result.data[i].name]] = parseInt(result.data[i].value); //todo: store object for slice {value: 12, percent: 25.0}
                 }
             }
             if (slices.length >= min_count) {
-                result = {ordered: slices, totals: totals, total_count: total_unsliced};
+                result = {ordered: slices, totals: totals, total_sum: total_sum};
                 def.resolve(result);
             } else {
                 def.reject();
@@ -180,6 +185,7 @@ function get_verse_data(subject_type, subject_id, slice_by, all_active, min_coun
 
 function combine_all_and_active_verse_data(subject_type, subject_id, slice_by){
     var def = $.Deferred();
+
     $.when(get_verse_data(subject_type, subject_id, slice_by, 'all', 0, -1),
         get_verse_data(subject_type, subject_id, slice_by, 'active', 0, -1))
         .then(function(all_results, active_results){
@@ -192,9 +198,7 @@ function combine_all_and_active_verse_data(subject_type, subject_id, slice_by){
 }
 
 function sp_top_3_lender_sectors(lender){ //used on /live
-    get_verse_data('lender', lender.lender_id,'sector', 'all', 3, 3).done(function(slices){
-        sp("Their top sectors are " + ar_and(slices.ordered.slice(0,3)), lender);
-    });
+    get_verse_data('lender', lender.lender_id,'sector', 'all', 3, 3).then(sp_top_3_lender_sectors_from_slices);
 }
 
 function sp_top_3_lender_countries(lender){ //not in use anymore
@@ -209,51 +213,56 @@ function sp_top_3_lender_regions(lender){ //not in use anymore
     });
 }
 
+function percent_portfolio(slices, over_perc){
+    var def = $.Deferred();
+
+    if (!over_perc) { over_perc = 20; }
+    total = 0;
+    for (var key in slices.totals) {
+        total += slices.totals[key];
+    }
+    percent = Math.floor(100 * total / slices.total_sum);
+    if (percent >= over_perc){
+        def.resolve(ar_and(slices.ordered.slice(0,3)), percent);
+    } else {
+        def.reject(ar_and(slices.ordered.slice(0,3)));
+    }
+    return def.promise();
+}
+
+function sp_top_3_lender_sectors_from_slices(slices){
+    percent_portfolio(slices).then(function(top_3, percent){
+        sp(top_3 + " account for " + percent + " percent of their portfolio");
+    }).fail(function(top_3){
+        sp("Their most popular countries are " + top_3);
+    });
+}
+
 function sp_top_3_lender_stats(lender){ //on lender page
-    var already_did_percent_stat = false;
-    get_verse_data('lender', lender.lender_id,'region', 'all', 3,3).then(function(slices){
-        sp("This lender's top regions are " + ar_and(slices.ordered.slice(0,3)), lender_id);
-    });
-    get_verse_data('lender', lender.lender_id,'country', 'all', 3,3).then(function(slices){
-        var to_say = "Their most popular countries are " + ar_and(slices.ordered.slice(0,3)), lender_id;
-        total = 0;
-        for (var key in slices.totals) {
-            total += parseInt(slices.totals[key]);
-        }
-        percent = Math.floor(100 * total / lender.loan_count);
-        if (percent >= 50 && !already_did_percent_stat){
-            sp(to_say + ". Those countries account for " + percent + " percent of their portfolio", lender_id);
-            //already_did_percent_stat = true;
-        } else {
-            sp(to_say);
-        }
-    });
-    get_verse_data('lender', lender.lender_id,'sector', 'all', 3,3).then(function(slices){
-        total = 0;
-        for (var key in slices.totals) {
-            total += parseInt(slices.totals[key]);
-        }
-        percent = Math.floor(100 * total / lender.loan_count);
-        if (percent >= 50 && lender.loan_count > 20 && !already_did_percent_stat){
-            sp("Wow, they really love " + ar_and(slices.ordered.slice(0,3)) + ". Those sectors account for " + percent + " percent of their portfolio", lender_id);
-            //already_did_percent_stat = true
-        } else {
-            sp("They like lending " + ar_and(slices.ordered.slice(0,3)), lender_id);
-        }
+    get_verse_data('lender', lender.lender_id,'country', 'all', 3,3).then(sp_top_3_lender_sectors_from_slices);
+
+    get_verse_data('lender', lender.lender_id,'sector', 'all', 3,3).then(percent_portfolio).then(function(top_3, percent){
+        sp("Wow, they really love " + top_3 + ". Those sectors account for " + percent + " percent of their portfolio", lender);
+    }).fail(function(top_3){
+        sp("They like lending " + top_3, lender);
     });
 }
 
 function sp_top_3_team_stats(team){ //on team page
-    get_verse_data('team', team.shortname,'region', 'all', 3,3).then(function(slices){
-        sp("This team's top regions are " + ar_and(slices.ordered.slice(0,3)), team);
+    //get_verse_data('team', team.shortname,'region', 'all', 3,3).then(function(slices){
+    //    sp("This team's top regions are " + ar_and(slices.ordered.slice(0,3)), team);
+    //});
+
+    get_verse_data('team', team.shortname,'country', 'all', 3,3).then(percent_portfolio).then(function(top_3, percent) {
+        sp(top_3 + " account for " + percent + " percent of this team's loans", team);
+    }).fail(function(top_3){
+        sp("Their most popular countries are " + top_3, team);
     });
 
-    get_verse_data('team', team.shortname,'country', 'all', 3,3).then(function(slices){
-        sp("Their most popular countries are " + ar_and(slices.ordered.slice(0,3)), team);
-    });
-
-    get_verse_data('team', team.shortname,'sector', 'all', 3,3).then(function(slices){
-        sp("They love loans for " + ar_and(slices.ordered.slice(0,3)), team);
+    get_verse_data('team', team.shortname,'sector', 'all', 3,3).then(percent_portfolio).then(function(top_3, percent) {
+        sp(top_3 + " account for " + percent + " percent of their loans", lender_id);
+    }).fail(function(top_3) {
+        sp("The members of this team love loans for " + top_3, team);
     });
 }
 
@@ -308,7 +317,7 @@ function short_talk_team(team){
     speak = [team.name];
 
     ago = date_diff_to_words(Date.now() - new Date(Date.parse(team.team_since)));
-    speak.push("has been around for " + ago.units + ago.uom);
+    speak.push("team has been around for " + ago.units + ago.uom);
 
     if (team.member_count > 500) {
         speak.push("with more than " + plural(Math.floor(team.member_count / 100) * 100, 'member'));

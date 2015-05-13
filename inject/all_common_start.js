@@ -96,7 +96,8 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
     if (changes.was_logged_in){//present
         if (changes.was_logged_in.oldValue == true && changes.was_logged_in.newValue == false) {
             //if we log out, set the data to wipe out.
-            chrome.storage.local.set({"d_countries":null,"d_sectors":null,"last_logged_out":Date.now()}); //"lender_id":null,
+            chrome.storage.local.remove(['d_countries','d_sectors']);
+            chrome.storage.local.set({"last_logged_out":Date.now()}); //"lender_id":null,
         }
     }
     //debug
