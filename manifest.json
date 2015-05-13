@@ -90,11 +90,6 @@
       "matches": ["https://zip.kiva.org/*"],
       "run_at": "document_end",
       "js": ["inject/zip.js"]
-    },
-    {
-      "matches": ["https://www.kivalens.org/nosilverlight.htm"],
-      "run_at": "document_start",
-      "js": ["inject/oauth.js"]
     }
   ]
 }
