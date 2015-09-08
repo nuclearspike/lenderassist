@@ -37,3 +37,7 @@ on Zip, the link will just take you to the listing of fundraising loans.
 a longer or shorter than normal repayment term, when the rating of the partner is much higher or lower than normal, etc.
 2.    Once the Lender Assistant knows who you are (you just have to log in once, it'll figure out the rest), it will be able to relate the loan you're
 looking at to loans in your portfolio and, for example, comment that you've made a lot of loans to that country before but they're all done paying back.
+
+## Lend Tab
+
+1. On kiva.org/lend (and only that page) the extension will add in the Final Repayment date to the Loan Cards.
