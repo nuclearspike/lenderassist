@@ -1,8 +1,8 @@
 cl("lend.js processing");
-
+///LOAN PAGES
 //basic analysis
 
-var block_wait_words = false;
+var block_wait_words = true;
 
 //todo: turn 'concerns' into something that will eventually be set in the properties form by the user.
 var concerns = {high_months_to_payback: 12, low_months_to_payback: 5};
@@ -59,7 +59,7 @@ function an_lender(loan){
 }
 
 function an_wait_words(){
-    if (block_wait_words) return
+    if (block_wait_words) return;
     var wait_words = ["Hum, just a second", "Let me look at this.", "Interesting...", "Look at this one.", "", "One second.", "Hold on...", "Wow.", "Okay.", "Ooo.", "Just a moment.", "What do you think about this one?", "Here we go."];
     sp_rand(wait_words); //not interrupting speech
 }
@@ -75,14 +75,11 @@ function an_status(loan){
     }
 }
 
-function h_make_date(date){ //ex: March 2015
-    return monthNames[date.getMonth()] + " " + date.getFullYear().toString();
-}
-
 function an_repayment_term(loan){
-    months_to_go = (loan.final_payment - Date.now()) / month;
+    if (loan.status != 'fundraising') return;
+    var months_to_go = (loan.final_payment - Date.now()) / month;
 
-    frd = new Date(loan.final_payment);
+    var frd = new Date(loan.final_payment);
 
     if (Math.ceil(months_to_go) <= concerns.low_months_to_payback ){
         sp("That's great! This loan should pay back in " + h_make_date(frd) + " which is only " + Math.ceil(months_to_go) + " months away.", loan);
@@ -92,11 +89,13 @@ function an_repayment_term(loan){
         sp("Note: The final repayment isn't until " + h_make_date(frd) + " which is " + Math.floor(months_to_go) + " months away.", loan);
     }
 
-    if (loan.terms.disbursal_date) {
-        predisbursal_date = new Date(Date.parse(loan.terms.disbursal_date));
+    if (loan.terms.disbursal_date) { //should only be doing any of this IFF fundraising.
+        var predisbursal_date = new Date(Date.parse(loan.terms.disbursal_date));
         //it should look at the repayment schedule before making this comment!
-        if (Date.parse(loan.terms.scheduled_payments[0].date) < Date.now()){
-            sp("Was this loan really predisbursed?", loan);
+        var days_ago_pred = Math.floor((Date.now() - predisbursal_date) / day);
+        sp("The money was pre-disbursed " + days_ago_pred + " days ago", loan);
+        if (Date.parse(loan.terms.local_payments[0].date) < Date.now()){
+            sp("And they've already started paying back", loan);
         //    sp("Nice! The borrower has already received the money in " + h_make_date(predisbursal_date) + " which means your repayments will generally start sooner with a lump sum at the start.", loan);
         }
     }
@@ -104,7 +103,7 @@ function an_repayment_term(loan){
 
 function an_loan_attr(loan){
     if (Date.now() - Date.parse(loan.posted_date) < hour * 3){
-        sp("This loan just posted within the past few hours.", loan);
+        sp("This only just posted within the past few hours.", loan);
     }
     if (loan.funded_amount == 0) { //due to lag of API, this could be wrong.
         sp("You can be the first person to lend to this borrower.", loan)

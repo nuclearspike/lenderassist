@@ -50,6 +50,11 @@
       "js": ["inject/loans.js"]
     },
     {
+      "matches": ["http://www.kiva.org/lend*"],
+      "run_at": "document_end",
+      "js": ["inject/lend.js"]
+    },
+    {
       "matches": ["http://www.kiva.org/partners/*"],
       "run_at": "document_end",
       "js": ["inject/partner.js"]

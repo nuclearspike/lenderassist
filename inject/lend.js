@@ -1,0 +1,84 @@
+//LEND TAB
+var cache_tests_left = 1; //
+function cache_lookup_complete(){
+    cache_tests_left--;
+    if (cache_tests_left == 0){
+        console.log(cache_tests_left);
+        perform_mass_loan_lookup();
+        cache_tests_left = 0; //shouldn't happen
+
+    }
+}
+
+function perform_mass_loan_lookup(){
+    var loan_ids = [];
+    //collect ids to look up
+    $(".kivalens_final_repay.kivalens_needs_lookup").each(function(i,elem){
+        $elem = $(elem);
+        $elem.removeClass('kivalens_needs_lookup');
+        $elem.addClass('kivalens_waiting');
+        loan_ids.push($(elem).data('loan-id'));
+    });
+    //lookup all ids
+    if (loan_ids.length == 0) return;
+    get_loans(loan_ids).done(function(loans){
+        //for each loan returned, look for the
+        $.each(loans, function(i,loan){
+            //will only be one, possibly zero if page has changed since request was made.
+            $(".kivalens_final_repay.kivalens_waiting[data-loan-id="+ loan.id +"]").each(function(i,elem){
+                receive_loan_data(loan, $(elem));
+            })
+        })
+    })
+}
+
+function wire_loan_list($loan_cards){
+    cache_tests_left = 1;
+    $loan_cards.each(function(i,elem){
+        wire_element_for_extra(elem);
+    });
+    cache_lookup_complete(); //hacky. this is to make sure all of the elems have been processed before it starts mass lookup
+}
+
+//on page load, wire it up.
+setTimeout(function(){
+    //wire_loan_list($(".loanCards").find('.loanCard'));
+},1000); //todo: this is bad. could miss if it takes longer, otherwise it waits too long.
+
+
+//".loanCards"
+//DON'T EXECUTE ON /LEND/1234
+
+$(document).on("DOMNodeInserted", function (e){
+    if (e.target.classList.contains('loanCards')) {
+        wire_loan_list($(e.target).find('.loanCard'));
+    }
+});
+
+function wire_element_for_extra(elem){
+    var $elem = $(elem);
+
+    //if we've already added it, don't add it again.
+    if ($elem.find('.kivalens_final_repay').length > 0){
+        return;
+    }
+    //create the div to add
+    var loan_id = url_to_parts($elem.find('.info_status h1 a').first().attr("href")).id;
+    var $finalRepay = $("<div class='kivalens_final_repay kivalens_needs_lookup' data-loan-id='" + loan_id + "'>Checking Repayment...</div>");
+
+    //add the block
+    $elem.find('.details').first().append($finalRepay);
+    cache_tests_left++;
+    get_cache('loan_' + loan_id).done(function(loan){
+        //if we've already looked it up, just fill in the details immediately
+        receive_loan_data(loan, $finalRepay);
+    }).always(cache_lookup_complete);
+}
+
+function receive_loan_data(loan, $finalRepay){
+    var last_payment = new Date(Date.parse(loan.terms.scheduled_payments[loan.terms.scheduled_payments.length - 1].due_date));
+    var diff = roundedToFixed((last_payment - (new Date())) / (365 * 24 * 60 * 60 * 1000), 1);
+    $finalRepay.html('Final: ' + h_make_full_date(last_payment)+"<br/>"+diff + ' years');
+    $finalRepay.removeClass('kivalens_waiting');
+    $finalRepay.removeClass('kivalens_needs_lookup');
+}

@@ -40,12 +40,17 @@ $(document).on('click', 'a[href*="kiva.org/lender/"]', function(e){
     window.location.href = $elem.attr("href")+ amp + "super_graphs=1";
 });
 
+$(document).on('click', 'a[href*="kiva.org/lend/"]', function(e){
+    var wait_words = ["Hum, just a second", "Let me look at this.", "Interesting...", "Look at this one.", "", "One second.", "Hold on...", "Wow.", "Okay.", "Ooo.", "Just a moment.", "What do you think about this one?", "Here we go."];
+    sp_rand(wait_words);
+});
+
 $(function(){
     do_if_awhile("check_zip_logged_in", 15 * minute, function(){
         $.ajax({
             type: 'GET',
             url: "https://zip.kiva.org/about",
-            success: function(output) {
+            success: function(output) { //BRITTLE.
                 var zip_logged_in = $(output).find("li.dropdown > a.user-menu").length > 0;
                 cl("Zip Logged In: " + zip_logged_in);
                 chrome.storage.local.set({"zip_logged_in": zip_logged_in}, set_zip_button); //todo: this needs to clear for sure if it's used to prevent the ajax call.

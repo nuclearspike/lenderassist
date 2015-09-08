@@ -3,7 +3,21 @@ cl("all_common_start.js processing");
 
 var second=1000, minute=second*60, hour=minute*60, day=hour*24, week=day* 7, month=day*30, year=12*month;
 var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+var monthNamesShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
 var lender_id = undefined;
+
+function h_make_date(date){ //ex: March 2015
+    return monthNames[date.getMonth()] + " " + date.getFullYear().toString();
+}
+
+function h_make_full_date(date){ //ex: Mar 4 2015
+    return monthNamesShort[date.getMonth()] + " " + date.getDay() + ', ' + date.getFullYear().toString();
+}
+
+function roundedToFixed(_float, _digits){
+    var rounder = Math.pow(10, _digits);
+    return (Math.round(_float * rounder) / rounder).toFixed(_digits);
+}
 
 //speak
 function sp(speak, context, follow_up, interrupt) {

@@ -1,5 +1,9 @@
 cl("all_start.js processing");
 
+//chrome.storage.get(null, function(all){
+    //console.log(all);
+//});
+
 //hmm.
 function fetch_value( key ) {
     var dfd = $.Deferred();
@@ -51,7 +55,7 @@ function get_lender(t_id){
         def.resolve(lender);
     }).fail(function(){
         $.ajax({
-            url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_id + ".json",
+            url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_id + ".json?app_id=org.kiva.kivalens",
             cache: false,
             fail: def.reject,
             success: function (result) {
@@ -69,7 +73,7 @@ function get_team(t_id){
         def.resolve(team);
     }).fail(function(){
         $.ajax({
-            url: window.location.protocol + "//api.kivaws.org/v1/teams/using_shortname/" + t_id + ".json",
+            url: window.location.protocol + "//api.kivaws.org/v1/teams/using_shortname/" + t_id + ".json?app_id=org.kiva.kivalens",
             cache: false,
             fail: def.reject,
             success: function (result) {
@@ -81,6 +85,32 @@ function get_team(t_id){
     return def.promise();
 }
 
+
+function get_loans(loan_id_arr){
+    var def = $.Deferred();
+    //eventually...
+    //get_cache on every loan in array
+    //for the ones that didn't fail add them to the results array.
+    //$.when
+
+    $.ajax({
+        url: window.location.protocol + "//api.kivaws.org/v1/loans/" + loan_id_arr.join(',') + ".json?app_id=org.kiva.kivalens",
+        cache: false,
+        fail: def.reject,
+        success: function (result) {
+            loans = result.loans;
+            $.each(loans, function(i, loan){
+                set_cache('loan_' + loan.id, loan);
+            });
+            def.resolve(loans);
+        }
+    });
+
+    //set_cache for all loans
+
+    return def.promise();
+}
+
 function get_loan(t_id){
     var def = $.Deferred();
 
@@ -88,7 +118,7 @@ function get_loan(t_id){
         def.resolve(loan);
     }).fail(function(){
         $.ajax({
-            url: window.location.protocol + "//api.kivaws.org/v1/loans/" + t_id + ".json",
+            url: window.location.protocol + "//api.kivaws.org/v1/loans/" + t_id + ".json?app_id=org.kiva.kivalens",
             cache: false,
             fail: def.reject,
             success: function (result) {
@@ -107,7 +137,7 @@ function get_partner(t_id){
         def.resolve(partner);
     }).fail(function(){
         $.ajax({
-            url: window.location.protocol + "//api.kivaws.org/v1/partners/" + t_id + ".json",
+            url: window.location.protocol + "//api.kivaws.org/v1/partners/" + t_id + ".json?app_id=org.kiva.kivalens",
             cache: false,
             fail: def.reject,
             success: function (result) {

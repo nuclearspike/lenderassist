@@ -127,4 +127,6 @@ function narrate(utterance, context, follow_up, interrupt, callback) {
 //happens when the extension loads
 //narrate(pick_random(["Let's make the world a better place.","Things are looking better every day!", "Isn't it time to check out Kiva again?"]));
 
+//chrome.storage.local.clear();
+
 narrate("Here we go again...");
