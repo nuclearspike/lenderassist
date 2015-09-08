@@ -11,7 +11,7 @@ function h_make_date(date){ //ex: March 2015
 }
 
 function h_make_full_date(date){ //ex: Mar 4 2015
-    return monthNamesShort[date.getMonth()] + " " + date.getDay() + ', ' + date.getFullYear().toString();
+    return monthNamesShort[date.getMonth()] + " " + date.getDate() + ', ' + date.getFullYear().toString();
 }
 
 function roundedToFixed(_float, _digits){
