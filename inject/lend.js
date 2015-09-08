@@ -3,7 +3,6 @@ var cache_tests_left = 1; //
 function cache_lookup_complete(){
     cache_tests_left--;
     if (cache_tests_left == 0){
-        console.log(cache_tests_left);
         perform_mass_loan_lookup();
         cache_tests_left = 0; //shouldn't happen
 
@@ -42,7 +41,7 @@ function wire_loan_list($loan_cards){
 
 //on page load, wire it up.
 setTimeout(function(){
-    //wire_loan_list($(".loanCards").find('.loanCard'));
+    wire_loan_list($(".loanCards").find('.loanCard'));
 },1000); //todo: this is bad. could miss if it takes longer, otherwise it waits too long.
 
 
@@ -76,9 +75,13 @@ function wire_element_for_extra(elem){
 }
 
 function receive_loan_data(loan, $finalRepay){
-    var last_payment = new Date(Date.parse(loan.terms.scheduled_payments[loan.terms.scheduled_payments.length - 1].due_date));
-    var diff = roundedToFixed((last_payment - (new Date())) / (365 * 24 * 60 * 60 * 1000), 1);
-    $finalRepay.html('Final: ' + h_make_full_date(last_payment)+"<br/>"+diff + ' years');
+    if (loan.terms.scheduled_payments.length > 0) {
+        var last_payment = new Date(Date.parse(loan.terms.scheduled_payments[loan.terms.scheduled_payments.length - 1].due_date));
+        var diff = roundedToFixed((last_payment - (new Date())) / (365 * 24 * 60 * 60 * 1000), 1);
+        $finalRepay.html('Final: ' + h_make_full_date(last_payment) + "<br/>" + diff + ' years');
+    } else {
+        $finalRepay.html('Unknown Final Date');
+    }
     $finalRepay.removeClass('kivalens_waiting');
     $finalRepay.removeClass('kivalens_needs_lookup');
 }
