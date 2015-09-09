@@ -8,4 +8,11 @@
 div.kivalens_final_repay {
     margin-top: 10px;
     font-size: 95%;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #CCCCCC;
+    background-color: #F7F7F2;
+    border-radius: 3px;
+    padding: 4px;
+    min-height: 52px;
 }

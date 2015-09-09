@@ -28,7 +28,7 @@ on Zip, the link will just take you to the listing of fundraising loans.
 
 ## Chrome Omnibar
 
-1.    In Chrome's URL/Search bar, just type "kiva cattle" and the extension will automatically send that query to Kiva's lend tab.
+1.    In Chrome's URL/Search bar, just type "kiva cattle" and the extension will automatically send a query for "cattle" to Kiva's lend tab.
 2.    If you type "kiva" and start typing another word it will also display some popular Kiva pages that you can immediately jump to.
 
 ## Loan Pages
@@ -41,3 +41,4 @@ looking at to loans in your portfolio and, for example, comment that you've made
 ## Lend Tab
 
 1. On kiva.org/lend (and only that page) the extension will add in the Final Repayment date to the Loan Cards.
+2. Sparklines of repayment amounts. Get a quick overview of what the repayments will look like, one big repayment at the end of 4 years? Evenly distributed?

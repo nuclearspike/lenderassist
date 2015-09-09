@@ -28,6 +28,7 @@ function perform_mass_loan_lookup(){
                 receive_loan_data(loan, $(elem));
             })
         })
+        $('span.sparkit').sparkline('html', {type: 'bar', barColor: 'blue', chartRangeMin: 0, barWidth: 2} );
     })
 }
 
@@ -78,7 +79,10 @@ function receive_loan_data(loan, $finalRepay){
     if (loan.terms.scheduled_payments.length > 0) {
         var last_payment = new Date(Date.parse(loan.terms.scheduled_payments[loan.terms.scheduled_payments.length - 1].due_date));
         var diff = roundedToFixed((last_payment - (new Date())) / (365 * 24 * 60 * 60 * 1000), 1);
-        $finalRepay.html('Final: ' + h_make_full_date(last_payment) + "<br/>" + diff + ' years');
+        var spark_data = loan.terms.scheduled_payments.map(function(payment){return payment.amount});
+        var spark = "<span class='sparkit'>"+ spark_data.join(',') +"</span>";
+        $finalRepay.html('Final: ' + h_make_full_date(last_payment) + "<br/>" + diff + ' years<br/>' + spark);
+
     } else {
         $finalRepay.html('Unknown Final Date');
     }
