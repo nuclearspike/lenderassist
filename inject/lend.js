@@ -27,8 +27,7 @@ function perform_mass_loan_lookup(){
             $(".kivalens_final_repay.kivalens_waiting[data-loan-id="+ loan.id +"]").each(function(i,elem){
                 receive_loan_data(loan, $(elem));
             })
-        })
-        $('span.sparkit').sparkline('html', {type: 'bar', barColor: 'blue', chartRangeMin: 0, barWidth: 2} );
+        });
     })
 }
 
@@ -82,6 +81,7 @@ function receive_loan_data(loan, $finalRepay){
         var spark_data = loan.terms.scheduled_payments.map(function(payment){return payment.amount});
         var spark = "<span class='sparkit'>"+ spark_data.join(',') +"</span>";
         $finalRepay.html('Final: ' + h_make_full_date(last_payment) + "<br/>" + diff + ' years<br/>' + spark);
+        $finalRepay.find('span.sparkit').sparkline('html', {type: 'bar', barColor: 'blue', chartRangeMin: 0, barWidth: 2} );
 
     } else {
         $finalRepay.html('Unknown Final Date');
