@@ -1,7 +1,7 @@
 // SAMPLE
 this.manifest = {
     "name": "Kiva Lender Assistant Extension",
-    "icon": "icon.png",
+    "icon": "/icons/icon48.png",
     "settings": [
         {   "tab": "Speech",
             "group": "Master Switch",
@@ -74,14 +74,14 @@ this.manifest = {
             "group": "Loan Details",
             "name": "speech_enabled_analyze_loan_repayment_terms",
             "type": "checkbox",
-            "label": "Comment on very short and very long repayment terms"
+            "label": "Comment on 'very short' and 'very long' repayment terms"
         },
         {
             "tab": "Speech",
             "group": "Loan Details",
             "name": "low_months_to_payback",
             "type": "slider",
-            "label": "How many months is 'low'?",
+            "label": "How many months is 'very short'?",
             "max": 12,
             "min": 3,
             "step": 1,
@@ -92,7 +92,7 @@ this.manifest = {
             "group": "Loan Details",
             "name": "high_months_to_payback",
             "type": "slider",
-            "label": "How many months is 'high'?",
+            "label": "How many months is 'very long'?",
             "max": 48,
             "min": 8,
             "step": 1,
