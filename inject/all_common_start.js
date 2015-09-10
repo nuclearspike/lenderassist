@@ -12,17 +12,13 @@ function if_setting(setting_name){
     var dfd = $.Deferred();
 
     chrome.runtime.sendMessage({get_settings: true}, function(settings){
-        //cl("IF_SETTING::::", settings, setting_name); causes loop
         var all_true = function(settings){
             var result = true;
             $.each(keys, function(i, key){
-                //console.log(key, settings[key]);
                 if (settings[key] === false) {
-                    //console.log(key + " failed");
                     result = false;
                 }
             });
-            //console.log(result);
             return result;
         };
 
