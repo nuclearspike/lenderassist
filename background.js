@@ -12,6 +12,7 @@ var settings = new Store("settings", {
     "speech_enabled_analyze_loan_relate_to_portfolio": true,
     "speech_enabled_analyze_loan_repayment_terms": true,
     "speech_enabled_analyze_loan_attributes": true,
+    "speech_enabled_analyze_loan_partner": true,
     "speech_enabled_analyze_lender": true,
     "speech_enabled_analyze_team": true,
     "speech_enabled_analyze_partner": true,

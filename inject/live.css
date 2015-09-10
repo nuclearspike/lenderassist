@@ -1,5 +1,5 @@
 div.Streaming_TickerSubView li {
-    width: 100%; /* new registrations were sizing their width to content */
+    /*width: 100%;  new registrations were sizing their width to content (problem with windows wrapping images around */
 }
 
 .ticker {

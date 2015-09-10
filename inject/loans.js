@@ -20,7 +20,7 @@ function analyze_loan(loan){
         if (settings.speech_enabled_analyze_loan_repayment_terms) {
             an_repayment_term(loan, settings.low_months_to_payback, settings.high_months_to_payback);
         }
-        if (settings.speech_enabled_analyze_loan_repayment_terms) {
+        if (settings.speech_enabled_analyze_loan_partner) {
             get_partner_from_loan(loan).done([an_partner_risk, an_partner_stuff]);
         }
         if (settings.speech_enabled_analyze_loan_relate_to_portfolio){
