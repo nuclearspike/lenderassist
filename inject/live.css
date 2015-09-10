@@ -38,3 +38,7 @@ ul.ticker li.lenderassist_read_text.lenderassist_color_commentary {
 ul.ticker li.lenderassist_read_text.lenderassist_color_commentary_more {
     /**background-color: orangered !important;**/
 }
+
+div.dataChanged {
+    background-color: gold;
+}

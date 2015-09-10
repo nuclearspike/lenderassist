@@ -12,7 +12,7 @@ function if_setting(setting_name){
     var dfd = $.Deferred();
 
     chrome.runtime.sendMessage({get_settings: true}, function(settings){
-        console.log("IF_SETTING::::", settings, setting_name);
+        //cl("IF_SETTING::::", settings, setting_name); causes loop
         var all_true = function(){
             $.each(keys, function(i, key){
                 if (settings[key] === false) return false;
