@@ -5,7 +5,6 @@ function cache_lookup_complete(){
     if (cache_tests_left == 0){
         perform_mass_loan_lookup();
         cache_tests_left = 0; //shouldn't happen
-
     }
 }
 
@@ -32,11 +31,13 @@ function perform_mass_loan_lookup(){
 }
 
 function wire_loan_list($loan_cards){
-    cache_tests_left = 1;
-    $loan_cards.each(function(i,elem){
-        wire_element_for_extra(elem);
-    });
-    cache_lookup_complete(); //hacky. this is to make sure all of the elems have been processed before it starts mass lookup
+    if_setting('add_on_repayment_loan_card').done(function(){
+        cache_tests_left = 1;
+        $loan_cards.each(function(i,elem){
+            wire_element_for_extra(elem);
+        });
+        cache_lookup_complete(); //hacky. this is to make sure all of the elems have been processed before it starts mass lookup
+    })
 }
 
 //on page load, wire it up.

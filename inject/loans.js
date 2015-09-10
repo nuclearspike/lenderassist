@@ -4,22 +4,29 @@ cl("lend.js processing");
 
 var block_wait_words = true;
 
-//todo: turn 'concerns' into something that will eventually be set in the properties form by the user.
-var concerns = {high_months_to_payback: 12, low_months_to_payback: 5};
-
 function analyze_loan(loan){
-    an_massage(loan);
-    an_status(loan);
-    if (loan.status != 'fundraising') {
-        if (['issue', 'reviewed', 'inactive'].indexOf(loan.status) > -1) {
-            sp("Well, that's weird. The API for Kiva is showing that this loan is still in the " + loan.status + " state. I'm not going to analyze this loan any further.", loan);
+    if_setting(['speech_enabled','speech_enabled_analyze_loan']).done(function(settings) {
+        an_massage(loan);
+        an_status(loan);
+        if (loan.status != 'fundraising') {
+            if (['issue', 'reviewed', 'inactive'].indexOf(loan.status) > -1) {
+                sp("Well, that's weird. The API for Kiva is showing that this loan is still in the " + loan.status + " state. I'm not going to analyze this loan any further.", loan);
+            }
+            return;
         }
-        return;
-    }
-    an_loan_attr(loan);
-    an_repayment_term(loan);
-    get_partner_from_loan(loan).done([an_partner_risk, an_partner_stuff]);
-    an_lender(loan);
+        if (settings.speech_enabled_analyze_loan_attributes) {
+            an_loan_attr(loan);
+        }
+        if (settings.speech_enabled_analyze_loan_repayment_terms) {
+            an_repayment_term(loan, settings.low_months_to_payback, settings.high_months_to_payback);
+        }
+        if (settings.speech_enabled_analyze_loan_repayment_terms) {
+            get_partner_from_loan(loan).done([an_partner_risk, an_partner_stuff]);
+        }
+        if (settings.speech_enabled_analyze_loan_relate_to_portfolio){
+            an_lender(loan);
+        }
+    });
 }
 
 function an_lender(loan){
@@ -75,17 +82,17 @@ function an_status(loan){
     }
 }
 
-function an_repayment_term(loan){
+function an_repayment_term(loan, low, high){
     if (loan.status != 'fundraising') return;
     var months_to_go = (loan.final_payment - Date.now()) / month;
 
     var frd = new Date(loan.final_payment);
 
-    if (Math.ceil(months_to_go) <= concerns.low_months_to_payback ){
+    if (Math.ceil(months_to_go) <= low ){
         sp("That's great! This loan should pay back in " + h_make_date(frd) + " which is only " + Math.ceil(months_to_go) + " months away.", loan);
     }
 
-    if (Math.floor(months_to_go) >= concerns.high_months_to_payback){
+    if (Math.floor(months_to_go) >= high){
         sp("Note: The final repayment isn't until " + h_make_date(frd) + " which is " + Math.floor(months_to_go) + " months away.", loan);
     }
 
@@ -133,6 +140,10 @@ function an_partner_stuff(partner) {
     }
 }
 
-api_object.done([short_talk_loan, analyze_loan, function(){block_wait_words = true}]);
+if_setting('speech_enabled_analyze_loan').done(function() {
+    api_object.done([short_talk_loan, analyze_loan, function () {
+        block_wait_words = true
+    }]);
+});
 
 an_wait_words();

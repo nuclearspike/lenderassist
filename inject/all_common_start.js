@@ -6,6 +6,29 @@ var monthNames = ["January", "February", "March", "April", "May", "June", "July"
 var monthNamesShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
 var lender_id = undefined;
 
+//execute .done() IFF the setting is set to true, then also returns whole settings object
+function if_setting(setting_name){
+    var keys = setting_name.isArray ? setting_name : [setting_name];
+    var dfd = $.Deferred();
+
+    chrome.runtime.sendMessage({get_settings: true}, function(settings){
+        console.log("IF_SETTING::::", settings, setting_name);
+        var all_true = function(){
+            $.each(keys, function(i, key){
+                if (settings[key] === false) return false;
+            })
+            return true;
+        };
+
+        if (all_true()){
+            dfd.resolve(settings);
+        } else {
+            dfd.reject(settings);
+        }
+    });
+    return dfd.promise();
+}
+
 function h_make_date(date){ //ex: March 2015
     return monthNames[date.getMonth()] + " " + date.getFullYear().toString();
 }
@@ -91,7 +114,9 @@ function date_diff_to_words(date_diff){
 }
 
 function cl(s){
-    console.log(s);
+    if_setting('debug_output_to_console').done(function(){
+        console.log(s);
+    });
 }
 
 function sp_rand(arr, context, interrupt){

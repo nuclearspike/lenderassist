@@ -20,17 +20,27 @@ function set_zip_button(){
     });
 }
 
-wire_intent('a[href*="kiva.org/team/"]', 'team_chatter', function($element) {
-    url_to_api_object($element.attr("href")).done(short_talk_team);
+
+
+if_setting('speech_enabled').done(function(settings){
+    if (settings.speech_enabled_hover_team) {
+        wire_intent('a[href*="kiva.org/team/"]', 'team_chatter', function ($element) {
+            url_to_api_object($element.attr("href")).done(short_talk_team);
+        });
+    }
+    if (settings.speech_enabled_hover_lender) {
+        wire_intent('a[href*="kiva.org/lender/"]', 'lender_chatter', function ($element) {
+            url_to_api_object($element.attr("href")).done(short_talk_lender);
+        });
+    }
+    if (settings.speech_enabled_hover_loan) {
+        wire_intent('a[href*="kiva.org/lend/"]', 'loan_chatter', function ($element) {
+            url_to_api_object($element.attr("href")).done(short_talk_loan);
+        });
+    }
 });
 
-wire_intent('a[href*="kiva.org/lender/"]', 'lender_chatter', function($element){
-    url_to_api_object($element.attr("href")).done(short_talk_lender);
-});
 
-wire_intent('a[href*="kiva.org/lend/"]', 'loan_chatter', function($element){
-    url_to_api_object($element.attr("href")).done(short_talk_loan);
-});
 
 $(document).on('click', 'a[href*="kiva.org/lender/"]', function(e){
     e.preventDefault();
@@ -59,4 +69,3 @@ $(function(){
         });
     }, set_zip_button);
 });
-

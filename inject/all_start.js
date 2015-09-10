@@ -4,6 +4,7 @@ cl("all_start.js processing");
     //console.log(all);
 //});
 
+
 //hmm.
 function fetch_value( key ) {
     var dfd = $.Deferred();
