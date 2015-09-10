@@ -8,19 +8,25 @@ var lender_id = undefined;
 
 //execute .done() IFF the setting is set to true, then also returns whole settings object
 function if_setting(setting_name){
-    var keys = setting_name.isArray ? setting_name : [setting_name];
+    var keys = Array.isArray(setting_name) ? setting_name : [setting_name];
     var dfd = $.Deferred();
 
     chrome.runtime.sendMessage({get_settings: true}, function(settings){
         //cl("IF_SETTING::::", settings, setting_name); causes loop
-        var all_true = function(){
+        var all_true = function(settings){
+            var result = true;
             $.each(keys, function(i, key){
-                if (settings[key] === false) return false;
-            })
-            return true;
+                //console.log(key, settings[key]);
+                if (settings[key] === false) {
+                    //console.log(key + " failed");
+                    result = false;
+                }
+            });
+            //console.log(result);
+            return result;
         };
 
-        if (all_true()){
+        if (all_true(settings)){
             dfd.resolve(settings);
         } else {
             dfd.reject(settings);
