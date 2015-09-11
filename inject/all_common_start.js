@@ -6,6 +6,8 @@ var monthNames = ["January", "February", "March", "April", "May", "June", "July"
 var monthNamesShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
 var lender_id = undefined;
 
+chrome.runtime.sendMessage({location_icon: true});
+
 //execute .done() IFF the setting is set to true, then also returns whole settings object
 function if_setting(setting_name){
     var keys = Array.isArray(setting_name) ? setting_name : [setting_name];

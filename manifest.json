@@ -1,7 +1,7 @@
 {
   "name": "Kiva Lender Assistant (Beta)",
   "description": "KLA analyzes loans, shows repayment data on the list of loans, gives easy access to what's happening now, and much more!",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "manifest_version": 2,
   "homepage_url": "https://github.com/nuclearspike/lenderassist",
   "background" : { "page": "background.html" },
@@ -9,6 +9,14 @@
   "icons": { "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png" },
+  "page_action": {
+    "default_icon": {
+      "19": "icons/icon19.png",
+      "38": "icons/icon38.png"
+    },
+    "default_title": "Kiva Lender Assistant (click to view options)"
+
+  },
   "permissions": [
     "tts",
     "storage",

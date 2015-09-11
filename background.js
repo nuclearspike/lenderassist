@@ -26,8 +26,12 @@ var settings = new Store("settings", {
     "debug_output_to_console": false
 });
 
-///OMNIBOX
+chrome.pageAction.onClicked.addListener(function(tab){
+    chrome.tabs.create({ url: "options_custom/index.html" });
+    //chrome.tabs.create({ "url": "chrome://extensions/?options=" + chrome.runtime.id });
+});
 
+///OMNIBOX
 if (settings.toObject().add_on_omnibar) {
     chrome.omnibox.onInputChanged.addListener(
         function (text, suggest) {
@@ -83,6 +87,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     } else if (request.get_settings){
         console.log("background",settings);
         sendResponse(settings.toObject());
+    } else if (request.location_icon){
+        ////"default_popup": "options_custom/index.html"
+        //needs to show on any matching page, clicking takes you to options.
+        chrome.tabs.getSelected(null, function (tab) {
+            chrome.pageAction.show(tab.id);
+        });
     }
     console.log(request);
 });

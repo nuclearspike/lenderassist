@@ -11,10 +11,10 @@ function cache_lookup_complete(){
 function perform_mass_loan_lookup(){
     var loan_ids = [];
     //collect ids to look up
-    $(".kivalens_final_repay.kivalens_needs_lookup").each(function(i,elem){
+    $(".lenderassist_final_repay.lenderassist_needs_lookup").each(function(i,elem){
         $elem = $(elem);
-        $elem.removeClass('kivalens_needs_lookup');
-        $elem.addClass('kivalens_waiting');
+        $elem.removeClass('lenderassist_needs_lookup');
+        $elem.addClass('lenderassist_waiting');
         loan_ids.push($(elem).data('loan-id'));
     });
     //lookup all ids
@@ -23,7 +23,7 @@ function perform_mass_loan_lookup(){
         //for each loan returned, look for the
         $.each(loans, function(i,loan){
             //will only be one, possibly zero if page has changed since request was made.
-            $(".kivalens_final_repay.kivalens_waiting[data-loan-id="+ loan.id +"]").each(function(i,elem){
+            $(".lenderassist_final_repay.lenderassist_waiting[data-loan-id="+ loan.id +"]").each(function(i,elem){
                 receive_loan_data(loan, $(elem));
             })
         });
@@ -59,12 +59,12 @@ function wire_element_for_extra(elem){
     var $elem = $(elem);
 
     //if we've already added it, don't add it again.
-    if ($elem.find('.kivalens_final_repay').length > 0){
+    if ($elem.find('.lenderassist_final_repay').length > 0){
         return;
     }
     //create the div to add
     var loan_id = url_to_parts($elem.find('.info_status h1 a').first().attr("href")).id;
-    var $finalRepay = $("<div class='kivalens_final_repay kivalens_needs_lookup' data-loan-id='" + loan_id + "'>Checking Repayment...</div>");
+    var $finalRepay = $("<div class='lenderassist_final_repay lenderassist_needs_lookup' data-loan-id='" + loan_id + "'>Checking Repayment...</div>");
 
     //add the block
     $elem.find('.details').first().append($finalRepay);
@@ -87,6 +87,6 @@ function receive_loan_data(loan, $finalRepay){
     } else {
         $finalRepay.html('Unknown Final Date');
     }
-    $finalRepay.removeClass('kivalens_waiting');
-    $finalRepay.removeClass('kivalens_needs_lookup');
+    $finalRepay.removeClass('lenderassist_waiting');
+    $finalRepay.removeClass('lenderassist_needs_lookup');
 }

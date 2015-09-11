@@ -1,6 +1,6 @@
 # Kiva Lender Assistant
 
-To install, [go here](https://chrome.google.com/webstore/detail/kiva-lender-assistant-bet/jkljjpdljndblihlcoenjbmdakaomhgo?hl=en-US&gl=US)
+To install, using the Google Chrome browser, [go here](https://chrome.google.com/webstore/detail/kiva-lender-assistant-bet/jkljjpdljndblihlcoenjbmdakaomhgo?hl=en-US&gl=US)
 
 ## Lender/Team Pages
 
