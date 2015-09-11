@@ -5,12 +5,12 @@ cl("lend.js processing");
 var block_wait_words = true;
 
 function analyze_loan(loan){
-    if_setting(['speech_enabled','speech_enabled_analyze_loan']).done(function(settings) {
+    if_setting(['speech_enabled','speech_enabled_analyze_loan']).done(settings => {
         an_massage(loan);
         an_status(loan);
         if (loan.status != 'fundraising') {
             if (['issue', 'reviewed', 'inactive'].indexOf(loan.status) > -1) {
-                sp("Well, that's weird. The API for Kiva is showing that this loan is still in the " + loan.status + " state. I'm not going to analyze this loan any further.", loan);
+                sp(`Well, that's weird. The API for Kiva is showing that this loan is still in the ${loan.status} state. I'm not going to analyze this loan any further.`, loan);
             }
             return;
         }
@@ -32,11 +32,11 @@ function analyze_loan(loan){
 function an_lender(loan){
     if (lender_id == undefined) return; //we can't look up information on a lender
 
-    combine_all_and_active_verse_data('lender', lender_id, 'country').done(function(data){
+    combine_all_and_active_verse_data('lender', lender_id, 'country').done(data => {
         cl(data);
         var cur_country_rank_all = data.all.ordered.indexOf(loan.location.country);
         if (cur_country_rank_all > -1 && cur_country_rank_all < 10){
-            sp("It looks like " + loan.location.country + " is one of your favorite lending countries.", lender_id);
+            sp(`It looks like ${loan.location.country} is one of your favorite lending countries.`, lender_id);
         }
 
         var cur_country_rank_active = data.active.ordered.indexOf(loan.location.country);
@@ -44,9 +44,9 @@ function an_lender(loan){
             var to_say;
 
             if (data.all.totals[loan.location.country] > 1){
-                to_say = "You've made " + plural(data.all.totals[loan.location.country], "loan") +  " in " + loan.location.country + "  "
+                to_say = `You've made ${plural(data.all.totals[loan.location.country], "loan")} in ${loan.location.country} `
             } else {
-                to_say = "You've made a loan to someone in " + loan.location.country + " before, "
+                to_say = `You've made a loan to someone in ${loan.location.country} before, `
             }
 
             if (cur_country_rank_active < 0){
@@ -55,14 +55,14 @@ function an_lender(loan){
                 if (data.active.totals[loan.location.country] == 1){
                     sp(to_say + "and you still have one loan paying back.");
                 } else {
-                    sp(to_say + "and you have " + data.active.totals[loan.location.country] + " loans still paying back.", lender_id);
+                    sp(to_say + `and you have ${data.active.totals[loan.location.country]} loans still paying back.`, lender_id);
                 }
             }
         } else { //never before
-            sp("You've never lent to anyone in " + loan.location.country + " before. Maybe now is the time.", loan);
+            sp(`You've never lent to anyone in ${loan.location.country} before. Maybe now is the time.`, loan);
         }
 
-    }).fail(function(){cl("failed;")});
+    }).fail(cl.bind(null,"failed;"));
 }
 
 function an_wait_words(){
@@ -89,21 +89,22 @@ function an_repayment_term(loan, low, high){
     var frd = new Date(loan.final_payment);
 
     if (Math.ceil(months_to_go) <= low ){
-        sp("That's great! This loan should pay back in " + h_make_date(frd) + " which is only " + Math.ceil(months_to_go) + " months away.", loan);
+        sp(`That's great! This loan should pay back in ${h_make_date(frd)} which is only ${Math.ceil(months_to_go)} months away.`, loan);
     }
 
     if (Math.floor(months_to_go) >= high){
-        sp("Note: The final repayment isn't until " + h_make_date(frd) + " which is " + Math.floor(months_to_go) + " months away.", loan);
+        sp(`Note: The final repayment isn't until ${h_make_date(frd)} which is ${Math.floor(months_to_go)}  months away.`, loan);
     }
 
-    if (loan.terms.disbursal_date) { //should only be doing any of this IFF fundraising.
+    if (loan.terms.disbursal_date) {
         var predisbursal_date = new Date(Date.parse(loan.terms.disbursal_date));
         //it should look at the repayment schedule before making this comment!
         var days_ago_pred = Math.floor((Date.now() - predisbursal_date) / day);
-        sp("The money was pre-disbursed " + days_ago_pred + " days ago", loan);
-        if (Date.parse(loan.terms.local_payments[0].date) < Date.now()){
-            sp("And they've already started paying back", loan);
-        //    sp("Nice! The borrower has already received the money in " + h_make_date(predisbursal_date) + " which means your repayments will generally start sooner with a lump sum at the start.", loan);
+        if (days_ago_pred > 0) {
+            sp(`The money was pre-disbursed ${days_ago_pred} days ago`, loan);
+            if (Date.parse(loan.terms.local_payments[0].date) < Date.now()) {
+                sp("And they've already started paying back", loan);
+            }
         }
     }
 }
@@ -125,7 +126,10 @@ function an_loan_attr(loan){
 
 function an_partner_risk(partner){
     var rate = parseFloat(partner.rating);
-    if (isNaN(rate)) return; //happens for "Not Rated"
+    if (isNaN(rate)) {
+        sp('The MFI is not rated.');
+        return;
+    } //happens for "Not Rated"
     if (rate >= 4.5) { //make user defined
         sp("Oh wow. The MFI is very highly rated, which means that the MFI has lower risk of failing.", partner);
     }
@@ -140,10 +144,10 @@ function an_partner_stuff(partner) {
     }
 }
 
-if_setting('speech_enabled_analyze_loan').done(function() {
+if_setting(['speech_enabled','speech_enabled_analyze_loan']).done(()=>
     api_object.done([short_talk_loan, analyze_loan, function () {
         block_wait_words = true
-    }]);
-});
+    }])
+);
 
 an_wait_words();

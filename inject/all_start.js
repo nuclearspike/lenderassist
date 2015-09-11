@@ -52,9 +52,9 @@ function f_is_logged_in(){
 function get_lender(t_id){
     var def = $.Deferred();
 
-    get_cache('lender_' + t_id, def, 10 * minute).done(function(lender){
+    get_cache('lender_' + t_id, def, 10 * minute).done(lender => {
         def.resolve(lender);
-    }).fail(function(){
+    }).fail(()=>{
         $.ajax({
             url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_id + ".json?app_id=org.kiva.kivalens",
             cache: false,
@@ -70,14 +70,14 @@ function get_lender(t_id){
 function get_team(t_id){
     var def = $.Deferred();
 
-    get_cache('team_'+t_id, def, 1 * hour).done(function(team){
+    get_cache('team_'+t_id, def, 1 * hour).done(team=>{
         def.resolve(team);
-    }).fail(function(){
+    }).fail(()=>{
         $.ajax({
             url: window.location.protocol + "//api.kivaws.org/v1/teams/using_shortname/" + t_id + ".json?app_id=org.kiva.kivalens",
             cache: false,
             fail: def.reject,
-            success: function (result) {
+            success: (result) => {
                 team = result.teams[0];
                 def.resolve(team);
             }
@@ -115,9 +115,9 @@ function get_loans(loan_id_arr){
 function get_loan(t_id){
     var def = $.Deferred();
 
-    get_cache('loan_' + t_id, def, 10 * minute).done(function(loan){
+    get_cache('loan_' + t_id, def, 10 * minute).done(loan => {
         def.resolve(loan);
-    }).fail(function(){
+    }).fail(() => {
         $.ajax({
             url: window.location.protocol + "//api.kivaws.org/v1/loans/" + t_id + ".json?app_id=org.kiva.kivalens",
             cache: false,
@@ -134,14 +134,14 @@ function get_loan(t_id){
 function get_partner(t_id){
     var def = $.Deferred();
 
-    get_cache('partner_' + t_id, def, 6 * hour).done(function(partner){
+    get_cache('partner_' + t_id, def, 6 * hour).done(partner=>{
         def.resolve(partner);
-    }).fail(function(){
+    }).fail(()=>{
         $.ajax({
             url: window.location.protocol + "//api.kivaws.org/v1/partners/" + t_id + ".json?app_id=org.kiva.kivalens",
             cache: false,
             fail: def.reject,
-            success: function (result) {
+            success: (result) => {
                 partner = result.partners[0];
                 def.resolve(partner);
             }
@@ -155,7 +155,7 @@ function get_partner_from_loan(loan){
     var def = $.Deferred();
 
     if (!loan.partner){
-        get_partner(loan.partner_id).done(function(partner){ loan.partner = partner; }).done(def.resolve);
+        get_partner(loan.partner_id).done(partner => { loan.partner = partner; }).done(def.resolve);
     } else {
         loan.partner = partner; //todo: partner is bad. does this do anything? isn't loan lost?
         def.resolve(loan.partner);
@@ -168,20 +168,20 @@ function get_verse_data(subject_type, subject_id, slice_by, all_active, min_coun
     var def = $.Deferred();
     var granularity = 'cumulative'; //for now
     var url = location.protocol + "//www.kiva.org/ajax/getSuperGraphData?&sliceBy="+ slice_by +"&include="+ all_active +"&measure=count&subject_id=" + subject_id + "&type=" + subject_type + "&granularity=" + granularity;
-    var cache_key = "get_verse_data_" + subject_type + "_" + subject_id + "_" + slice_by + "_" + all_active  + "_" + min_count + "_" + max_count + "_" + granularity;
+    var cache_key = `get_verse_data_${subject_type}_${subject_id}_${slice_by}_${all_active }_${min_count}_${max_count}_${granularity}`;
 
-    get_cache(cache_key, def).done(function(result){
+    get_cache(cache_key, def).done(result => {
         cl(result);
         def.resolve(result);
-    }).fail(function() {
-        cl("cache_miss: " + cache_key);
+    }).fail(() => {
+        cl(`cache_miss: ${cache_key}`);
         $.ajax({
             url: url,
             crossDomain: true,
             type: "GET",
             dataType: "json",
             cache: true
-        }).success(function (result) {
+        }).success(result => {
             var slices = [];
             var totals = {};
             var total_unsliced = 0;
@@ -219,7 +219,7 @@ function combine_all_and_active_verse_data(subject_type, subject_id, slice_by){
 
     $.when(get_verse_data(subject_type, subject_id, slice_by, 'all', 0, -1),
         get_verse_data(subject_type, subject_id, slice_by, 'active', 0, -1))
-        .then(function(all_results, active_results){
+        .then((all_results, active_results)=>{
             result = { all: all_results, active: active_results};
             //set_cache(cache_key, result);
             def.resolve(result);
@@ -233,20 +233,19 @@ function sp_top_3_lender_sectors(lender){ //used on /live
 }
 
 function sp_top_3_lender_countries(lender){ //not in use anymore
-    get_verse_data('lender', lender.lender_id,'country', 'all', 3, 3).done(function(slices){
-        sp("Their top countries are " + ar_and(slices.ordered.slice(0,3)), lender);
+    get_verse_data('lender', lender.lender_id,'country', 'all', 3, 3).done(slices => {
+        sp(`Their top countries are ${ar_and(slices.ordered.slice(0,3))}`, lender);
     });
 }
 
 function sp_top_3_lender_regions(lender){ //not in use anymore
-    get_verse_data('lender', lender.lender_id,'region', 'all', 3,3).done(function(slices){
-        sp("Their top regions are " + ar_and(slices.ordered.slice(0,3)), lender);
+    get_verse_data('lender', lender.lender_id,'region', 'all', 3,3).done(slices => {
+        sp(`Their top regions are ${ar_and(slices.ordered.slice(0,3))}`, lender);
     });
 }
 
 function percent_portfolio(slices, over_perc){
     var def = $.Deferred();
-
     if (!over_perc) { over_perc = 20; }
     total = 0;
     for (var key in slices.totals) {
@@ -262,20 +261,20 @@ function percent_portfolio(slices, over_perc){
 }
 
 function sp_top_3_lender_sectors_from_slices(slices){
-    percent_portfolio(slices).then(function(top_3, percent){
-        sp(top_3 + " account for " + percent + " percent of their portfolio");
-    }).fail(function(top_3){
-        sp("Their most popular countries are " + top_3);
+    percent_portfolio(slices).then((top_3, percent) => {
+        sp(`${top_3} account for ${percent} percent of their portfolio`);
+    }).fail(top_3 => {
+        sp(`Their most popular countries are ${top_3}`);
     });
 }
 
 function sp_top_3_lender_stats(lender){ //on lender page
     get_verse_data('lender', lender.lender_id,'country', 'all', 3,3).then(sp_top_3_lender_sectors_from_slices);
 
-    get_verse_data('lender', lender.lender_id,'sector', 'all', 3,3).then(percent_portfolio).then(function(top_3, percent){
-        sp("Wow, they really love " + top_3 + ". Those sectors account for " + percent + " percent of their portfolio", lender);
-    }).fail(function(top_3){
-        sp("They like lending " + top_3, lender);
+    get_verse_data('lender', lender.lender_id,'sector', 'all', 3,3).then(percent_portfolio).then((top_3, percent)=>{
+        sp(`Wow, they really love ${top_3}. Those sectors account for ${percent} percent of their portfolio`, lender);
+    }).fail(top_3 => {
+        sp(`They like lending ${top_3}`, lender);
     });
 }
 
@@ -284,15 +283,15 @@ function sp_top_3_team_stats(team){ //on team page
     //    sp("This team's top regions are " + ar_and(slices.ordered.slice(0,3)), team);
     //});
 
-    get_verse_data('team', team.shortname,'country', 'all', 3,3).then(percent_portfolio).then(function(top_3, percent) {
+    get_verse_data('team', team.shortname,'country', 'all', 3,3).then(percent_portfolio).then((top_3, percent)=> {
         sp(top_3 + " account for " + percent + " percent of this team's loans", team);
-    }).fail(function(top_3){
+    }).fail(top_3 =>{
         sp("Their most popular countries are " + top_3, team);
     });
 
-    get_verse_data('team', team.shortname,'sector', 'all', 3,3).then(percent_portfolio).then(function(top_3, percent) {
+    get_verse_data('team', team.shortname,'sector', 'all', 3,3).then(percent_portfolio).then((top_3, percent)=>{
         sp(top_3 + " account for " + percent + " percent of their loans", lender_id);
-    }).fail(function(top_3) {
+    }).fail(top_3 => {
         sp("The members of this team love loans for " + top_3, team);
     });
 }

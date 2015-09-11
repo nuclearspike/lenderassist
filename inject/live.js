@@ -12,9 +12,7 @@ function test_change(id, to_say){
 
 var speech_enabled_live = false;
 
-if_setting(['speech_enabled','speech_enabled_live']).done(function(){
-    speech_enabled_live = true;
-});
+if_setting(['speech_enabled','speech_enabled_live']).done(()=> speech_enabled_live = true);
 
 $(document).ready(function() {
     $("#siteNavAboutAnchor").parent().removeClass("urHere");
@@ -112,7 +110,7 @@ function read_li_text($li){
 
 function comment_on_lender($li){
     if ((speech_enabled_live) && ($li.data().lender_id != undefined)) {
-        get_lender($li.data().lender_id).done(function (lender) { //would find cached version
+        get_lender($li.data().lender_id).done(lender => { //would find cached version
             $li.data().lender = lender;
             ago = date_diff_to_words(Date.now() - new Date(Date.parse(lender.member_since)));
             last_spoken_ticker = Date.now();
@@ -127,7 +125,7 @@ function comment_on_lender($li){
 
 function comment_on_team($li){
     if ((speech_enabled_live) && ($li.data().team_id != undefined)) {
-        get_team($li.data().team_id).done(short_talk_team).done(function (team) {
+        get_team($li.data().team_id).done(short_talk_team).done(team => {
             $li.data().team = team;
             last_spoken_ticker = Date.now();
             $li.data().commented_on_team = true;
@@ -137,7 +135,7 @@ function comment_on_team($li){
 
 function comment_on_loan($li){
     if ((speech_enabled_live) && ($li.data().loan_id != undefined)) {
-        get_loan($li.data().loan_id).done(function (loan) {
+        get_loan($li.data().loan_id).done(loan => {
             sp(loan.name + ' is in ' + loan.location.country, loan);
             $li.data().loan = loan;
             last_spoken_ticker = Date.now();

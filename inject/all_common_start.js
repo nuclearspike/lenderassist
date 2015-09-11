@@ -75,7 +75,7 @@ function get_cache(key, calc, max_age){
     var cache_callback = function(result){
         if (result == undefined){ //when missing from the cache
             if (calc){ //wire up interest in watching the (parent) function that can fetch/figure the value
-                calc.done(function(value){
+                calc.done(value => {
                     set_cache(key, value); //and set the cache value once calculated
                 })
             }
@@ -118,7 +118,7 @@ function date_diff_to_words(date_diff){
 }
 
 function cl(s){
-    if_setting('debug_output_to_console').done(function(){
+    if_setting('debug_output_to_console').done(()=>{
         console.log(s);
     });
 }
@@ -146,12 +146,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
     //debug
     for (key in changes) {
         var storageChange = changes[key];
-        console.log('Storage key "%s" in namespace "%s" changed. ' +
-            'Old value was "%s", new value is "%s".',
-            key,
-            namespace,
-            storageChange.oldValue,
-            storageChange.newValue);
+        console.log(`Storage key "${key}" in namespace "${namespace}" changed. Old value was "${storageChange.oldValue}", new value is "${storageChange.newValue}".`)
     }
 });
 

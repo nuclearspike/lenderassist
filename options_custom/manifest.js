@@ -9,6 +9,8 @@ this.manifest = {
             "type": "checkbox",
             "label": "Enable Speech. Disable this to prevent this extension from speaking to you."
         },
+
+
         {   "tab": "Speech",
             "group": "Hover-over Links",
             "name": "speech_enabled_hover_loan",
@@ -33,6 +35,8 @@ this.manifest = {
             "type": "checkbox",
             "label": "Read ticker on /Live Page and add comments about loans, lenders and teams if time."
         },
+
+
         {   "tab": "Speech",
             "group": "General",
             "name": "speech_enabled_analyze_lender",
@@ -58,6 +62,8 @@ this.manifest = {
             "type": "checkbox",
             "label": "Speak when extension starts up"
         },
+
+
         {   "tab": "Speech",
             "group": "Loan Details",
             "name": "speech_enabled_analyze_loan",
@@ -110,6 +116,10 @@ this.manifest = {
             "type": "checkbox",
             "label": "Comment on partner risk and social performance badges"
         },
+
+
+
+
         {   "tab": "Other",
             "group": "Add-on",
             "name": "add_on_repayment_loan_card",
@@ -121,7 +131,7 @@ this.manifest = {
             "group": "Omnibar",
             "name": "add_on_omnibar",
             "type": "checkbox",
-            "label": "When typing in Chrome's Location/Search bar (Omnibar) send queries like 'kiva cattle' to search for 'cattle' on Kiva's lend tab"
+            "label": "When typing in Chrome's Location/Search bar (Omnibar) send queries like 'kiva cattle' to search for 'cattle' on Kiva's lend tab rather than to Google."
         },
         {
             "tab": "Other",

@@ -11,7 +11,7 @@ function cache_lookup_complete(){
 function perform_mass_loan_lookup(){
     var loan_ids = [];
     //collect ids to look up
-    $(".lenderassist_final_repay.lenderassist_needs_lookup").each(function(i,elem){
+    $(".lenderassist_final_repay.lenderassist_needs_lookup").each((i,elem) => {
         $elem = $(elem);
         $elem.removeClass('lenderassist_needs_lookup');
         $elem.addClass('lenderassist_waiting');
@@ -19,19 +19,19 @@ function perform_mass_loan_lookup(){
     });
     //lookup all ids
     if (loan_ids.length == 0) return;
-    get_loans(loan_ids).done(function(loans){
+    get_loans(loan_ids).done(loans => {
         //for each loan returned, look for the
-        $.each(loans, function(i,loan){
+        for (var loan in loans) {
             //will only be one, possibly zero if page has changed since request was made.
-            $(".lenderassist_final_repay.lenderassist_waiting[data-loan-id="+ loan.id +"]").each(function(i,elem){
+            $(`.lenderassist_final_repay.lenderassist_waiting[data-loan-id=${loan.id}]`).each((i,elem)=>{
                 receive_loan_data(loan, $(elem));
             })
-        });
+        }
     })
 }
 
 function wire_loan_list($loan_cards){
-    if_setting('add_on_repayment_loan_card').done(function(){
+    if_setting('add_on_repayment_loan_card').done(()=>{
         cache_tests_left = 1;
         $loan_cards.each(function(i,elem){
             wire_element_for_extra(elem);
@@ -41,7 +41,7 @@ function wire_loan_list($loan_cards){
 }
 
 //on page load, wire it up.
-setTimeout(function(){
+setTimeout(()=>{
     wire_loan_list($(".loanCards").find('.loanCard'));
 },1000); //todo: this is bad. could miss if it takes longer, otherwise it waits too long.
 
@@ -49,7 +49,7 @@ setTimeout(function(){
 //".loanCards"
 //DON'T EXECUTE ON /LEND/1234
 
-$(document).on("DOMNodeInserted", function (e){
+$(document).on("DOMNodeInserted", (e)=>{
     if (e.target.classList.contains('loanCards')) {
         wire_loan_list($(e.target).find('.loanCard'));
     }
@@ -64,12 +64,12 @@ function wire_element_for_extra(elem){
     }
     //create the div to add
     var loan_id = url_to_parts($elem.find('.info_status h1 a').first().attr("href")).id;
-    var $finalRepay = $("<div class='lenderassist_final_repay lenderassist_needs_lookup' data-loan-id='" + loan_id + "'>Checking Repayment...</div>");
+    var $finalRepay = $(`<div class='lenderassist_final_repay lenderassist_needs_lookup' data-loan-id='${loan_id}'>Checking Repayment...</div>`);
 
     //add the block
     $elem.find('.details').first().append($finalRepay);
     cache_tests_left++;
-    get_cache('loan_' + loan_id).done(function(loan){
+    get_cache('loan_' + loan_id).done(loan => {
         //if we've already looked it up, just fill in the details immediately
         receive_loan_data(loan, $finalRepay);
     }).always(cache_lookup_complete);

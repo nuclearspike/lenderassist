@@ -22,7 +22,7 @@ function set_zip_button(){
 
 
 
-if_setting('speech_enabled').done(function(settings){
+if_setting('speech_enabled').done(settings => {
     if (settings.speech_enabled_hover_team) {
         wire_intent('a[href*="kiva.org/team/"]', 'team_chatter', function ($element) {
             url_to_api_object($element.attr("href")).done(short_talk_team);

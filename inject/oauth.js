@@ -9,7 +9,7 @@ oauth = function setup_oauth(){
 function o_my(path){
     var def = $.Deferred();
 
-    oauth.done(function(con){
+    oauth.done(con => {
         con.get({ path: 'my/'+ path +'.json' }).done(def.resolve).fail(def.reject);
     }).fail(def.reject);
 
