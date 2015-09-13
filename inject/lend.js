@@ -21,12 +21,15 @@ function perform_mass_loan_lookup(){
     if (loan_ids.length == 0) return;
     get_loans(loan_ids).done(loans => {
         //for each loan returned, look for the
-        for (var loan in loans) {
+        //console.log(loans);
+        $.each(loans, (i,loan)=>{
+            //console.log(loan);
             //will only be one, possibly zero if page has changed since request was made.
             $(`.lenderassist_final_repay.lenderassist_waiting[data-loan-id=${loan.id}]`).each((i,elem)=>{
+                //console.log(elem);
                 receive_loan_data(loan, $(elem));
             })
-        }
+        })
     })
 }
 
