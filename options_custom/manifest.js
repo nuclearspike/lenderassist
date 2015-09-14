@@ -74,7 +74,7 @@ this.manifest = {
             "group": "Loan Details",
             "name": "speech_enabled_analyze_loan_relate_to_portfolio",
             "type": "checkbox",
-            "label": "Relate loan to your porfolio (recognize when it's one of your favorites)"
+            "label": "Relate loan to your porfolio (recognize when it's one of your favorite countries, etc)"
         },
         {   "tab": "Speech",
             "group": "Loan Details",

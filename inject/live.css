@@ -27,6 +27,10 @@ ul.ticker li a {
     font-size: 10px !important;
 }
 
+ul.ticker li.lender_registered {
+    width: 280px;
+}
+
 ul.ticker li.lenderassist_read_text {
     /**background-color: bisque;**/
 }
