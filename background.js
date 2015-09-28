@@ -172,5 +172,5 @@ function narrate(utterance, context, follow_up, interrupt, callback) {
 //chrome.storage.local.clear();
 
 if (settings.toObject().speech_enabled_startup) {
-    narrate("Here we go again...");
+    narrate("Let's make the world a better place.");
 }
