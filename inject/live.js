@@ -18,6 +18,10 @@ $(document).ready(function() {
     $("#siteNavAboutAnchor").parent().removeClass("urHere");
     $("#siteNavLiveAnchor").parent().addClass("urHere");
 
+    //temp fix! these will work after it's fixed.
+    $("#sidebar").remove()
+    $("#main.g9").removeClass("g9").addClass("g12")
+
     //wire to look for changes and tag them to be read.
     $("#mostCommonBorrowerCountry, #mostCommonSector, #mostCommonLenderCountry").on("DOMSubtreeModified", function(e) {
         if ($(e.target).text() != '(Undisclosed)') //
