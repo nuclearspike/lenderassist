@@ -9,7 +9,8 @@ div.Streaming_TickerSubView li {
 div.view_select { /* allow user to select which view they want to use */
     position: absolute;
     #opacity: 0;
-    top: 69px;
+    /*top: 69px;*/
+    top: 130px;
     left: 23px;
     font-size: smaller;
     z-index: 10000;

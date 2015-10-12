@@ -13,20 +13,15 @@ function perform_mass_loan_lookup(){
     //collect ids to look up
     $(".lenderassist_final_repay.lenderassist_needs_lookup").each((i,elem) => {
         $elem = $(elem);
-        $elem.removeClass('lenderassist_needs_lookup');
-        $elem.addClass('lenderassist_waiting');
-        loan_ids.push($(elem).data('loan-id'));
+        $elem.removeClass('lenderassist_needs_lookup').addClass('lenderassist_waiting');
+        loan_ids.push($elem.data('loan-id'));
     });
     //lookup all ids
     if (loan_ids.length == 0) return;
     get_loans(loan_ids).done(loans => {
-        //for each loan returned, look for the
-        //console.log(loans);
         $.each(loans, (i,loan)=>{
-            //console.log(loan);
             //will only be one, possibly zero if page has changed since request was made.
             $(`.lenderassist_final_repay.lenderassist_waiting[data-loan-id=${loan.id}]`).each((i,elem)=>{
-                //console.log(elem);
                 receive_loan_data(loan, $(elem));
             })
         })
