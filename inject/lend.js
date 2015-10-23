@@ -74,12 +74,15 @@ function wire_element_for_extra(elem){
 }
 
 function receive_loan_data(loan, $finalRepay){
-    if (loan.terms.scheduled_payments.length > 0) {
-        var last_payment = new Date(Date.parse(loan.terms.scheduled_payments[loan.terms.scheduled_payments.length - 1].due_date));
+    if (loan.terms.scheduled_payments && loan.terms.scheduled_payments.length > 0) {
+        var last_payment = new Date(loan.terms.scheduled_payments[loan.terms.scheduled_payments.length - 1].due_date);
         var diff = roundedToFixed((last_payment - (new Date())) / (365 * 24 * 60 * 60 * 1000), 1);
-        var spark_data = loan.terms.scheduled_payments.map(function(payment){return payment.amount});
+        var payments = loan.terms.scheduled_payments.select(function(payment){
+            return {due_date: new Date(payment.due_date).toString("MMM-yyyy"), amount: payment.amount}
+        }) //todo: can be reduced
+        var spark_data  = payments.groupBy(function(p){return p.due_date}).select(function(g){ return g.sum(function(r){return r.amount}) })
         var spark = "<span class='sparkit'>"+ spark_data.join(',') +"</span>";
-        $finalRepay.html('Final: ' + h_make_full_date(last_payment) + "<br/>" + diff + ' years<br/>' + spark);
+        $finalRepay.html('Final: ' + last_payment.toString('MMM d, yyyy') + "<br/>" + diff + ' years<br/>' + spark);
         $finalRepay.find('span.sparkit').sparkline('html', {type: 'bar', barColor: 'blue', chartRangeMin: 0, barWidth: 2} );
 
     } else {

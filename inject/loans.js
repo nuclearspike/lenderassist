@@ -72,7 +72,7 @@ function an_wait_words(){
 }
 
 function an_massage(loan){
-    loan.final_payment = Date.parse(loan.terms.scheduled_payments[loan.terms.scheduled_payments.length - 1].due_date);
+    loan.final_payment = new Date(loan.terms.scheduled_payments[loan.terms.scheduled_payments.length - 1].due_date);
 }
 
 function an_status(loan){
@@ -84,9 +84,9 @@ function an_status(loan){
 
 function an_repayment_term(loan, low, high){
     if (loan.status != 'fundraising') return;
-    var months_to_go = (loan.final_payment - Date.now()) / month;
+    var months_to_go = (loan.final_payment - new Date()) / month;
 
-    var frd = new Date(loan.final_payment);
+    var frd = loan.final_payment;
 
     if (Math.ceil(months_to_go) <= low ){
         sp(`That's great! This loan should pay back in ${h_make_date(frd)} which is only ${Math.ceil(months_to_go)} months away.`, loan);
@@ -97,12 +97,12 @@ function an_repayment_term(loan, low, high){
     }
 
     if (loan.terms.disbursal_date) {
-        var predisbursal_date = new Date(Date.parse(loan.terms.disbursal_date));
+        var predisbursal_date = new Date(loan.terms.disbursal_date);
         //it should look at the repayment schedule before making this comment!
         var days_ago_pred = Math.floor((Date.now() - predisbursal_date) / day);
         if (days_ago_pred > 0) {
             sp(`The money was pre-disbursed ${days_ago_pred} days ago`, loan);
-            if (Date.parse(loan.terms.local_payments[0].date) < Date.now()) {
+            if (new Date(loan.terms.local_payments[0].date) < new Date()) {
                 sp("And they've already started paying back", loan);
             }
         }
@@ -110,13 +110,13 @@ function an_repayment_term(loan, low, high){
 }
 
 function an_loan_attr(loan){
-    if (Date.now() - Date.parse(loan.posted_date) < hour * 3){
+    if (new Date() - new Date(loan.posted_date) < hour * 3){
         sp("This only just posted within the past few hours.", loan);
     }
     if (loan.funded_amount == 0) { //due to lag of API, this could be wrong.
         sp("You can be the first person to lend to this borrower.", loan)
     }
-    if (Date.parse(loan.planned_expiration_date) - Date.now() < 3 * day){
+    if (new Date(loan.planned_expiration_date) - new Date() < 3 * day){
         sp("This loan is expiring soon.", loan); // Rally your teams to get this loan funded!
     }
     if ((loan.loan_amount - loan.funded_amount - loan.basket_amount) <= 75){ //or use "not much left on the loan!" when under $50/75?

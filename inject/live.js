@@ -116,7 +116,7 @@ function comment_on_lender($li){
     if ((speech_enabled_live) && ($li.data().lender_id != undefined)) {
         get_lender($li.data().lender_id).done(lender => { //would find cached version
             $li.data().lender = lender;
-            ago = date_diff_to_words(Date.now() - new Date(Date.parse(lender.member_since)));
+            ago = date_diff_to_words(Date.now() - new Date(lender.member_since));
             last_spoken_ticker = Date.now();
             $li.data().commented_on_lender = true;
             sp(lender.name + " has made " + plural(lender.loan_count, "loan") + " since joining " + ago.units + ago.uom + " ago", lender);

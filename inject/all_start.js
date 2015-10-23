@@ -346,7 +346,7 @@ function short_talk_loan(loan){
 function short_talk_team(team){
     speak = [team.name];
 
-    ago = date_diff_to_words(Date.now() - new Date(Date.parse(team.team_since)));
+    ago = date_diff_to_words(Date.now() - new Date(team.team_since));
     speak.push("team has been around for " + ago.units + ago.uom);
 
     if (team.member_count > 500) {
@@ -373,7 +373,7 @@ function short_talk_lender(lender){
     if (lender.loan_count > 0) {
         speak.push("has made " + plural(lender.loan_count, "loan"));
     }
-    ago = date_diff_to_words(Date.now() - new Date(Date.parse(lender.member_since)));
+    ago = date_diff_to_words(Date.now() - new Date(lender.member_since));
     speak.push("has been lending for " + ago.units + ago.uom);
     if (lender.invitee_count > 0){
         speak.push("has made " + plural(lender.invitee_count, "successful invitation"));
