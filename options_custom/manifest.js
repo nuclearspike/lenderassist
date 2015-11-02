@@ -108,7 +108,7 @@ this.manifest = {
             "group": "Loan Details",
             "name": "speech_enabled_analyze_loan_attributes",
             "type": "checkbox",
-            "label": "Mention: Expiring soon, recently posted, almost funded, and if no one else has lent anything."
+            "label": "Mention: Expiring soon, recently posted, almost funded, and if no one else has loaned anything."
         },
         {   "tab": "Speech",
             "group": "Loan Details",
