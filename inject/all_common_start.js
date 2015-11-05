@@ -154,10 +154,10 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 function do_if_awhile(named_process, amount_of_time, check_func, if_ready_func){
     chrome.storage.local.get(named_process, function(res){
         var last_check = res[named_process];
-        if (is_not_set(last_check) || (Date.now() -  last_check > amount_of_time)){
+        if (is_not_set(last_check) || (Date.now().getTime() -  last_check > amount_of_time)){
             check_func();
             obj = {};
-            obj[named_process] = Date.now();
+            obj[named_process] = Date.now().getTime();
             chrome.storage.local.set(obj);
         } else {
             if_ready_func();

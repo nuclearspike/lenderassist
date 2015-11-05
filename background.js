@@ -149,6 +149,7 @@ function narrate(utterance, context, follow_up, interrupt, callback) {
     chrome.tts.speak(
         utterance,
         {
+            voiceName: 'Google US English',
             enqueue: !interrupt,
             onEvent: function(ttsEvent) {
                 console.log(ttsEvent);
@@ -174,3 +175,5 @@ function narrate(utterance, context, follow_up, interrupt, callback) {
 if (settings.toObject().speech_enabled_startup) {
     narrate("Let's make the world a better place.");
 }
+
+//chrome.tts.getVoices(voices => {console.log(voices)})

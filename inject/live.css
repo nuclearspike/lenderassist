@@ -3,7 +3,7 @@ div.Streaming_TickerSubView li {
 }
 
 .ticker {
-    overflow-y: auto !important;
+    /*overflow-y: auto !important;*/
 }
 
 div.view_select { /* allow user to select which view they want to use */
