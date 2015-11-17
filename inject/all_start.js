@@ -168,7 +168,7 @@ function get_verse_data(subject_type, subject_id, slice_by, all_active, min_coun
     var def = $.Deferred();
     var granularity = 'cumulative'; //for now
     var url = location.protocol + "//www.kiva.org/ajax/getSuperGraphData?&sliceBy="+ slice_by +"&include="+ all_active +"&measure=count&subject_id=" + subject_id + "&type=" + subject_type + "&granularity=" + granularity;
-    var cache_key = `get_verse_data_${subject_type}_${subject_id}_${slice_by}_${all_active }_${min_count}_${max_count}_${granularity}`;
+    var cache_key = `get_verse_data_${subject_type}_${subject_id}_${slice_by}_${all_active}_${min_count}_${max_count}_${granularity}`;
 
     get_cache(cache_key, def).done(result => {
         cl(result);
@@ -264,7 +264,7 @@ function sp_top_3_lender_sectors_from_slices(slices){
     percent_portfolio(slices).then((top_3, percent) => {
         sp(`${top_3} account for ${percent} percent of their portfolio`);
     }).fail(top_3 => {
-        sp(`Their most popular countries are ${top_3}`);
+        sp(`Their most popular sectors are ${top_3}`);
     });
 }
 
