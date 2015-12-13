@@ -52,6 +52,7 @@ function f_is_logged_in(){
 function get_lender(t_id){
     var def = $.Deferred();
 
+    //does cache ever get set??
     get_cache('lender_' + t_id, def, 10 * minute).done(lender => {
         def.resolve(lender);
     }).fail(()=>{
@@ -67,6 +68,27 @@ function get_lender(t_id){
     });
     return def.promise();
 }
+
+function get_lenders(t_ids){
+    var def = $.Deferred();
+
+    //in an ideal world, this would look at each one to see if we had a cached result before calling.
+    //then would store each result individually in the cache
+    //this never gets cached.
+
+    get_cache('lenders_' + t_ids, def, 10 * minute).done(lenders => {
+        def.resolve(lenders);
+    }).fail(()=>{
+        $.ajax({
+            url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_ids.join(',') + ".json?app_id=org.kiva.kivalens",
+            cache: false,
+            fail: def.reject,
+            success: function (result) { def.resolve(result.lenders) }
+        });
+    });
+    return def.promise();
+}
+
 function get_team(t_id){
     var def = $.Deferred();
 
