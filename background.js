@@ -26,10 +26,12 @@ var settings = new Store("settings", {
     "debug_output_to_console": false
 });
 
-chrome.pageAction.onClicked.addListener(function(tab){
-    chrome.tabs.create({ url: "options_custom/index.html" });
-    //chrome.tabs.create({ "url": "chrome://extensions/?options=" + chrome.runtime.id });
-});
+if (chrome.pageAction) {
+    chrome.pageAction.onClicked.addListener(function (tab) {
+        chrome.tabs.create({url: "options_custom/index.html"})
+        //chrome.tabs.create({ "url": "chrome://extensions/?options=" + chrome.runtime.id });
+    })
+}
 
 ///OMNIBOX
 if (settings.toObject().add_on_omnibar) {
@@ -69,6 +71,24 @@ if (settings.toObject().add_on_omnibar) {
         }
     );
 }
+
+//integration with KivaLens
+chrome.runtime.onMessageExternal.addListener(
+    function(request, sender, sendResponse) {
+        if (request) {
+            if (request.getFeatures) {
+                sendResponse({features:['setAutoLendPartners']})
+            }
+            if (request.setAutoLendPartners) {
+                set_session_cache('setAutoLendPartners',request.setAutoLendPartners)
+                chrome.tabs.create({ url: "https://www.kiva.org/settings/credit?klset=1" })
+                sendResponse({received:true})
+            }
+        }
+        return true;
+    })
+
+
 
 //background message receiver
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
