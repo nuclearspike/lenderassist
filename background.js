@@ -77,11 +77,15 @@ chrome.runtime.onMessageExternal.addListener(
     function(request, sender, sendResponse) {
         if (request) {
             if (request.getFeatures) {
-                sendResponse({features:['setAutoLendPartners']})
+                sendResponse({features:['setAutoLendPartners','setAutoLendPCS']})
             }
-            if (request.setAutoLendPartners) {
-                set_session_cache('setAutoLendPartners',request.setAutoLendPartners)
-                chrome.tabs.create({ url: "https://www.kiva.org/settings/credit?klset=1" })
+            if (request.setAutoLendPartners) { //deprecated
+                chrome.tabs.create({ url: `https://www.kiva.org/settings/credit?kivalens=true&partner_ids=${request.setAutoLendPartners.join(',')}` })
+                sendResponse({received:true})
+            }
+            if (request.setAutoLendPCS) {
+                var o = request.setAutoLendPCS
+                chrome.tabs.create({ url: `https://www.kiva.org/settings/credit?kivalens=true&partner_ids=${o.partners.join(',')}&countries=${encodeURI(o.countries.join(','))}&sectors=${encodeURI(o.sectors.join(','))}` })
                 sendResponse({received:true})
             }
         }
