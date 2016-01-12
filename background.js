@@ -77,7 +77,13 @@ chrome.runtime.onMessageExternal.addListener(
     function(request, sender, sendResponse) {
         if (request) {
             if (request.getFeatures) {
-                sendResponse({features:['setAutoLendPartners','setAutoLendPCS']})
+                sendResponse({features:['setAutoLendPartners','setAutoLendPCS','getManifest','getVersion']})
+            }
+            if (request.getManifest){
+                sendResponse({manifest: chrome.runtime.getManifest()})
+            }
+            if (request.getVersion){
+                sendResponse({version: chrome.runtime.getManifest().version})
             }
             if (request.setAutoLendPartners) { //deprecated
                 chrome.tabs.create({ url: `https://www.kiva.org/settings/credit?kivalens=true&partner_ids=${request.setAutoLendPartners.join(',')}` })
