@@ -435,18 +435,18 @@ function url_to_parts(url){
 }
 
 function url_to_api_object(url){
-    var def = $.Deferred();
-    var parts = url_to_parts(url);
+    var def = $.Deferred()
+    var parts = url_to_parts(url)
     if (parts.reject) {
-        def.reject();
-        return def.promise();
+        def.reject()
+        return def.promise()
     } else {
         var funcs = {
             team: get_team,
             lend: get_loan,
             lender: get_lender,
             partners: get_partner
-        };
+        }
     }
     return funcs[parts.path](parts.id); //promise
 }
