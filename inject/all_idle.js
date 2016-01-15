@@ -20,8 +20,6 @@ function set_zip_button(){
     });
 }
 
-
-
 if_setting('speech_enabled').done(settings => {
     if (settings.speech_enabled_hover_team) {
         wire_intent('a[href*="kiva.org/team/"]', 'team_chatter', function ($element) {
@@ -40,8 +38,6 @@ if_setting('speech_enabled').done(settings => {
     }
 });
 
-
-
 $(document).on('click', 'a[href*="kiva.org/lender/"]', function(e){
     e.preventDefault();
     var $elem = $(e.target).closest('a');
@@ -55,7 +51,13 @@ $(document).on('click', 'a[href*="kiva.org/lend/"]', function(e){
     sp_rand(wait_words);
 });
 
+function addKLToMenu(){
+    $('.loggedIndropdownMenu ul').find('li > #loggedInMenuMessages').parent().after($(`<li class="stretch"><a href="http://www.kivalens.org/#/search"  target="_blank"  class="elem_track_click" data-elem="sec_messages" id="loggedInMenuKivaLens" style="opacity: 1;">Go to KivaLens.org</a></li>`))
+}
+
 $(function(){
+    addKLToMenu()
+
     do_if_awhile("check_zip_logged_in", 15 * minute, function(){
         $.ajax({
             type: 'GET',

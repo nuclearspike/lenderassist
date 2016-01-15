@@ -62,7 +62,7 @@ function an_lender(loan){
             sp(`You've never lent to anyone in ${loan.location.country} before. Maybe now is the time.`, loan);
         }
 
-    }).fail(cl.bind(null,"failed;"));
+    }).fail(cl.bind(null,"failed;"))
 }
 
 function an_wait_words(){
@@ -72,7 +72,7 @@ function an_wait_words(){
 }
 
 function an_massage(loan){
-    loan.final_payment = new Date(loan.terms.scheduled_payments[loan.terms.scheduled_payments.length - 1].due_date);
+    loan.final_payment = new Date(loan.terms.scheduled_payments.last().due_date)
 }
 
 function an_status(loan){
@@ -84,7 +84,7 @@ function an_status(loan){
 
 function an_repayment_term(loan, low, high){
     if (loan.status != 'fundraising') return;
-    var months_to_go = (loan.final_payment - new Date()) / month;
+    var months_to_go = (loan.final_payment - new Date()) / month
 
     var frd = loan.final_payment;
 
@@ -103,14 +103,14 @@ function an_repayment_term(loan, low, high){
         if (days_ago_pred > 0) {
             sp(`The money was pre-disbursed ${days_ago_pred} days ago`, loan);
             if (new Date(loan.terms.local_payments[0].date) < new Date()) {
-                sp("And they've already started paying back", loan);
+                sp("And they've already started paying back", loan)
             }
         }
     }
 }
 
 function an_loan_attr(loan){
-    if (new Date() - new Date(loan.posted_date) < hour * 3){
+    if (new Date() - new Date(loan.posted_date) < 3 * hour){
         sp("This only just posted within the past few hours.", loan);
     }
     if (loan.funded_amount == 0) { //due to lag of API, this could be wrong.
@@ -143,6 +143,15 @@ function an_partner_stuff(partner) {
         sp("Nice! The field partner has a lot of social performance badges including " + partner.social_performance_strengths[get_rand_int(partner.social_performance_strengths.length)].name, partner);
     }
 }
+
+function addKLToMenu(){
+    var loanFromURL = url_to_parts(location.href).id
+    $('.loggedIndropdownMenu ul').find('li > #loggedInMenuMessages').parent().after($(`<li class="stretch"><a href="http://www.kivalens.org/#/search/loan/${loanFromURL}" target="_blank" class="elem_track_click" data-elem="sec_messages" id="loggedInMenuKivaLensLoan" style="opacity: 1;">View Loan on KivaLens.org</a></li>`))
+}
+
+$(()=>{
+    addKLToMenu()
+})
 
 if_setting(['speech_enabled','speech_enabled_analyze_loan']).done(()=>
     api_object.done([short_talk_loan, analyze_loan, function () {

@@ -3,7 +3,13 @@ if_setting(['speech_enabled','speech_enabled_analyze_lender']).done(()=>
     api_object.done([short_talk_lender, sp_top_3_lender_stats, get_lender_teams])
 );
 
+function add3DWallLink(){
+    var lenderId = url_to_parts(location.href).id
+    $('dl.profileStats').prepend(`<dt>3D Loan Wall</dt><dd><a href="http://www.kivalens.org/#/portfolio?kivaid=${lenderId}" target="_blank" >View</a>`)
+}
+
 $(()=>{
+    add3DWallLink()
     var invitees_arr = []
     $("ul.lenderCards .lenderCard a.thumb").each((i,e)=>{
         invitees_arr.push(url_to_parts(e.href).id)

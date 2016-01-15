@@ -77,7 +77,7 @@ chrome.runtime.onMessageExternal.addListener(
     function(request, sender, sendResponse) {
         if (request) {
             if (request.getFeatures) {
-                sendResponse({features:['setAutoLendPartners','setAutoLendPCS','getManifest','getVersion']})
+                sendResponse({features:['setAutoLendPartners','setAutoLendPCS','getManifest','getVersion','getLenderId']})
             }
             if (request.getManifest){
                 sendResponse({manifest: chrome.runtime.getManifest()})
@@ -94,10 +94,14 @@ chrome.runtime.onMessageExternal.addListener(
                 chrome.tabs.create({ url: `https://www.kiva.org/settings/credit?kivalens=true&partner_ids=${o.partners.join(',')}&countries=${encodeURI(o.countries.join(','))}&sectors=${encodeURI(o.sectors.join(','))}` })
                 sendResponse({received:true})
             }
+            if (request.getLenderId){
+                chrome.storage.local.get("lender_id", function(result){
+                    sendResponse({lender_id: result.lender_id})
+                })
+            }
         }
-        return true;
+        return true; //leave channel open?
     })
-
 
 
 //background message receiver
