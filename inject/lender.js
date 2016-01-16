@@ -5,7 +5,7 @@ if_setting(['speech_enabled','speech_enabled_analyze_lender']).done(()=>
 
 function add3DWallLink(){
     var lenderId = url_to_parts(location.href).id
-    $('dl.profileStats').prepend(`<dt>3D Loan Wall</dt><dd><a href="http://www.kivalens.org/#/portfolio?kivaid=${lenderId}" target="_blank" >View</a>`)
+    $('dl.profileStats').prepend(`<dt>3D Loan Wall:</dt><dd><a href="http://www.kivalens.org/#/portfolio?kivaid=${lenderId}" title="Opens in a new tab" target="_blank" >View on KivaLens</a>`)
 }
 
 $(()=>{
