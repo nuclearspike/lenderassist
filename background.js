@@ -72,18 +72,26 @@ if (settings.toObject().add_on_omnibar) {
     );
 }
 
+//
+var newLoansInList =[]
+
 //integration with KivaLens
 chrome.runtime.onMessageExternal.addListener(
     function(request, sender, sendResponse) {
         if (request) {
             if (request.getFeatures) {
-                sendResponse({features:['setAutoLendPartners','setAutoLendPCS','getManifest','getVersion','getLenderId']})
+                sendResponse({features:['setAutoLendPartners','setAutoLendPCS','getManifest','getVersion','getLenderId','notify']})
             }
             if (request.getManifest){
                 sendResponse({manifest: chrome.runtime.getManifest()})
             }
             if (request.getVersion){
                 sendResponse({version: chrome.runtime.getManifest().version})
+            }
+            if (request.notify){
+                new Audio('sounds/sweep.mp3').play()
+                chrome.notifications.create("KLA.KL.notify", {iconUrl: 'icons/icon128.png', type: 'basic', title: 'Notice from KivaLens', message: request.params}, notifyId => {})
+                sendResponse({received: true})
             }
             if (request.setAutoLendPartners) { //deprecated
                 chrome.tabs.create({ url: `https://www.kiva.org/settings/credit?kivalens=true&partner_ids=${request.setAutoLendPartners.join(',')}` })

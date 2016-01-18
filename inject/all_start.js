@@ -1,3 +1,4 @@
+'use strict'
 cl("all_start.js processing");
 
 //chrome.storage.get(null, function(all){
@@ -23,7 +24,7 @@ function fetch_value( key ) {
 function ar_and(arr){
     var result = "";
     for (i = 0; i < arr.length; i++){
-        connector = '';
+        var connector = '';
         if (i > 0) {
             if (i == arr.length - 1) {
                 connector = ' and ';
@@ -37,7 +38,7 @@ function ar_and(arr){
 }
 
 function f_is_logged_in(){
-    result = $("div.loggedInGreeting").length > 0;
+    var result = $("div.loggedInGreeting").length > 0;
     if (result) {
         chrome.storage.local.set({"was_logged_in": true});
     } else {
@@ -61,8 +62,7 @@ function get_lender(t_id){
             cache: false,
             fail: def.reject,
             success: function (result) {
-                lender = result.lenders[0];
-                def.resolve(lender);
+                def.resolve(result.lenders[0]);
             }
         });
     });
@@ -100,8 +100,7 @@ function get_team(t_id){
             cache: false,
             fail: def.reject,
             success: (result) => {
-                team = result.teams[0];
-                def.resolve(team);
+                def.resolve(result.teams[0]);
             }
         });
     })
@@ -121,7 +120,7 @@ function get_loans(loan_id_arr){
         cache: false,
         fail: def.reject,
         success: function (result) {
-            loans = result.loans;
+            var loans = result.loans;
             $.each(loans, function(i, loan){
                 set_cache('loan_' + loan.id, loan);
             });
@@ -145,8 +144,7 @@ function get_loan(t_id){
             cache: false,
             fail: def.reject,
             success: function (result) {
-                loan = result.loans[0];
-                def.resolve(loan);
+                def.resolve(result.loans[0]);
             }
         });
     });
@@ -164,8 +162,7 @@ function get_partner(t_id){
             cache: false,
             fail: def.reject,
             success: (result) => {
-                partner = result.partners[0];
-                def.resolve(partner);
+                def.resolve(result.partners[0]);
             }
         });
     });
@@ -175,14 +172,11 @@ function get_partner(t_id){
 
 function get_partner_from_loan(loan){
     var def = $.Deferred();
-
     if (!loan.partner){
-        get_partner(loan.partner_id).done(partner => { loan.partner = partner; }).done(def.resolve);
+        get_partner(loan.partner_id).done(partner => { loan.partner = partner; }).done(p => loan.partner = p).done(def.resolve);
     } else {
-        loan.partner = partner; //todo: partner is bad. does this do anything? isn't loan lost?
         def.resolve(loan.partner);
     }
-
     return def.promise();
 }
 
@@ -206,7 +200,6 @@ function get_verse_data(subject_type, subject_id, slice_by, all_active, min_coun
         }).success(result => {
             var slices = [];
             var totals = {};
-            var total_unsliced = 0;
             var total_sum = 0;
 
             if (result.data) {
@@ -231,9 +224,9 @@ function get_verse_data(subject_type, subject_id, slice_by, all_active, min_coun
             } else {
                 def.reject();
             }
-        }).fail(def.reject);
+        }).fail(def.reject)
     });
-    return def.promise();
+    return def
 }
 
 function combine_all_and_active_verse_data(subject_type, subject_id, slice_by){
@@ -242,7 +235,7 @@ function combine_all_and_active_verse_data(subject_type, subject_id, slice_by){
     $.when(get_verse_data(subject_type, subject_id, slice_by, 'all', 0, -1),
         get_verse_data(subject_type, subject_id, slice_by, 'active', 0, -1))
         .then((all_results, active_results)=>{
-            result = { all: all_results, active: active_results};
+            var result = { all: all_results, active: active_results};
             //set_cache(cache_key, result);
             def.resolve(result);
         }).fail(def.reject);
@@ -269,11 +262,11 @@ function sp_top_3_lender_regions(lender){ //not in use anymore
 function percent_portfolio(slices, over_perc){
     var def = $.Deferred();
     if (!over_perc) { over_perc = 20; }
-    total = 0;
+    var total = 0;
     for (var key in slices.totals) {
         total += slices.totals[key];
     }
-    percent = Math.floor(100 * total / slices.total_sum);
+    var percent = Math.floor(100 * total / slices.total_sum);
     if (percent >= over_perc){
         def.resolve(ar_and(slices.ordered.slice(0,3)), percent);
     } else {
@@ -348,7 +341,7 @@ function plural(count, word, plural_word){
 
 //used when you nave to the myLenderId page directly or during ajax calls if it doesn't know who you are and you're logged in.
 function figure_lender_id(dom) {
-    old_lender_id = lender_id;
+    var old_lender_id = lender_id;
     var lender_id = $(dom).find("center > div:first").text(); //brittle!
     if (lender_id != "") {
         cl(lender_id);
@@ -366,9 +359,9 @@ function short_talk_loan(loan){
 }
 
 function short_talk_team(team){
-    speak = [team.name];
+    var speak = [team.name];
 
-    ago = date_diff_to_words(Date.now() - new Date(team.team_since));
+    var ago = date_diff_to_words(Date.now() - new Date(team.team_since));
     speak.push("team has been around for " + ago.units + ago.uom);
 
     if (team.member_count > 500) {
@@ -388,14 +381,14 @@ function short_talk_lender(lender){
     if (Date.now() - lender.last_spoke < 10 * second){
         return;
     }
-    speak = [];
+    var speak = [];
     if (lender.whereabouts.length > 0) {
         speak.push("lives in " + lender.whereabouts);
     }
     if (lender.loan_count > 0) {
         speak.push("has made " + plural(lender.loan_count, "loan"));
     }
-    ago = date_diff_to_words(Date.now() - new Date(lender.member_since));
+    var ago = date_diff_to_words(Date.now() - new Date(lender.member_since));
     speak.push("has been lending for " + ago.units + ago.uom);
     if (lender.invitee_count > 0){
         speak.push("has made " + plural(lender.invitee_count, "successful invitation"));
@@ -454,9 +447,7 @@ function url_to_api_object(url){
 var api_object = url_to_api_object(window.location.href); //promise
 
 //CODE TO RUN
-chrome.storage.local.get("lender_id", function(result){
-    lender_id = result.lender_id;
-});
+chrome.storage.local.get("lender_id", result => lender_id = result.lender_id);
 
 chrome.storage.local.set({"last_visit": Date.now()});
 
