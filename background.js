@@ -80,13 +80,17 @@ chrome.runtime.onMessageExternal.addListener(
     function(request, sender, sendResponse) {
         if (request) {
             if (request.getFeatures) {
-                sendResponse({features:['setAutoLendPartners','setAutoLendPCS','getManifest','getVersion','getLenderId','notify']})
+                sendResponse({features:['setAutoLendPartners','setAutoLendPCS','getManifest','getVersion','getLenderId','notify','speak']})
             }
             if (request.getManifest){
                 sendResponse({manifest: chrome.runtime.getManifest()})
             }
             if (request.getVersion){
                 sendResponse({version: chrome.runtime.getManifest().version})
+            }
+            if (request.speak){
+                narrate(request.params)
+                sendResponse({received:true})
             }
             if (request.notify){
                 new Audio('sounds/sweep.mp3').play()
@@ -171,7 +175,7 @@ function narrate(utterance, context, follow_up, interrupt, callback) {
 
     //a "follow up" message must match the same context or it gets skipped.
 
-    if (typeof context == Object) {
+    if (typeof context == 'object') {
         context = JSON.stringify(context);
     }
 

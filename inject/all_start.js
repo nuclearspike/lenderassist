@@ -5,7 +5,6 @@ cl("all_start.js processing");
     //console.log(all);
 //});
 
-
 //hmm.
 function fetch_value( key ) {
     var dfd = $.Deferred();
@@ -23,7 +22,7 @@ function fetch_value( key ) {
 
 function ar_and(arr){
     var result = "";
-    for (i = 0; i < arr.length; i++){
+    for (var i = 0; i < arr.length; i++){
         var connector = '';
         if (i > 0) {
             if (i == arr.length - 1) {
@@ -183,7 +182,7 @@ function get_partner_from_loan(loan){
 function get_verse_data(subject_type, subject_id, slice_by, all_active, min_count, max_count){
     var def = $.Deferred();
     var granularity = 'cumulative'; //for now
-    var url = location.protocol + "//www.kiva.org/ajax/getSuperGraphData?&sliceBy="+ slice_by +"&include="+ all_active +"&measure=count&subject_id=" + subject_id + "&type=" + subject_type + "&granularity=" + granularity;
+    var url = "https://www.kiva.org/ajax/getSuperGraphData?&sliceBy="+ slice_by +"&include="+ all_active +"&measure=count&subject_id=" + subject_id + "&type=" + subject_type + "&granularity=" + granularity;
     var cache_key = `get_verse_data_${subject_type}_${subject_id}_${slice_by}_${all_active}_${min_count}_${max_count}_${granularity}`;
 
     get_cache(cache_key, def).done(result => {
@@ -209,11 +208,11 @@ function get_verse_data(subject_type, subject_id, slice_by, all_active, min_coun
                     max_count = Math.min(max_count, result.data.length);
                 }
 
-                for (i = 0; i < result.data.length; i++){
+                for (var i = 0; i < result.data.length; i++){
                     total_sum += parseInt(result.data[i].value);
                 }
 
-                for (i = 0; i < max_count; i++) {
+                for (var i = 0; i < max_count; i++) {
                     slices.push(result.lookup[result.data[i].name]);
                     totals[result.lookup[result.data[i].name]] = parseInt(result.data[i].value); //todo: store object for slice {value: 12, percent: 25.0}
                 }
