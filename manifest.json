@@ -1,7 +1,7 @@
 {
   "name": "Kiva Lender Assistant",
   "description": "KLA analyzes loans, shows repayment data on the list of loans, gives easy access to what's happening now, and much more!",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "manifest_version": 2,
   "homepage_url": "https://github.com/nuclearspike/lenderassist",
   "background" : { "page": "background.html" },
@@ -60,34 +60,34 @@
       "js": ["inject/secure_pages.js"]
     },
     {
-      "matches": ["http://www.kiva.org/lend/*"],
+      "matches": ["*://www.kiva.org/lend/*"],
       "run_at": "document_end",
       "js": ["inject/loans.js"]
     },
     {
-      "matches": ["http://www.kiva.org/lend","http://www.kiva.org/lend?*","http://www.kiva.org/lend#*"],
+      "matches": ["*://www.kiva.org/lend","*://www.kiva.org/lend?*","*://www.kiva.org/lend#*"],
       "run_at": "document_end",
       "js": ["inject/lend.js"]
     },
     {
-      "matches": ["http://www.kiva.org/partners/*"],
+      "matches": ["*://www.kiva.org/partners/*"],
       "run_at": "document_end",
       "js": ["inject/partner.js"]
     },
     {
-      "matches": ["http://www.kiva.org/live*"],
+      "matches": ["*://www.kiva.org/live*"],
       "run_at": "document_end",
       "css": ["inject/live.css"],
       "js": ["inject/live.js"]
     },
     {
-      "matches": ["http://www.kiva.org/live","http://www.kiva.org/live?v=2"],
+      "matches": ["*://www.kiva.org/live","*://www.kiva.org/live?v=2"],
       "run_at": "document_end",
       "css": ["inject/live_globe.css"],
       "js": ["inject/live_globe.js"]
     },
     {
-      "matches": ["http://www.kiva.org/live?v=1"],
+      "matches": ["*://www.kiva.org/live?v=1"],
       "run_at": "document_end",
       "css": ["inject/live_map.css"],
       "js": ["inject/live_map.js"]
