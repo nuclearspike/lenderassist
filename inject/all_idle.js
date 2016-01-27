@@ -52,6 +52,8 @@ $(document).on('click', 'a[href*="kiva.org/lend/"]', function(e){
 });
 
 function addKLToMenu(){
+    if (lender_id)
+        $('.loggedIndropdownMenu ul').find('li > #loggedInMenuPortfolio').parent().after($(`<li class="stretch"><a href="/lender/${lender_id}?super_graphs=1" class="elem_track_click" data-elem="sec_messages" id="loggedInMenuLenderPage" style="opacity: 1;">My Lender Page</a></li>`))
     $('.loggedIndropdownMenu ul').find('li > #loggedInMenuMessages').parent().after($(`<li class="stretch"><a href="http://www.kivalens.org/#/search"  target="_blank"  class="elem_track_click" data-elem="sec_messages" id="loggedInMenuKivaLens" style="opacity: 1;">Go to KivaLens.org</a></li>`))
 }
 

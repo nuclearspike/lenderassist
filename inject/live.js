@@ -56,7 +56,7 @@ $(document).ready(function() {
                     var len_href = $lender_links.first().attr('href');
                     //fix the links to lender pages to have full domain in them so that hover-overs will automatically work.
                     if (len_href.indexOf('www.kiva.org') == -1) { //if it's later fixed on www, stop doing it.
-                        $lender_links.attr('href', len_href.replace('lender/', 'http://www.kiva.org/lender/'));
+                        $lender_links.attr('href', len_href.replace('lender/', 'https://www.kiva.org/lender/'));
                     }
                     var lender_url = $lender_links.attr('href');
                     $new_li.data().lender_id = lender_url.split('/')[4];

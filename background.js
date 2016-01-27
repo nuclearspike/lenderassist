@@ -1,4 +1,4 @@
-console.log("background.js processing");
+    console.log("background.js processing");
 
 var settings = new Store("settings", {
     "speech_enabled": true,
@@ -103,7 +103,7 @@ chrome.runtime.onMessageExternal.addListener(
             }
             if (request.setAutoLendPCS) {
                 var o = request.setAutoLendPCS
-                chrome.tabs.create({ url: `https://www.kiva.org/settings/credit?kivalens=true&partner_ids=${o.partners.join(',')}&countries=${encodeURI(o.countries.join(','))}&sectors=${encodeURI(o.sectors.join(','))}` })
+                chrome.tabs.create({ url: `https://www.kiva.org/settings/credit?kla=true&partner_ids=${o.partners.join(',')}&countries=${encodeURI(o.countries.join(','))}&sectors=${encodeURI(o.sectors.join(','))}` })
                 sendResponse({received:true})
             }
             if (request.getLenderId){
