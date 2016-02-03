@@ -146,7 +146,8 @@ function an_partner_stuff(partner) {
 
 function addKLToMenu(){
     var loanFromURL = url_to_parts(location.href).id
-    $('.loggedIndropdownMenu ul').find('li > #loggedInMenuMessages').parent().after($(`<li class="stretch"><a href="http://www.kivalens.org/#/search/loan/${loanFromURL}" target="_blank" class="elem_track_click" data-elem="sec_messages" id="loggedInMenuKivaLensLoan" style="opacity: 1;">View Loan on KivaLens.org</a></li>`))
+    if (loanFromURL)
+        $('.loggedIndropdownMenu ul').find('li > #loggedInMenuMessages').parent().after($(`<li class="stretch"><a href="http://www.kivalens.org/#/search/loan/${loanFromURL}" target="_blank" class="elem_track_click" data-elem="sec_messages" id="loggedInMenuKivaLensLoan" style="opacity: 1;">View Loan on KivaLens.org</a></li>`))
 }
 
 $(()=>{
