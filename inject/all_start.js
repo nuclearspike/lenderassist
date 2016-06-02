@@ -37,11 +37,11 @@ function ar_and(arr){
 }
 
 function f_is_logged_in(){
-    var result = $("div.loggedInGreeting").length > 0;
+    var result = $('#my-kiva-dropdown').length > 0;
     if (result) {
         chrome.storage.local.set({"was_logged_in": true});
     } else {
-        if ($(".headerLoginContainer").length > 0) {
+        if ($(".xbLegacyNav").length > 0) {
             //test for the login div to really know. opening a lender picture was registering it as not logged in
             chrome.storage.local.set({"was_logged_in": false});
         }
@@ -133,13 +133,14 @@ function get_loans(loan_id_arr){
 }
 
 function get_loan(t_id){
+    if (isNaN(t_id)) return //happens on lend tab
     var def = $.Deferred();
 
     get_cache('loan_' + t_id, def, 10 * minute).done(loan => {
         def.resolve(loan);
     }).fail(() => {
         $.ajax({
-            url: window.location.protocol + "//api.kivaws.org/v1/loans/" + t_id + ".json?app_id=org.kiva.kivalens",
+            url:  `https://api.kivaws.org/v1/loans/${t_id}.json?app_id=org.kiva.kivalens`,
             cache: false,
             fail: def.reject,
             success: function (result) {
@@ -157,7 +158,7 @@ function get_partner(t_id){
         def.resolve(partner);
     }).fail(()=>{
         $.ajax({
-            url: window.location.protocol + "//api.kivaws.org/v1/partners/" + t_id + ".json?app_id=org.kiva.kivalens",
+            url: `https://api.kivaws.org/v1/partners/${t_id}.json?app_id=org.kiva.kivalens`,
             cache: false,
             fail: def.reject,
             success: (result) => {
@@ -340,7 +341,7 @@ function plural(count, word, plural_word){
 
 //used when you nave to the myLenderId page directly or during ajax calls if it doesn't know who you are and you're logged in.
 function figure_lender_id(dom) {
-    var old_lender_id = lender_id;
+    var old_lender_id = lender_id; //hmm.
     var lender_id = $(dom).find("center > div:first").text(); //brittle!
     if (lender_id != "") {
         cl(lender_id);

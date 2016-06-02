@@ -1,7 +1,7 @@
 {
   "name": "Kiva Lender Assistant",
   "description": "KLA analyzes loans, shows repayment data on the list of loans, gives easy access to what's happening now, and much more!",
-  "version": "1.2.4",
+  "version": "1.3.1",
   "manifest_version": 2,
   "homepage_url": "https://github.com/nuclearspike/lenderassist",
   "background" : { "page": "background.html" },
@@ -15,7 +15,6 @@
       "38": "icons/icon38.png"
     },
     "default_title": "Kiva Lender Assistant (click to view options)"
-
   },
   "permissions": [
     "tts",
@@ -32,7 +31,7 @@
     "keyword": "kiva"
   },
   "externally_connectable": {
-    "matches": ["*://localhost/*","*://www.kivalens.org/*"]
+    "matches": ["*://www.kivalens.org/*"]
   },
   "content_scripts": [
     {
@@ -60,12 +59,7 @@
       "js": ["inject/secure_pages.js"]
     },
     {
-      "matches": ["*://www.kiva.org/lend/*"],
-      "run_at": "document_end",
-      "js": ["inject/loans.js"]
-    },
-    {
-      "matches": ["*://www.kiva.org/lend","*://www.kiva.org/lend?*","*://www.kiva.org/lend#*"],
+      "matches": ["*://www.kiva.org/lend*"],
       "run_at": "document_end",
       "js": ["inject/lend.js"]
     },

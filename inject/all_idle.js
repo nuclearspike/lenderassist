@@ -5,6 +5,7 @@ function set_zip_button(){
     chrome.storage.local.get('zip_logged_in', function(res){
         zip_logged_in = res.zip_logged_in || false;
 
+        //todo: redesign  this is gone
         $zip = $("#siteNavZip").find("a"); //nav on WWW
 
         if (f_is_logged_in() && !zip_logged_in) { //WWW in|ZIP not. alter the zip button to go to the oauth login...
@@ -52,9 +53,11 @@ $(document).on('click', 'a[href*="kiva.org/lend/"]', function(e){
 });
 
 function addKLToMenu(){
+    var teamsButton  = $('<div id="top-basket-button" class="show-for-large-up large-4 columns"><a class="header-button " href="https://www.kiva.org/teams"><span class="amount hide">0</span> Teams</a></div>')
+    $("div.top-nav .header-row div.small-1-8th").before(teamsButton)
     if (lender_id)
-        $('.loggedIndropdownMenu ul').find('li > #loggedInMenuPortfolio').parent().after($(`<li class="stretch"><a href="/lender/${lender_id}?super_graphs=1" class="elem_track_click" data-elem="sec_messages" id="loggedInMenuLenderPage" style="opacity: 1;">My Lender Page</a></li>`))
-    $('.loggedIndropdownMenu ul').find('li > #loggedInMenuMessages').parent().after($(`<li class="stretch"><a href="http://www.kivalens.org/#/search"  target="_blank"  class="elem_track_click" data-elem="sec_messages" id="loggedInMenuKivaLens" style="opacity: 1;">Go to KivaLens.org</a></li>`))
+        $('#my-kiva-dropdown').find('li').first().after($(`<li><a href="/lender/${lender_id}?super_graphs=1" class="elem_track_click" data-elem="sec_messages" id="loggedInMenuLenderPage" style="opacity: 1;">My Lender Page</a></li>`))
+    $('#my-kiva-dropdown').find('li').first().after($(`<li><a href="http://www.kivalens.org/#/search"  target="_blank"  class="elem_track_click" data-elem="sec_messages" id="loggedInMenuKivaLens" style="opacity: 1;">Go to KivaLens.org</a></li>`))
 }
 
 $(function(){
