@@ -1,25 +1,5 @@
+"use strict";
 cl("all_idle.js processing");
-$(".siteNav li a").animate({opacity: 1});
-
-function set_zip_button(){
-    chrome.storage.local.get('zip_logged_in', function(res){
-        zip_logged_in = res.zip_logged_in || false;
-
-        //todo: redesign  this is gone
-        $zip = $("#siteNavZip").find("a"); //nav on WWW
-
-        if (f_is_logged_in() && !zip_logged_in) { //WWW in|ZIP not. alter the zip button to go to the oauth login...
-            $zip.attr('href', 'https://zip.kiva.org/users/auth/kiva?kv_method=login');
-        } else if (zip_logged_in) { //if ZIP in then just hop to loans page
-            $zip.attr('href', 'https://zip.kiva.org/loans'); //don't do all the cross promo stuff. they have an account.
-        }
-
-        $zip.click(function(){
-            //clear these so that injected pages on zip do a full check when on the site.
-            chrome.storage.local.remove(['check_zip_logged_in','zip_logged_in']);
-        });
-    });
-}
 
 if_setting('speech_enabled').done(settings => {
     if (settings.speech_enabled_hover_team) {
@@ -52,27 +32,36 @@ $(document).on('click', 'a[href*="kiva.org/lend/"]', function(e){
     sp_rand(wait_words);
 });
 
-function addKLToMenu(){
-    var teamsButton  = $('<div id="top-basket-button" class="show-for-large-up large-4 columns"><a class="header-button " href="https://www.kiva.org/teams"><span class="amount hide">0</span> Teams</a></div>')
-    $("div.top-nav .header-row div.small-1-8th").before(teamsButton)
+function AddButtonToBanner(id, text, url) {
+    var newButton  = $(`<div id=top-${id}-button" class="show-for-large-up large-4 columns"><a class="header-button " href="${url}">${text}</a></div>`)
+    $("div.top-nav .header-row div.small-1-8th").before(newButton)
+}
+
+function addToDOM(){
+    if_setting('custom_button_master').done(settings => {
+        if (settings.custom_button_all_teams)
+            AddButtonToBanner("teams", "Teams", "https://www.kiva.org/teams");
+        if (settings.custom_button_my_teams)
+            AddButtonToBanner("my-teams", "My Teams", "https://www.kiva.org/teams/my-teams");
+        if (settings.custom_button_live)
+            AddButtonToBanner("live", "Live", "https://www.kiva.org/live");
+        if (settings.custom_button_kivalens)
+            AddButtonToBanner("kivalens", "KivaLens", "https://www.kivalens.org/#/search");
+
+        ([1,2,3]).forEach(i => {
+            var caption = settings[`custom_button_${i}_caption`]
+            var url = settings[`custom_button_${i}_url`]
+            console.log("test", caption, url)
+            if ((caption.trim() != "") && /^((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/i.test(url)){
+                AddButtonToBanner(`custom_button_${i}_url`, caption, url)
+            }
+        })
+    })
+
+
     if (lender_id)
         $('#my-kiva-dropdown').find('li').first().after($(`<li><a href="/lender/${lender_id}?super_graphs=1" class="elem_track_click" data-elem="sec_messages" id="loggedInMenuLenderPage" style="opacity: 1;">My Lender Page</a></li>`))
     $('#my-kiva-dropdown').find('li').first().after($(`<li><a href="http://www.kivalens.org/#/search"  target="_blank"  class="elem_track_click" data-elem="sec_messages" id="loggedInMenuKivaLens" style="opacity: 1;">Go to KivaLens.org</a></li>`))
 }
 
-$(function(){
-    addKLToMenu()
-
-    do_if_awhile("check_zip_logged_in", 15 * minute, function(){
-        $.ajax({
-            type: 'GET',
-            url: "https://zip.kiva.org/about",
-            success: function(output) { //BRITTLE.
-                var zip_logged_in = $(output).find("li.dropdown > a.user-menu").length > 0;
-                cl("Zip Logged In: " + zip_logged_in);
-                chrome.storage.local.set({"zip_logged_in": zip_logged_in}, set_zip_button); //todo: this needs to clear for sure if it's used to prevent the ajax call.
-            },
-            cache: false
-        });
-    }, set_zip_button);
-});
+$(()=> addToDOM());

@@ -18,8 +18,13 @@ var settings = new Store("settings", {
     "speech_enabled_analyze_partner": true,
 
     "add_on_repayment_loan_card": true,
+    "add_on_always_show_partner_on_loan": true,
     "add_on_omnibar": true,
 
+    custom_button_all_teams: false,
+    custom_button_my_teams: false,
+    custom_button_live: false,
+    
     "high_months_to_payback": 12,
     "low_months_to_payback": 5,
 

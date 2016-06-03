@@ -9,8 +9,6 @@ this.manifest = {
             "type": "checkbox",
             "label": "Enable Speech. Disable this to prevent this extension from speaking to you."
         },
-
-
         {   "tab": "Speech",
             "group": "Hover-over Links",
             "name": "speech_enabled_hover_loan",
@@ -35,8 +33,6 @@ this.manifest = {
             "type": "checkbox",
             "label": "Read ticker on /Live Page and add comments about loans, lenders and teams if time."
         },
-
-
         {   "tab": "Speech",
             "group": "General",
             "name": "speech_enabled_analyze_lender",
@@ -62,8 +58,6 @@ this.manifest = {
             "type": "checkbox",
             "label": "Speak when extension starts up"
         },
-
-
         {   "tab": "Speech",
             "group": "Loan Details",
             "name": "speech_enabled_analyze_loan",
@@ -116,15 +110,18 @@ this.manifest = {
             "type": "checkbox",
             "label": "Comment on partner risk and social performance badges"
         },
-
-
-
-
+        
         {   "tab": "Other",
-            "group": "Add-on",
+            "group": "Features",
             "name": "add_on_repayment_loan_card",
             "type": "checkbox",
             "label": "Add final repayment date, time to end of loan and sparklines to loan cards on /lend"
+        },
+        {   "tab": "Other",
+            "group": "Features",
+            "name": "add_on_always_show_partner_on_loan",
+            "type": "checkbox",
+            "label": "Always show Partner (MFI) or Trustee (direct loans) details section on loan pages"
         },
         {
             "tab": "Other",
@@ -139,6 +136,83 @@ this.manifest = {
             "name": "debug_output_to_console",
             "type": "checkbox",
             "label": "Output debugging messages to console"
+        },
+        {
+            "tab": "Banner Buttons",
+            "group": "Master Switch",
+            "name": "custom_button_master",
+            "type": "checkbox",
+            "label": "Add buttons to Kiva's Banner/Header at the top of every page (Must be enabled for any buttons below to appear)"
+        },
+        {
+            "tab": "Banner Buttons",
+            "group": "Presets",
+            "name": "custom_button_kivalens",
+            "type": "checkbox",
+            "label": "Add KivaLens"
+        },
+        {
+            "tab": "Banner Buttons",
+            "group": "Presets",
+            "name": "custom_button_all_teams",
+            "type": "checkbox",
+            "label": "Add Teams/Community listing"
+        },
+        {
+            "tab": "Banner Buttons",
+            "group": "Presets",
+            "name": "custom_button_my_teams",
+            "type": "checkbox",
+            "label": "Add My Teams page"
+        },
+        {
+            "tab": "Banner Buttons",
+            "group": "Presets",
+            "name": "custom_button_live",
+            "type": "checkbox",
+            "label": "Add Happening Now real-time map animation"
+        },
+        {
+            "tab": "Banner Buttons",
+            "group": "Button 1",
+            "name": "custom_button_1_caption",
+            "type": "text",
+            "label": "Text"
+        },
+        {
+            "tab": "Banner Buttons",
+            "group": "Button 1",
+            "name": "custom_button_1_url",
+            "type": "text",
+            "label": "URL"
+        },
+        {
+            "tab": "Banner Buttons",
+            "group": "Button 2",
+            "name": "custom_button_2_caption",
+            "type": "text",
+            "label": "Text"
+        },
+        {
+            "tab": "Banner Buttons",
+            "group": "Button 2",
+            "name": "custom_button_2_url",
+            "type": "text",
+            "label": "URL"
+        },
+        {
+            "tab": "Banner Buttons",
+            "group": "Button 3",
+            "name": "custom_button_3_caption",
+            "type": "text",
+            "label": "Text"
+        },
+        {
+            "tab": "Banner Buttons",
+            "group": "Button 3",
+            "name": "custom_button_3_url",
+            "type": "text",
+            "label": "URL"
         }
     ],
     "alignment" : [

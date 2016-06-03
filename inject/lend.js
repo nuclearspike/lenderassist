@@ -252,9 +252,17 @@ function treatAsLendTab(){
 }
 
 function treatAsLoanPage() {
-    $(()=> addKLToMenu())
+    $(()=> {
+        if_setting("add_on_always_show_partner_on_loan").done(()=> {
+            $("#ac-field-partner-details-body-right").attr("aria-hidden", false);
+            $(".field-partner-details .ac-container .ac-dropdown-icon").remove();
+            $("#ac-trustee-info-body-right").attr("aria-hidden", false);
+            $(".trustee-details .ac-container .ac-dropdown-icon").remove();
+        })
+        addKLToMenu()
+    })
 
-    if_setting(['speech_enabled','speech_enabled_analyze_loan']).done(()=>
+    if_setting(['speech_enabled', 'speech_enabled_analyze_loan']).done(()=>
         api_object.done([short_talk_loan, analyze_loan, function () {
             block_wait_words = true
         }])
