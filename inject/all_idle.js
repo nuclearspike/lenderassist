@@ -51,8 +51,7 @@ function addToDOM(){
         ([1,2,3]).forEach(i => {
             var caption = settings[`custom_button_${i}_caption`]
             var url = settings[`custom_button_${i}_url`]
-            console.log("test", caption, url)
-            if ((caption.trim() != "") && /^((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/i.test(url)){
+            if (caption && (caption.trim() != "") && /^((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/i.test(url)){
                 AddButtonToBanner(`custom_button_${i}_url`, caption, url)
             }
         })
@@ -64,4 +63,4 @@ function addToDOM(){
     $('#my-kiva-dropdown').find('li').first().after($(`<li><a href="http://www.kivalens.org/#/search"  target="_blank"  class="elem_track_click" data-elem="sec_messages" id="loggedInMenuKivaLens" style="opacity: 1;">Go to KivaLens.org</a></li>`))
 }
 
-$(()=> addToDOM());
+$(addToDOM);

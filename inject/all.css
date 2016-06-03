@@ -5,15 +5,26 @@
     opacity: 0;
 }
 
-div.lenderassist_final_repay {
-    margin-top: 0px;
-    font-size: 95%;
-    height: 62px;
+div.lenderassist_additional {
+    border-radius: 0px;
     border-style: solid;
     border-width: 1px;
     border-color: #CCCCCC;
     background-color: #F7F7F2;
-    border-radius: 0px;
+}
+
+div.lenderassist_final_repay {
+    margin-top: 0px;
+    font-size: 75%;
+    height: 45px;
     padding: 4px;
-    min-height: 52px;
+}
+
+div.lenderassist_partner {
+    margin-top: 0px;
+    font-size: 75%;
+    height: 25px;
+    background-color: #F7F7F2;
+    padding: 4px;
+    overflow-y: hidden;
 }

@@ -111,32 +111,6 @@ this.manifest = {
             "label": "Comment on partner risk and social performance badges"
         },
         
-        {   "tab": "Other",
-            "group": "Features",
-            "name": "add_on_repayment_loan_card",
-            "type": "checkbox",
-            "label": "Add final repayment date, time to end of loan and sparklines to loan cards on /lend"
-        },
-        {   "tab": "Other",
-            "group": "Features",
-            "name": "add_on_always_show_partner_on_loan",
-            "type": "checkbox",
-            "label": "Always show Partner (MFI) or Trustee (direct loans) details section on loan pages"
-        },
-        {
-            "tab": "Other",
-            "group": "Omnibar",
-            "name": "add_on_omnibar",
-            "type": "checkbox",
-            "label": "When typing in Chrome's Location/Search bar (Omnibar) send queries like 'kiva cattle' to search for 'cattle' on Kiva's lend tab rather than to Google."
-        },
-        {
-            "tab": "Other",
-            "group": "Debug",
-            "name": "debug_output_to_console",
-            "type": "checkbox",
-            "label": "Output debugging messages to console"
-        },
         {
             "tab": "Banner Buttons",
             "group": "Master Switch",
@@ -213,6 +187,39 @@ this.manifest = {
             "name": "custom_button_3_url",
             "type": "text",
             "label": "URL"
+        },
+
+        {   "tab": "Other",
+            "group": "Features",
+            "name": "add_on_repayment_loan_card",
+            "type": "checkbox",
+            "label": "Add final repayment date, time to end of loan and sparklines to loan cards on /lend"
+        },
+        {   "tab": "Other",
+            "group": "Features",
+            "name": "add_on_always_show_partner_on_lend_tab",
+            "type": "checkbox",
+            "label": "Always show Partner (MFI) name on Lend Tab"
+        },
+        {   "tab": "Other",
+            "group": "Features",
+            "name": "add_on_always_show_partner_on_loan",
+            "type": "checkbox",
+            "label": "Always show Partner (MFI) or Trustee (direct loans) details section on loan pages"
+        },
+        {
+            "tab": "Other",
+            "group": "Omnibar",
+            "name": "add_on_omnibar",
+            "type": "checkbox",
+            "label": "When typing in Chrome's Location/Search bar (Omnibar) send queries like 'kiva cattle' to search for 'cattle' on Kiva's lend tab rather than to Google."
+        },
+        {
+            "tab": "Other",
+            "group": "Debug",
+            "name": "debug_output_to_console",
+            "type": "checkbox",
+            "label": "Output debugging messages to console"
         }
     ],
     "alignment" : [

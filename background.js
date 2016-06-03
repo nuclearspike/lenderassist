@@ -18,9 +18,11 @@ var settings = new Store("settings", {
     "speech_enabled_analyze_partner": true,
 
     "add_on_repayment_loan_card": true,
+    "add_on_always_show_partner_on_lend_tab": true,
     "add_on_always_show_partner_on_loan": true,
     "add_on_omnibar": true,
 
+    custom_button_kivalens: false,
     custom_button_all_teams: false,
     custom_button_my_teams: false,
     custom_button_live: false,

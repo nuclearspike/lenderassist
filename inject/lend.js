@@ -15,71 +15,96 @@ function cache_lookup_complete(){
 function perform_mass_loan_lookup(){
     var loan_ids = [];
     //collect ids to look up
-    $(".lenderassist_final_repay.lenderassist_needs_lookup").each((i,elem) => {
+    $(".lenderassist_additional.lenderassist_needs_lookup").each((i,elem) => {
         var $elem = $(elem);
         $elem.removeClass('lenderassist_needs_lookup').addClass('lenderassist_waiting');
         loan_ids.push($elem.data('loan-id'));
     });
     //lookup all ids
     if (loan_ids.length == 0) return;
+    console.log("looking up: ", loan_ids)
     get_loans(loan_ids).done(loans => {
-        $.each(loans, (i,loan)=>{
-            //will only be one, possibly zero if page has changed since request was made.
-            $(`.lenderassist_final_repay.lenderassist_waiting[data-loan-id=${loan.id}]`).each((i,elem)=>{
-                receive_loan_data(loan, $(elem));
+        loan_ids.forEach(id => {
+            $(`.lenderassist_additional.lenderassist_waiting[data-loan-id=${id}]`).each((i,elem)=>{
+                receive_loan_data(loans.first(l => l.id == id), $(elem));
             })
         })
     })
 }
 
-function wire_loan_list($loan_cards){
-    if_setting('add_on_repayment_loan_card').done(()=>{
-        cache_tests_left = 1;
-        $(".loancards-list li .loan-card").each(function(i,elem){
-            wire_element_for_extra(elem);
-        });
-        cache_lookup_complete(); //hacky. this is to make sure all of the elems have been processed before it starts mass lookup
+var show_partner, show_repayments;
+
+function wire_loan_list(){
+    get_settings().done(settings => {
+        show_partner = settings.add_on_always_show_partner_on_lend_tab;
+        show_repayments = settings.add_on_repayment_loan_card;
+
+        if (show_partner || show_repayments) {
+            cache_tests_left = 1;
+            $(".loancards-list li .loan-card").each((i, elem) => wire_element_for_extra(elem));
+            cache_lookup_complete(); //hacky. this is to make sure all of the elems have been processed before it starts mass lookup
+        }
     })
 }
-
 
 function wire_element_for_extra(elem){
     var $elem = $(elem);
 
     //if we've already added it, don't add it again.
-    if ($elem.find('.lenderassist_final_repay').length > 0){
+    if ($elem.find('.lenderassist_additional').length > 0){
         return;
     }
     //create the div to add
     var loan_id = url_to_parts($elem.find('.borrower-img-wrap').first().attr("href")).id;
-    var $finalRepay = $(`<div class='lenderassist_final_repay lenderassist_needs_lookup' data-loan-id='${loan_id}'>Checking Repayment...</div>`);
+    var $finalRepay = show_repayments ? `<div class='lenderassist_final_repay'>Checking Repayment...</div>` : '';
+    var $partnerName = show_partner ? `<div class='lenderassist_partner'>Looking up Partner...</div>` : '';
+    var $klaAdditional =  $(`<div class='lenderassist_additional lenderassist_needs_lookup' data-loan-id='${loan_id}'>${$finalRepay} ${$partnerName}</div>`);
 
     //add the block
-    $elem.find('.borrower-details-wrap').first().before($finalRepay);
+    $elem.find('.borrower-details-wrap').first().before($klaAdditional);
     cache_tests_left++;
-    get_cache('loan_' + loan_id).done(loan => {
+    get_cache('loan_graph_' + loan_id).done(loan => {
         //if we've already looked it up, just fill in the details immediately
-        receive_loan_data(loan, $finalRepay);
+        console.log("found cache: ", loan)
+        receive_loan_data(loan, $klaAdditional);
     }).always(cache_lookup_complete);
 }
 
-function receive_loan_data(loan, $finalRepay){
-    if (loan.terms.scheduled_payments && loan.terms.scheduled_payments.length > 0) {
-        var last_payment = new Date(loan.terms.scheduled_payments[loan.terms.scheduled_payments.length - 1].due_date);
-        var diff = roundedToFixed((last_payment - (new Date())) / (365 * 24 * 60 * 60 * 1000), 1);
-        var payments = loan.terms.scheduled_payments.select(function(payment){
-            return {due_date: new Date(payment.due_date).toString("MMM-yyyy"), amount: payment.amount}
-        }) //todo: can be reduced
-        var spark_data  = payments.groupBy(function(p){return p.due_date}).select(function(g){ return g.sum(function(r){return r.amount}) })
-        var spark = "<span class='sparkit'>"+ spark_data.join(',') +"</span>";
-        $finalRepay.html('Final: ' + last_payment.toString('MMM d, yyyy') + " (" + diff + ' years)<br/>' + spark);
-        $finalRepay.find('span.sparkit').sparkline('html', {type: 'bar', barColor: 'blue', chartRangeMin: 0, barWidth: 2} );
-
-    } else {
-        $finalRepay.html('Unknown Final Date');
+function receive_loan_data(loan, $klaAdditional){
+    if (show_repayments) {
+        var $finalRepay = $klaAdditional.find(".lenderassist_final_repay")
+        if (!loan) { //happens for Zip loans for now...
+            $finalRepay.html('Unknown Final Date');
+        } else if (loan.repayments && loan.repayments.length > 0) {
+            var last_payment = new Date(loan.final_repayment);
+            var diff = roundedToFixed((last_payment - (new Date())) / (365 * 24 * 60 * 60 * 1000), 1);
+            var spark_data = loan.repayments.select(r => r.amount)
+            var spark = "<span class='sparkit'>" + spark_data.join(',') + "</span>";
+            $finalRepay.html(`Final: ${last_payment.toString('MMM d, yyyy')} (${diff} years ${loan.terms.repayment_interval})<br/>` + spark);
+            $finalRepay.find('span.sparkit').sparkline('html', {
+                type: 'bar',
+                barColor: 'blue',
+                chartRangeMin: 0,
+                barWidth: 2
+            });
+        } else {
+            $finalRepay.html('Unknown Final Date');
+        }
     }
-    $finalRepay.removeClass('lenderassist_waiting');
-    $finalRepay.removeClass('lenderassist_needs_lookup');
+
+    if (show_partner) {
+        var $partnerName = $klaAdditional.find(".lenderassist_partner")
+        if (!loan) {
+            $partnerName.html('No Partner');
+        } else if (loan.partner && loan.partner.name) {
+            $partnerName.html(loan.partner.name)
+        } else {
+            $partnerName.html("No Partner")
+        }
+    }
+
+    $klaAdditional.removeClass('lenderassist_waiting');
+    $klaAdditional.removeClass('lenderassist_needs_lookup');
 }
 
 /////////////////////////////////////////
@@ -186,9 +211,6 @@ function an_repayment_term(loan, low, high){
         var days_ago_pred = Math.floor((Date.now() - predisbursal_date) / day);
         if (days_ago_pred > 0) {
             sp(`The money was pre-disbursed ${days_ago_pred} days ago`, loan);
-            //if (new Date(loan.terms.local_payments[0].date) < new Date()) {
-            //    sp("And they've already started paying back", loan)
-            //}
         }
     }
 }
@@ -239,7 +261,7 @@ function treatAsLendTab(){
     //on page load, wire it up.
     setTimeout(()=>{
         wire_loan_list();
-    },1000); //todo: this is bad. could miss if it takes longer, otherwise it waits too long.
+    },2000); //todo: this is bad. could miss if it takes longer, otherwise it waits too long.
 
     //".loanCards"
     //DON'T EXECUTE ON /LEND/1234

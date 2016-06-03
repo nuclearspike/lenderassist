@@ -1,3 +1,4 @@
+"use strict";
 cl("all_common_start.js processing");
 //this is shared between www, zip, and background pages.
 
@@ -8,12 +9,19 @@ var lender_id = undefined;
 
 chrome.runtime.sendMessage({location_icon: true});
 
-//execute .done() IFF the setting is set to true, then also returns whole settings object
+function get_settings() {
+    var dfd = $.Deferred();
+    chrome.runtime.sendMessage({get_settings: true}, dfd.resolve)
+    return dfd.promise();
+}
+
+//execute .done() IFF the settings are all set to true, then also returns whole settings object
+//can use .always() to get the settings object
 function if_setting(setting_name){
     var keys = Array.isArray(setting_name) ? setting_name : [setting_name];
     var dfd = $.Deferred();
 
-    chrome.runtime.sendMessage({get_settings: true}, function(settings){
+    get_settings().done(settings => {
         var all_true = function(settings){
             var result = true;
             $.each(keys, function(i, key){
@@ -30,6 +38,7 @@ function if_setting(setting_name){
             dfd.reject(settings);
         }
     });
+    
     return dfd.promise();
 }
 
@@ -59,7 +68,7 @@ function sp_once(named_utterance, utterance){
     chrome.storage.local.get(named_utterance, function(res){
         if (is_not_set(res[named_utterance])) {
             sp(utterance);
-            obj = {};
+            var obj = {};
             obj[named_utterance] = true; //named_utterance must be a variable, cannot reduce to {named_utterance: true}
             chrome.storage.local.set(obj);
         }
@@ -95,8 +104,8 @@ function clear_cache(){
 
 function date_diff_to_words(date_diff){
     if (date_diff < hour){
-        units = Math.floor(date_diff / minute);
-        uom = ' minute';
+        var units = Math.floor(date_diff / minute);
+        var uom = ' minute';
     } else if (date_diff < day) {
         units = Math.floor(date_diff / hour);
         uom = ' hour';
@@ -144,7 +153,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         }
     }
     //debug
-    for (key in changes) {
+    for (var key in changes) {
         var storageChange = changes[key];
         console.log(`Storage key "${key}" in namespace "${namespace}" changed. Old value was "${storageChange.oldValue}", new value is "${storageChange.newValue}".`)
     }
@@ -156,7 +165,7 @@ function do_if_awhile(named_process, amount_of_time, check_func, if_ready_func){
         var last_check = res[named_process];
         if (is_not_set(last_check) || (Date.now().getTime() -  last_check > amount_of_time)){
             check_func();
-            obj = {};
+            var obj = {};
             obj[named_process] = Date.now().getTime();
             chrome.storage.local.set(obj);
         } else {

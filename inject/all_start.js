@@ -106,30 +106,38 @@ function get_team(t_id){
     return def.promise();
 }
 
+function graph_ql(query) {
+    return $.post("https://kivalens.herokuapp.com/graphql",{query})
+        .then(result => result.data)
+}
 
 function get_loans(loan_id_arr){
-    var def = $.Deferred();
     //eventually...
     //get_cache on every loan in array
     //for the ones that didn't fail add them to the results array.
     //$.when
-
-    $.ajax({
-        url: window.location.protocol + "//api.kivaws.org/v1/loans/" + loan_id_arr.join(',') + ".json?app_id=org.kiva.kivalens",
-        cache: false,
-        fail: def.reject,
-        success: function (result) {
-            var loans = result.loans;
-            $.each(loans, function(i, loan){
-                set_cache('loan_' + loan.id, loan);
+    return graph_ql(`{loans(ids:[${loan_id_arr.join(',')}]) {
+                id
+                final_repayment
+                terms {
+                  repayment_interval
+                }
+                repayments(show_zero_amounts:true) {
+                  display
+                  amount
+                }
+                partner {
+                  name
+                }
+              }
+            }`)
+        .then(data => {
+            var loans = data.loans.where(l=>l)
+            loans.forEach(loan => {
+                set_cache('loan_graph_' + loan.id, loan)
             });
-            def.resolve(loans);
-        }
-    });
-
-    //set_cache for all loans
-
-    return def.promise();
+            return loans;
+        })
 }
 
 function get_loan(t_id){
@@ -153,6 +161,11 @@ function get_loan(t_id){
 
 function get_partner(t_id){
     var def = $.Deferred();
+
+    if (!t_id) {
+        def.reject()
+        return
+    }
 
     get_cache('partner_' + t_id, def, 6 * hour).done(partner=>{
         def.resolve(partner);
