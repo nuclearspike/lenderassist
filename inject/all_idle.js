@@ -33,7 +33,7 @@ $(document).on('click', 'a[href*="kiva.org/lend/"]', function(e){
 });
 
 function AddButtonToBanner(id, text, url) {
-    var newButton  = $(`<div id=top-${id}-button" class="show-for-large-up large-4 columns"><a class="header-button " href="${url}">${text}</a></div>`)
+    var newButton  = $(`<div id=top-${id}-button" class="show-for-large-up large-4 columns"><a class="header-button" href="${url}">${text}</a></div>`)
     $("div.top-nav .header-row div.small-1-8th").before(newButton)
 }
 
@@ -51,7 +51,7 @@ function addToDOM(){
         ([1,2,3]).forEach(i => {
             var caption = settings[`custom_button_${i}_caption`]
             var url = settings[`custom_button_${i}_url`]
-            if (caption && (caption.trim() != "") && /^((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/i.test(url)){
+            if (caption && (caption.trim() != "") && /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/i.test(url)){
                 AddButtonToBanner(`custom_button_${i}_url`, caption, url)
             }
         })

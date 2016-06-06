@@ -119,23 +119,14 @@ function get_loans(loan_id_arr){
     return graph_ql(`{loans(ids:[${loan_id_arr.join(',')}]) {
                 id
                 final_repayment
-                terms {
-                  repayment_interval
-                }
-                repayments(show_zero_amounts:true) {
-                  display
-                  amount
-                }
-                partner {
-                  name
-                }
+                terms { repayment_interval}
+                repayments(show_zero_amounts:true) { amount }
+                partner { name }
               }
             }`)
         .then(data => {
-            var loans = data.loans.where(l=>l)
-            loans.forEach(loan => {
-                set_cache('loan_graph_' + loan.id, loan)
-            });
+            var loans = data.loans.where(l=>l); //some come back null.
+            loans.forEach(loan => set_cache('loan_graph_' + loan.id, loan));
             return loans;
         })
 }
@@ -174,9 +165,7 @@ function get_partner(t_id){
             url: `https://api.kivaws.org/v1/partners/${t_id}.json?app_id=org.kiva.kivalens`,
             cache: false,
             fail: def.reject,
-            success: (result) => {
-                def.resolve(result.partners[0]);
-            }
+            success: result => def.resolve(result.partners[0]) 
         });
     });
 
@@ -186,7 +175,10 @@ function get_partner(t_id){
 function get_partner_from_loan(loan){
     var def = $.Deferred();
     if (!loan.partner){
-        get_partner(loan.partner_id).done(partner => { loan.partner = partner; }).done(p => loan.partner = p).done(def.resolve);
+        get_partner(loan.partner_id)
+            .done(partner => { loan.partner = partner; })
+            .done(p => loan.partner = p)
+            .done(def.resolve);
     } else {
         def.resolve(loan.partner);
     }

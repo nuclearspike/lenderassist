@@ -95,7 +95,7 @@ function receive_loan_data(loan, $klaAdditional){
     if (show_partner) {
         var $partnerName = $klaAdditional.find(".lenderassist_partner")
         if (!loan) {
-            $partnerName.html('No Partner');
+            $partnerName.html('');
         } else if (loan.partner && loan.partner.name) {
             $partnerName.html(loan.partner.name)
         } else {
@@ -280,7 +280,18 @@ function treatAsLoanPage() {
             $(".field-partner-details .ac-container .ac-dropdown-icon").remove();
             $("#ac-trustee-info-body-right").attr("aria-hidden", false);
             $(".trustee-details .ac-container .ac-dropdown-icon").remove();
+        });
+        api_object.done(loan => {
+            if (loan.status == "fundraising") {
+                var expiration = new Date(loan.planned_expiration_date);
+                //var timezone = Date.getTimezoneAbbreviation(expiration.getTimezoneOffset(), expiration.isDaylightSavingTime());
+                $(".loan-total").after($(`<div>Expires: ${expiration.toString("MMM d, yyyy h:mm tt")} </div>`))
+            }
+            var posted = new Date(loan.posted_date);
+            //var timezone = Date.getTimezoneAbbreviation(posted.getTimezoneOffset(), posted.isDaylightSavingTime());
+            $(".loan-total").after($(`<div>Posted: ${posted.toString("MMM d, yyyy h:mm tt")} </div>`))
         })
+
         addKLToMenu()
     })
 
