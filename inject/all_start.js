@@ -136,12 +136,12 @@ function get_loan_detail(loan_id){
     return graph_ql(`{loan(id:${loan_id}) {
                 terms { repayment_interval }
                 half_back(format: "MMM yyyy")
+                half_back_actual
                 three_fourths_back(format: "MMM yyyy")
+                three_fourths_back_actual
                 final_repayment(format: "MMM yyyy")
                 repayments(show_zero_amounts:true) {
-                  amount
-                  percent
-                  display
+                  amount percent display
                 }
               }
             }`)

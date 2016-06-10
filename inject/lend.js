@@ -241,7 +241,7 @@ function an_partner_risk(partner){
         sp("Oh wow. The MFI is very highly rated, which means that the MFI has lower risk of failing.", partner);
     }
     if (rate <= 2.5){ //make user defined
-        sp("The field partner has a low risk rating, meaning it is higher risk.", partner);
+        sp("The field partner's risk rating indicates it is higher risk.", partner);
     }
 }
 
@@ -348,8 +348,8 @@ function addGraphs(id) {
         container.highcharts(config(loan))
 
         var graphs = $(`<div>Interval: ${loan.terms.repayment_interval}</div>
-            <div>50% Back: ${loan.half_back}</div>
-            <div>75% Back: ${loan.three_fourths_back}</div>
+            <div>${Math.round(loan.half_back_actual)}% back by: ${loan.half_back}</div>
+            <div>${Math.round(loan.three_fourths_back_actual)}% back by: ${loan.three_fourths_back}</div>
             <div>Final Repayment: ${loan.final_repayment}</div>`)
         repayments.append(graphs)
 

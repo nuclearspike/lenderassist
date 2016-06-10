@@ -1,7 +1,7 @@
 {
   "name": "Kiva Lender Assistant",
   "description": "KLA analyzes loans, shows repayment data on the list of loans, gives easy access to what's happening now, and much more!",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "manifest_version": 2,
   "homepage_url": "https://github.com/nuclearspike/lenderassist",
   "background" : { "page": "background.html" },
@@ -22,7 +22,6 @@
     "notifications",
     "http://www.kiva.org/",
     "https://www.kiva.org/",
-    "https://zip.kiva.org/",
     "http://api.kivaws.org/",
     "https://api.kivaws.org/",
     "http://www.kivalens.org/"
@@ -35,7 +34,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://www.kiva.org/*","https://zip.kiva.org/*"],
+      "matches": ["*://www.kiva.org/*"],
       "run_at": "document_start",
       "js": ["js_lib/jquery/jquery.min.js", "js_lib/jquery/jquery.sparkline.min.js", "js_lib/linq.min.js", "js_lib/highcharts.js", "js_lib/date.js", "inject/all_common_start.js"]
     },
@@ -53,10 +52,6 @@
     {
       "matches": ["*://www.kiva.org/*"],
       "js": ["inject/all_idle.js"]
-    },
-    {
-      "matches": ["https://www.kiva.org/*"],
-      "js": ["inject/secure_pages.js"]
     },
     {
       "matches": ["*://www.kiva.org/lend*"],
@@ -104,11 +99,6 @@
       "matches": ["*://www.kiva.org/team/*"],
       "css": ["inject/team.css"],
       "js": ["inject/team.js"]
-    },
-    {
-      "matches": ["https://zip.kiva.org/*"],
-      "run_at": "document_end",
-      "js": ["inject/zip.js"]
     }
   ]
 }

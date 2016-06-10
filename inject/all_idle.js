@@ -28,8 +28,11 @@ $(document).on('click', 'a[href*="kiva.org/lender/"]', function(e){
 });
 
 $(document).on('click', 'a[href*="kiva.org/lend/"]', function(e){
-    var wait_words = ["Hum, just a second", "Let me look at this.", "Interesting...", "Look at this one.", "", "One second.", "Hold on...", "Wow.", "Okay.", "Ooo.", "Just a moment.", "What do you think about this one?", "Here we go."];
-    sp_rand(wait_words);
+    var id = url_to_parts(location.href).id
+    if (!isNaN(id)) {
+        var wait_words = ["Hum, just a second", "Let me look at this.", "Interesting...", "Look at this one.", "", "One second.", "Hold on...", "Wow.", "Okay.", "Ooo.", "Just a moment.", "What do you think about this one?", "Here we go."];
+        sp_rand(wait_words);
+    }
 });
 
 function AddButtonToBanner(id, text, url) {
