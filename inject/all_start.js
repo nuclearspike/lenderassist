@@ -111,6 +111,7 @@ function graph_ql(query) {
         .then(result => result.data)
 }
 
+//get data for lend tab
 function get_loans(loan_id_arr){
     //eventually...
     //get_cache on every loan in array
@@ -129,6 +130,22 @@ function get_loans(loan_id_arr){
             loans.forEach(loan => set_cache('loan_graph_' + loan.id, loan));
             return loans;
         })
+}
+
+function get_loan_detail(loan_id){
+    return graph_ql(`{loan(id:${loan_id}) {
+                terms { repayment_interval }
+                half_back(format: "MMM yyyy")
+                three_fourths_back(format: "MMM yyyy")
+                final_repayment(format: "MMM yyyy")
+                repayments(show_zero_amounts:true) {
+                  amount
+                  percent
+                  display
+                }
+              }
+            }`)
+        .then(data => data.loan)
 }
 
 function get_loan(t_id){

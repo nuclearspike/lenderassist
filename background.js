@@ -20,6 +20,7 @@ var settings = new Store("settings", {
     "add_on_repayment_loan_card": true,
     "add_on_always_show_partner_on_lend_tab": true,
     "add_on_always_show_partner_on_loan": true,
+    add_on_always_show_repayments_on_loan: true,
     "add_on_omnibar": true,
 
     custom_button_kivalens: false,

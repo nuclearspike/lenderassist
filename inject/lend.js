@@ -22,7 +22,7 @@ function perform_mass_loan_lookup(){
     });
     //lookup all ids
     if (loan_ids.length == 0) return;
-    console.log("looking up: ", loan_ids)
+    cl("looking up: ", loan_ids)
     get_loans(loan_ids).done(loans => {
         loan_ids.forEach(id => {
             $(`.lenderassist_additional.lenderassist_waiting[data-loan-id=${id}]`).each((i,elem)=>{
@@ -65,7 +65,7 @@ function wire_element_for_extra(elem){
     cache_tests_left++;
     get_cache('loan_graph_' + loan_id).done(loan => {
         //if we've already looked it up, just fill in the details immediately
-        console.log("found cache: ", loan)
+        cl("found cache: ", loan)
         receive_loan_data(loan, $klaAdditional);
     }).always(cache_lookup_complete);
 }
@@ -181,7 +181,8 @@ function an_wait_words(){
 }
 
 function an_massage(loan){
-    loan.final_payment = new Date(loan.terms.scheduled_payments.last().due_date)
+    var last_payment = loan.terms.scheduled_payments.last()
+    loan.final_payment = last_payment ? new Date(last_payment.due_date) : null
 }
 
 function an_status(loan){
@@ -273,7 +274,90 @@ function treatAsLendTab(){
     });
 }
 
-function treatAsLoanPage() {
+function addGraphs(id) {
+    const config = loan => {
+        return {
+            chart: {
+                alignTicks: false,
+                type: 'bar',
+                animation: false,
+                backgroundColor: "#EFEFEF"
+            },
+            title: {text: null},
+            xAxis: {
+                categories: loan.repayments.map(r => r.display),
+                title: {text: null}
+            },
+            yAxis: [{
+                min: 0,
+                dataLabels: {enabled: false},
+                labels: {overflow: 'justify'},
+                title: {text: 'USD'}
+            },
+                {
+                    min: 0,
+                    max: 100,
+                    dataLabels: {enabled: false},
+                    labels: {overflow: 'justify'},
+                    title: {text: 'Percent'}
+                }],
+            tooltip: {
+                valueDecimals: 2
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true,
+                        valueDecimals: 2,
+                        format: '${y:.2f} USD'
+                    }
+                },
+                area: {
+                    marker: {enabled: false},
+                    dataLabels: {
+                        enabled: false,
+                        valueDecimals: 0,
+                        format: '{y:.0f}%'
+                    }
+                }
+            },
+            legend: {enabled: false},
+            credits: {enabled: false},
+            series: [{
+                type: 'column',
+                animation: false,
+                zIndex: 6,
+                name: 'Repayment',
+                data: loan.repayments.map(r => r.amount),
+            }, {
+                type: 'area',
+                animation: false,
+                yAxis: 1,
+                zIndex: 5,
+                name: 'Percentage',
+                data: loan.repayments.map(r => r.percent),
+            }]
+        }
+    }
+    get_loan_detail(id).done(loan => {
+        if (!loan || !loan.repayments) return
+        var height = Math.max(400, Math.min(loan.repayments.length * 50, 1000))
+        var container = $(`<div style='z-index:1000; height:${height}px'/>`)
+        var repayments = $("section.repayment-schedule")
+        repayments.append(container)
+        container.highcharts(config(loan))
+
+        var graphs = $(`<div>Interval: ${loan.terms.repayment_interval}</div>
+            <div>50% Back: ${loan.half_back}</div>
+            <div>75% Back: ${loan.three_fourths_back}</div>
+            <div>Final Repayment: ${loan.final_repayment}</div>`)
+        repayments.append(graphs)
+
+        cl("REPAY: ", loan)
+    })
+}
+
+function treatAsLoanPage(id) {
     $(()=> {
         if_setting("add_on_always_show_partner_on_loan").done(()=> {
             $("#ac-field-partner-details-body-right").attr("aria-hidden", false);
@@ -284,15 +368,16 @@ function treatAsLoanPage() {
         api_object.done(loan => {
             if (loan.status == "fundraising") {
                 var expiration = new Date(loan.planned_expiration_date);
-                //var timezone = Date.getTimezoneAbbreviation(expiration.getTimezoneOffset(), expiration.isDaylightSavingTime());
                 $(".loan-total").after($(`<div>Expires: ${expiration.toString("MMM d, yyyy h:mm tt")} </div>`))
             }
             var posted = new Date(loan.posted_date);
-            //var timezone = Date.getTimezoneAbbreviation(posted.getTimezoneOffset(), posted.isDaylightSavingTime());
             $(".loan-total").after($(`<div>Posted: ${posted.toString("MMM d, yyyy h:mm tt")} </div>`))
         })
 
-        addKLToMenu()
+        addKLToMenu() //adds "view loan on KL"
+        if_setting("add_on_always_show_repayments_on_loan").done(()=> {
+            addGraphs(id)
+        })
     })
 
     if_setting(['speech_enabled', 'speech_enabled_analyze_loan']).done(()=>
@@ -308,5 +393,5 @@ var id = url_to_parts(location.href).id
 if (isNaN(id)) {
     treatAsLendTab()
 } else {
-    treatAsLoanPage()
+    treatAsLoanPage(id)
 }

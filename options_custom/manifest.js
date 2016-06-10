@@ -203,9 +203,15 @@ this.manifest = {
         },
         {   "tab": "Other",
             "group": "Features",
+            "name": "add_on_always_show_repayments_on_loan",
+            "type": "checkbox",
+            "label": "Always show Repayments graphs (amounts & percentages) on loan detail pages"
+        },
+        {   "tab": "Other",
+            "group": "Features",
             "name": "add_on_always_show_partner_on_loan",
             "type": "checkbox",
-            "label": "Always show Partner (MFI) or Trustee (direct loans) details section on loan pages"
+            "label": "Always show Partner (MFI) or Trustee (direct loans) details section on loan detail pages"
         },
         {
             "tab": "Other",
