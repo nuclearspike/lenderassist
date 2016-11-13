@@ -35,6 +35,7 @@ function perform_mass_loan_lookup(){
 var show_partner, show_repayments;
 
 function wire_loan_list(){
+    console.log('wire_loan_list');
     get_settings().done(settings => {
         show_partner = settings.add_on_always_show_partner_on_lend_tab;
         show_repayments = settings.add_on_repayment_loan_card;
@@ -50,18 +51,26 @@ function wire_loan_list(){
 function wire_element_for_extra(elem){
     var $elem = $(elem);
 
+    console.log('wire for extra', $elem);
     //if we've already added it, don't add it again.
     if ($elem.find('.lenderassist_additional').length > 0){
         return;
     }
+
+    const isListView = $('.list-view-header:visible').length > 0;
+
     //create the div to add
-    var loan_id = url_to_parts($elem.find('.borrower-img-wrap').first().attr("href")).id;
+    var loan_id = url_to_parts($elem.find('.borrower-image-wrap a').first().attr("href")).id;
     var $finalRepay = show_repayments ? `<div class='lenderassist_final_repay'>Checking Repayment...</div>` : '';
-    var $partnerName = show_partner ? `<div class='lenderassist_partner'>Looking up Partner...</div>` : '';
+    var $partnerName = show_partner && !isListView ? `<div class='lenderassist_partner'>Looking up Partner...</div>` : '';
     var $klaAdditional =  $(`<div class='lenderassist_additional lenderassist_needs_lookup' data-loan-id='${loan_id}'>${$finalRepay} ${$partnerName}</div>`);
 
     //add the block
-    $elem.find('.borrower-details-wrap').first().before($klaAdditional);
+    if (isListView) { //LIST VIEW
+        $elem.find('.borrower-footer-wrap').first().after($klaAdditional);
+    } else { //CARD VIEW
+        $elem.find('.borrower-details-wrap').first().before($klaAdditional);
+    }
     cache_tests_left++;
     get_cache('loan_graph_' + loan_id).done(loan => {
         //if we've already looked it up, just fill in the details immediately
@@ -264,9 +273,6 @@ function treatAsLendTab(){
         wire_loan_list();
     },2000); //todo: this is bad. could miss if it takes longer, otherwise it waits too long.
 
-    //".loanCards"
-    //DON'T EXECUTE ON /LEND/1234
-
     $(document).on("DOMNodeInserted", (e)=>{
         if (e.target.classList.contains('loancards-list')) {
             wire_loan_list();
@@ -274,8 +280,8 @@ function treatAsLendTab(){
     });
 }
 
-function addGraphs(id) {
-    const config = loan => {
+function addGraphs(loan) {
+    const config = loanData => {
         return {
             chart: {
                 alignTicks: false,
@@ -285,7 +291,7 @@ function addGraphs(id) {
             },
             title: {text: null},
             xAxis: {
-                categories: loan.repayments.map(r => r.display),
+                categories: loanData.repayments.map(r => r.display),
                 title: {text: null}
             },
             yAxis: [{
@@ -328,33 +334,74 @@ function addGraphs(id) {
                 animation: false,
                 zIndex: 6,
                 name: 'Repayment',
-                data: loan.repayments.map(r => r.amount),
+                data: loanData.repayments.map(r => r.amount),
             }, {
                 type: 'area',
                 animation: false,
                 yAxis: 1,
                 zIndex: 5,
                 name: 'Percentage',
-                data: loan.repayments.map(r => r.percent),
+                data: loanData.repayments.map(r => r.percent),
             }]
         }
     }
-    get_loan_detail(id).done(loan => {
-        if (!loan || !loan.repayments) return
-        var height = Math.max(400, Math.min(loan.repayments.length * 50, 1000))
-        var container = $(`<div style='z-index:1000; height:${height}px'/>`)
-        var repayments = $("section.repayment-schedule")
-        repayments.append(container)
-        container.highcharts(config(loan))
 
-        var graphs = $(`<div>Interval: ${loan.terms.repayment_interval}</div>
+    if (!loan || !loan.repayments) return
+    var height = Math.max(400, Math.min(loan.repayments.length * 50, 1000))
+    var container = $(`<div style='z-index:1000; height:${height}px'/>`)
+    var repayments = $("section.repayment-schedule")
+    repayments.append(container)
+    container.highcharts(config(loan))
+
+    var graphs = $(`<div>Interval: ${loan.terms.repayment_interval}</div>
             <div>${Math.round(loan.half_back_actual)}% back by: ${loan.half_back}</div>
             <div>${Math.round(loan.three_fourths_back_actual)}% back by: ${loan.three_fourths_back}</div>
             <div>Final Repayment: ${loan.final_repayment}</div>`)
-        repayments.append(graphs)
+    repayments.append(graphs)
 
-        cl("REPAY: ", loan)
-    })
+    cl("REPAY: ", loan)
+
+}
+
+function addAtheistTeamScore(loan) {
+    console.log('addAtheistTeamScore:loan', loan);
+    if (!loan.partner || !loan.partner.atheistScore) return;
+
+    function generateEntry(title, data, lightboxText, id) {
+        return $(`<div id="partner-atheist-${id}" class="datum">
+						                <a class="black-underlined" data-reveal-id="partner-atheist-${id}-lightbox">${title}</a>:
+						                <strong>
+						                    ${data}
+						                </strong>
+						            </div>
+						            <div id="partner-atheist-${id}-lightbox" class="reveal-modal" data-reveal="" aria-hidden="true" role="dialog">
+						                    <div class="row">
+						                        <div class="columns small-12">
+						                            <a class="close-reveal-modal" aria-label="Close">
+						                                <svg class="icon icon-x">
+						                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-x"></use>
+						                                </svg>
+						                            </a>
+						                            <div class="lightbox-content white">
+						                                <h1 class="white">${title}</h1>
+						                                <p class="featured white"></p><div>${lightboxText}<br/><p/><p/><p>
+						                                This data was added to the page by the Kiva Lender Assistant Chrome Extension. It was pulled from the Atheist Team's <a href="https://docs.google.com/spreadsheets/d/1KP7ULBAyavnohP4h8n2J2yaXNpIRnyIXdjJj_AwtwK0/edit#gid=1">Google spreadsheet</a> by <a href="http://www.kivalens.org">KivaLens' server</a> on a regular basis.
+						                                If you have any questions regarding any of this research, please contact the <a href="https://www.kiva.org/team/a_atheists_agnostics_skeptics_freethinkers_secular_humanists_and_the_nonreligious">Atheist Team</a> on Kiva, do not contact Kiva's Customer Service, Kiva is not involved.</p></div><p></p>
+						                            </div>
+						                        </div>
+						                    </div>
+						                </div>`)
+    }
+
+    const $atheistScore = [generateEntry('Secular Rating', loan.partner.atheistScore.secularRating, `A rating from 1 to 4 where 4 is the highest, indicating a purely secular organization and a 1 is a very religious organization. If you would like to filter by this data, use <a href="http://www.kivalens.org">KivaLens</a> and switch on the ability in KivaLens' Options tab.`, 'secular'),
+        generateEntry('Comments on Rating', loan.partner.atheistScore.commentsOnSecularRating, "The reviewer's explanation of how they arrived at the score.", 'secular-comment'),
+        generateEntry('Social Rating', loan.partner.atheistScore.socialRating, `A rating from 1 to 4 where 4 is the highest, indicating a partner that engages in helping their community with the proceeds from the loans.  If you would like to filter by this data, use <a href="http://www.kivalens.org">KivaLens</a> and switch on the ability in KivaLens' Options tab.`, 'social'),
+        generateEntry('Comments on Rating', loan.partner.atheistScore.commentsOnSocialRating, "The reviewer's explanation of how they arrived at the score.", 'social-comment'),
+        generateEntry('Religious Affiliation', loan.partner.atheistScore.religiousAffiliation, "Based on details from the partner's website, what, if any, religious affiliation do they have.", 'religious-affiliation'),
+        generateEntry('Review Comments', loan.partner.atheistScore.reviewComments, "Comments about the review.", 'review-comments')
+    ];
+
+    $('div.field-partner-data').append($atheistScore);
 }
 
 function treatAsLoanPage(id) {
@@ -374,10 +421,16 @@ function treatAsLoanPage(id) {
             $(".loan-total").after($(`<div>Posted: ${posted.toString("MMM d, yyyy h:mm tt")} </div>`))
         })
 
-        addKLToMenu() //adds "view loan on KL"
-        if_setting("add_on_always_show_repayments_on_loan").done(()=> {
-            addGraphs(id)
+        get_loan_detail(id).done(loan => {
+            if_setting("display_atheist_scores").done(()=> {
+                addAtheistTeamScore(loan)
+            })
+            if_setting("add_on_always_show_repayments_on_loan").done(()=> {
+                addGraphs(loan) ///loan
+            })
         })
+
+        addKLToMenu() //adds "view loan on KL"
     })
 
     if_setting(['speech_enabled', 'speech_enabled_analyze_loan']).done(()=>

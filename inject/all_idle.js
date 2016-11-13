@@ -47,9 +47,9 @@ function addToDOM(){
         if (settings.custom_button_my_teams)
             AddButtonToBanner("my-teams", "My Teams", "https://www.kiva.org/teams/my-teams");
         if (settings.custom_button_live)
-            AddButtonToBanner("live", "Live", "https://www.kiva.org/live");
+            AddButtonToBanner("live", "Live", "https://www.kiva.org/live?v=1");
         if (settings.custom_button_kivalens)
-            AddButtonToBanner("kivalens", "KivaLens", "https://www.kivalens.org/#/search");
+            AddButtonToBanner("kivalens", "KivaLens", "http://www.kivalens.org/#/search");
 
         ([1,2,3]).forEach(i => {
             var caption = settings[`custom_button_${i}_caption`]

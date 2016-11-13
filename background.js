@@ -22,6 +22,7 @@ var settings = new Store("settings", {
     "add_on_always_show_partner_on_loan": true,
     add_on_always_show_repayments_on_loan: true,
     "add_on_omnibar": true,
+    "display_atheist_scores": false,
 
     custom_button_kivalens: false,
     custom_button_all_teams: false,

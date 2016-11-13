@@ -209,6 +209,12 @@ this.manifest = {
         },
         {   "tab": "Other",
             "group": "Features",
+            "name": "display_atheist_scores",
+            "type": "checkbox",
+            "label": "Display Kiva's Atheist Team's Research for Partners. Partners are rated both on their social mission as well as how religious they are based on what's available on the partner's websites, including which religious affiliation the partner has, if applicable. If you want to filter by these scores and not just view them, use www.kivalens.org and check the box on the Options tab to filter by and display the data."
+        },
+        {   "tab": "Other",
+            "group": "Features",
             "name": "add_on_always_show_partner_on_loan",
             "type": "checkbox",
             "label": "Always show Partner (MFI) or Trustee (direct loans) details section on loan detail pages"

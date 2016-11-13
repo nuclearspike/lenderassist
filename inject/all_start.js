@@ -143,8 +143,17 @@ function get_loan_detail(loan_id){
                 repayments(show_zero_amounts:true) {
                   amount percent display
                 }
-              }
-            }`)
+                partner {
+                    atheistScore {
+                        commentsOnSecularRating
+                        commentsOnSocialRating
+                        religiousAffiliation
+                        reviewComments
+                        secularRating
+                        socialRating
+                    }
+                }
+            }}`)
         .then(data => data.loan)
 }
 
@@ -193,7 +202,6 @@ function get_partner_from_loan(loan){
     var def = $.Deferred();
     if (!loan.partner){
         get_partner(loan.partner_id)
-            .done(partner => { loan.partner = partner; })
             .done(p => loan.partner = p)
             .done(def.resolve);
     } else {
