@@ -406,12 +406,14 @@ function addAtheistTeamScore(loan) {
 
 function treatAsLoanPage(id) {
     $(()=> {
+        /*
         if_setting("add_on_always_show_partner_on_loan").done(()=> {
             $("#ac-field-partner-details-body-right").attr("aria-hidden", false);
             $(".field-partner-details .ac-container .ac-dropdown-icon").remove();
             $("#ac-trustee-info-body-right").attr("aria-hidden", false);
             $(".trustee-details .ac-container .ac-dropdown-icon").remove();
         });
+        */
         api_object.done(loan => {
             if (loan.status == "fundraising") {
                 var expiration = new Date(loan.planned_expiration_date);

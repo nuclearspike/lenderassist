@@ -98,7 +98,8 @@ this.manifest = {
             "step": 1,
             "display": true
         },
-        {   "tab": "Speech",
+        {
+            "tab": "Speech",
             "group": "Loan Details",
             "name": "speech_enabled_analyze_loan_attributes",
             "type": "checkbox",
@@ -188,7 +189,6 @@ this.manifest = {
             "type": "text",
             "label": "URL"
         },
-
         {   "tab": "Other",
             "group": "Features",
             "name": "add_on_repayment_loan_card",
@@ -213,12 +213,6 @@ this.manifest = {
             "type": "checkbox",
             "label": "Display Kiva's Atheist Team's Research for Partners. Partners are rated both on their social mission as well as how religious they are based on what's available on the partner's websites, including which religious affiliation the partner has, if applicable. If you want to filter by these scores and not just view them, use www.kivalens.org and check the box on the Options tab to filter by and display the data."
         },
-        {   "tab": "Other",
-            "group": "Features",
-            "name": "add_on_always_show_partner_on_loan",
-            "type": "checkbox",
-            "label": "Always show Partner (MFI) or Trustee (direct loans) details section on loan detail pages"
-        },
         {
             "tab": "Other",
             "group": "Omnibar",
@@ -242,7 +236,15 @@ this.manifest = {
     ]
 };
 
-//    {
+// {   "tab": "Other",
+/* "group": "Features",
+    "name": "add_on_always_show_partner_on_loan",
+    "type": "checkbox",
+    "label": "Always show Partner (MFI) or Trustee (direct loans) details section on loan detail pages without having to click to expand."
+},
+*/
+//
+// {
 //        "tab": i18n.get("information"),
 //        "group": i18n.get("login"),
 //        "name": "username",

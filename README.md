@@ -20,6 +20,7 @@ To view screenshots or install, using the Google Chrome browser, [go here](https
 a longer or shorter than normal repayment term, when the rating of the partner is much higher or lower than normal, etc.
 *  Once the Lender Assistant knows who you are (you just have to log in once, it'll figure out the rest), it will be able to relate the loan you're
 looking at to loans in your portfolio and, for example, comment that you've made a lot of loans to that country before but they're all done paying back.
+* See the Atheist team's research included directly on the Loan pages, including Secular/Social scoring and comments and religious affiliation. (Go to Options, then the "Other" tab to switch it on)
 
 ## Lender/Team Pages
 * When hovering over any link anywhere on the site that goes to a lender or team page, the extension will pull information on that lender/team
