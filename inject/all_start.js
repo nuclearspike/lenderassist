@@ -57,7 +57,7 @@ function get_lender(t_id){
         def.resolve(lender);
     }).fail(()=>{
         $.ajax({
-            url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_id + ".json?app_id=org.kiva.kivalens",
+            url: "https://api.kivaws.org/v1/lenders/" + t_id + ".json?app_id=org.kiva.kivalens",
             cache: false,
             fail: def.reject,
             success: function (result) {
@@ -79,7 +79,7 @@ function get_lenders(t_ids){
         def.resolve(lenders);
     }).fail(()=>{
         $.ajax({
-            url: window.location.protocol + "//api.kivaws.org/v1/lenders/" + t_ids.join(',') + ".json?app_id=org.kiva.kivalens",
+            url: "https://api.kivaws.org/v1/lenders/" + t_ids.join(',') + ".json?app_id=org.kiva.kivalens",
             cache: false,
             fail: def.reject,
             success: function (result) { def.resolve(result.lenders) }
@@ -95,7 +95,7 @@ function get_team(t_id){
         def.resolve(team);
     }).fail(()=>{
         $.ajax({
-            url: window.location.protocol + "//api.kivaws.org/v1/teams/using_shortname/" + t_id + ".json?app_id=org.kiva.kivalens",
+            url: "https://api.kivaws.org/v1/teams/using_shortname/" + t_id + ".json?app_id=org.kiva.kivalens",
             cache: false,
             fail: def.reject,
             success: (result) => {
@@ -120,7 +120,7 @@ function get_loans(loan_id_arr){
     return graph_ql(`{loans(ids:[${loan_id_arr.join(',')}]) {
                 id
                 final_repayment
-                terms { repayment_interval}
+                terms { repayment_interval }
                 repayments(show_zero_amounts:true) { amount }
                 partner { name }
               }

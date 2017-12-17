@@ -1,7 +1,7 @@
     console.log("background.js processing");
 
 var settings = new Store("settings", {
-    "speech_enabled": true,
+    "speech_enabled": false,
     "speech_enabled_live": true,
     "speech_enabled_hover_loan": false,
     "speech_enabled_hover_lender": true,

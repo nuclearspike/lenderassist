@@ -1,7 +1,7 @@
 {
   "name": "Kiva Lender Assistant",
   "description": "KLA shows repayment graphs, partner religious affiliation, lets you set up custom buttons in Kiva's header, and more!",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "manifest_version": 2,
   "homepage_url": "https://github.com/nuclearspike/lenderassist",
   "background" : { "page": "background.html" },
