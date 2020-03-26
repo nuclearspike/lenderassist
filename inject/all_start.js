@@ -107,6 +107,7 @@ function get_team(t_id){
 }
 
 function graph_ql(query) {
+    // must use https
     return $.post("https://kivalens.herokuapp.com/graphql",{query})
         .then(result => result.data)
 }

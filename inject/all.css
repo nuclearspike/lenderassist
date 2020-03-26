@@ -20,6 +20,22 @@ div.loan-card.row {
     min-height: 350px !important;
 }
 
+div.loan-card-2.row {
+    height: auto !important;
+}
+
+div.loan-card-2.row.partner-name .loan-card-2-footer-wrap {
+    height: 10.5rem !important;
+}
+
+div.loan-card-2.row.spark-lines .loan-card-2-footer-wrap {
+    height: 12rem !important;
+}
+
+div.loan-card-2.row.partner-name.spark-lines .loan-card-2-footer-wrap {
+    height: 13.0625rem !important;
+}
+
 div.borrower-details-wrap {
     height: 73px !important;
 }

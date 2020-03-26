@@ -6,7 +6,7 @@ const wait = ms => {
     return $d
 }
 
-//generic automation functions
+//generic automation functions. some of this should be looking at node insertion events rather than just using timers.
 const waitForElement = selector => {
     var $d = $.Deferred()
     var found = false
@@ -64,6 +64,7 @@ waitForElement("#updateAutolendSettings-form").done($el => {
     }
 })
 
+// returns an array of anon objects containing the id, name and checked status of criteria.
 function gatherNamesIds(){
     var results = []
     $('.MyKiva_EditAutolendCriteriaView .checkableControlSet').find('div').each((i,el)=>{
@@ -82,6 +83,7 @@ function assignGeneric(singular, plural, url_param, byName) {
 
     //open lightbox
     if (!clickElement(`a[data-kv-criteria=${plural}]`)){
+      // should have actual error reporting to somewhere, not speech
         sp(`I cannot open the ${singular} selection window. Please report this error.`)
         return
     }
