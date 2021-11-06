@@ -79,7 +79,7 @@ function get_lenders(t_ids){
         def.resolve(lenders);
     }).fail(()=>{
         $.ajax({
-            url: "https://api.kivaws.org/v1/lenders/" + t_ids.join(',') + ".json?app_id=org.kiva.kivalens",
+            url: "http://api.kivaws.org/v1/lenders/" + t_ids.join(',') + ".json?app_id=org.kiva.kivalens",
             cache: false,
             fail: def.reject,
             success: function (result) { def.resolve(result.lenders) }
@@ -95,7 +95,7 @@ function get_team(t_id){
         def.resolve(team);
     }).fail(()=>{
         $.ajax({
-            url: "https://api.kivaws.org/v1/teams/using_shortname/" + t_id + ".json?app_id=org.kiva.kivalens",
+            url: "http://api.kivaws.org/v1/teams/using_shortname/" + t_id + ".json?app_id=org.kiva.kivalens",
             cache: false,
             fail: def.reject,
             success: (result) => {
@@ -166,7 +166,7 @@ function get_loan(t_id){
         def.resolve(loan);
     }).fail(() => {
         $.ajax({
-            url:  `https://api.kivaws.org/v1/loans/${t_id}.json?app_id=org.kiva.kivalens`,
+            url:  `http://api.kivaws.org/v1/loans/${t_id}.json?app_id=org.kiva.kivalens`,
             cache: false,
             fail: def.reject,
             success: function (result) {
@@ -189,7 +189,7 @@ function get_partner(t_id){
         def.resolve(partner);
     }).fail(()=>{
         $.ajax({
-            url: `https://api.kivaws.org/v1/partners/${t_id}.json?app_id=org.kiva.kivalens`,
+            url: `http://api.kivaws.org/v1/partners/${t_id}.json?app_id=org.kiva.kivalens`,
             cache: false,
             fail: def.reject,
             success: result => def.resolve(result.partners[0]) 
