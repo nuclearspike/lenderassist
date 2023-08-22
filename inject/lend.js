@@ -459,7 +459,7 @@ function treatAsLoanPage(id) {
       }
       var posted = new Date(loan.posted_date);
       $(".loan-total").after($(`<div>Posted: ${posted.toString("MMM d, yyyy h:mm tt")} </div>`))
-    })
+    }).fail(function() {return true})
 
     get_loan_detail(id).done(loan => {
       if_setting("display_atheist_scores").done(() => {
