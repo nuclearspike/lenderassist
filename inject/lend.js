@@ -468,10 +468,10 @@ function treatAsLoanPage(id) {
       if_setting("add_on_always_show_repayments_on_loan").done(() => {
         addGraphs(loan) ///loan
       })
-    })
+    }).fail(function() {return true})
 
     addKLToMenu() //adds "view loan on KL"
-  })
+  }).fail(function() {return true})
 
   if_setting(['speech_enabled', 'speech_enabled_analyze_loan']).done(() =>
     api_object.done([short_talk_loan, analyze_loan, function () {
